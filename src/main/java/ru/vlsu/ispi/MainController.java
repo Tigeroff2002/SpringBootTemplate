@@ -4,12 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import ru.vlsu.ispi.DAO.ClubDAO;
 import ru.vlsu.ispi.beans.Club;
+import ru.vlsu.ispi.beans.Sportsman;
 import ru.vlsu.ispi.daoimpl.IClubDAO;
+import ru.vlsu.ispi.daoimpl.ISportsmanDAO;
 
+import javax.validation.Valid;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +32,9 @@ public class MainController {
 
     @Autowired
     private IClubDAO clubDAO;
+
+    @Autowired
+    private ISportsmanDAO sportsmanDAO;
 
     public static Connection getConnection() throws SQLException {
         try {
@@ -109,7 +116,7 @@ public class MainController {
         Connection connection = null;
         try{
             connection = getConnection();
-            if (!ifExists(club, connection)){
+            if (!ifClubExists(club, connection)){
                 clubDAO.create(club, connection);
             }
             else {
@@ -161,11 +168,86 @@ public class MainController {
         return "club";
     }
 
-    private boolean ifExists(Club club, Connection connection) throws SQLException{
+    @GetMapping("/sportsman")
+    public String sportsmanForm(Model model){
+        Connection connection = null;
+        try{
+            connection = getConnection();
+            model.addAttribute(new Sportsman());
+            model.addAttribute(sportsmanDAO.getAllSportsmen(connection));
+            System.out.println(clubDAO.getAllClubs(connection).size());
+            model.addAttribute(clubDAO.getAllClubs(connection));
+        }
+        catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        finally {
+            try{
+                if (connection != null){
+                    connection.close();
+                }
+            }
+            catch (SQLException exception){
+                exception.printStackTrace();
+            }
+        }
+        return "sportsmen";
+    }
+
+    @PostMapping("/sportsman")
+    public String sportsmanSubmit(@Valid @ModelAttribute Sportsman sportsman, BindingResult result, Model model){
+        if (result.hasErrors()){
+            return "sportsmen";
+        }
+        System.out.println("Sportsman name: " + sportsman.getName());
+        Connection connection = null;
+        try{
+            connection = getConnection();
+            if (!ifSportsmanExists(sportsman, connection)){
+                sportsmanDAO.create(sportsman, connection);
+            }
+            else {
+                sportsmanDAO.update(sportsman, connection);
+            }
+            System.out.println(sportsmanDAO.getAllSportsmen(connection).size());
+            model.addAttribute(sportsmanDAO.getAllSportsmen(connection));
+        }
+        catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        finally {
+            try{
+                if (connection != null){
+                    connection.close();
+                }
+            }
+            catch (SQLException exception){
+                exception.printStackTrace();
+            }
+        }
+        return "sportsman";
+    }
+
+    private boolean ifClubExists(Club club, Connection connection) throws SQLException{
         String query = "SELECT * FROM Clubs WHERE Id=?";
         Club currClub = null;
         try (PreparedStatement stmt = connection.prepareStatement(query)){
             stmt.setLong(1, club.getId());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    private boolean ifSportsmanExists(Sportsman sportsman, Connection connection) throws SQLException{
+        String query = "SELECT * FROM Sportsmen WHERE Id=?";
+        Sportsman currSportsman = null;
+        try (PreparedStatement stmt = connection.prepareStatement(query)){
+            stmt.setLong(1, sportsman.getId());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()){
                 return true;

@@ -73,7 +73,7 @@ public class ClubDAO implements IClubDAO{
                 currSportsman.setId(rs.getLong("Id"));
                 currSportsman.setClubId(rs.getLong("ClubId"));
                 currSportsman.setName(rs.getString("Name"));
-                currSportsman.setAge(rs.getInt("Age"));
+                currSportsman.setAge(rs.getLong("Age"));
                 impl.sportsmen.put(currSportsman.getId(), currSportsman);
             }
         } catch (SQLException ex){

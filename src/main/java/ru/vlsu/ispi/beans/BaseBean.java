@@ -1,11 +1,14 @@
 package ru.vlsu.ispi.beans;
 
+import javax.validation.constraints.NotNull;
+
 public class BaseBean {
-    private long id;
-    public long getId(){
+    @NotNull(message="Id should not be null")
+    private Long id;
+    public Long getId(){
         return id;
     }
-    public void setId(long _id){
+    public void setId(Long _id){
         id = _id;
     }
 }

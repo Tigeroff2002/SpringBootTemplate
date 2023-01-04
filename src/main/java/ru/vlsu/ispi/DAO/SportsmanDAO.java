@@ -17,12 +17,13 @@ public class SportsmanDAO implements ISportsmanDAO {
         this.impl = impl;
     }
     public void create(Sportsman sportsman, Connection conn) throws SQLException{
-        String query = "INSERT INTO Sportsmen (Id, ClubId, Name, Age) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Sportsmen (Id, ClubId, Name, gender, Age) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setLong(1, sportsman.getId());
             statement.setLong(2, sportsman.getClubId());
             statement.setString(3, sportsman.getName());
-            statement.setInt(4, sportsman.getAge());
+            statement.setString(4, sportsman.getGender());
+            statement.setLong(5, sportsman.getAge());
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0)
                 System.out.println("A new sportsman was inserted successfully");
@@ -31,12 +32,13 @@ public class SportsmanDAO implements ISportsmanDAO {
         }
     }
     public void update(Sportsman sportsman, Connection conn) throws SQLException{
-        String query = "UPDATE Sportsmen SET ClubId=?, Name=?, Age=? WHERE Id=?";
+        String query = "UPDATE Sportsmen SET ClubId=?, Name=?, gender=?, Age=? WHERE Id=?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setLong(1, sportsman.getClubId());
             statement.setString(2, sportsman.getName());
-            statement.setInt(3, sportsman.getAge());
-            statement.setLong(4, sportsman.getId());
+            statement.setString(3, sportsman.getGender());
+            statement.setLong(4, sportsman.getAge());
+            statement.setLong(5, sportsman.getId());
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0)
                 System.out.println("A sportsman was updated successfully");
@@ -64,7 +66,8 @@ public class SportsmanDAO implements ISportsmanDAO {
                 currSportsman.setId(rs.getLong("Id"));
                 currSportsman.setClubId(rs.getLong("ClubId"));
                 currSportsman.setName(rs.getString("Name"));
-                currSportsman.setAge(rs.getInt("Age"));
+                currSportsman.setGender(rs.getString("gender"));
+                currSportsman.setAge(rs.getLong("Age"));
             }
         } catch (SQLException ex){
             System.out.println("Query was not successfully executed");
@@ -95,7 +98,8 @@ public class SportsmanDAO implements ISportsmanDAO {
                 currSportsman.setId(rs.getLong("Id"));
                 currSportsman.setClubId(rs.getLong("ClubId"));
                 currSportsman.setName(rs.getString("Name"));
-                currSportsman.setAge(rs.getInt("Age"));
+                currSportsman.setGender(rs.getString("gender"));
+                currSportsman.setAge(rs.getLong("Age"));
                 impl.sportsmen.put(currSportsman.getId(), currSportsman);
             }
         } catch (SQLException ex){
