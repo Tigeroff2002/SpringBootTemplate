@@ -15,6 +15,12 @@
         <!-- collaborators and configuration for this bean go here -->
     </bean>
 
+    <bean id="conn" class="ru.vlsu.ispi.logic.abstractions.IConnector" scope="singleton">
+    </bean>
+
+    <bean id="handle" class="ru.vlsu.ispi.logic.abstractions.IHandler" scope="singleton">
+    </bean>
+
     <bean id="sportsmanDAO" class="ru.vlsu.ispi.DAO.SportsmanDAO">
         <constructor-arg ref="stub"/>
     </bean>
@@ -23,6 +29,20 @@
     <bean id="clubDAO" class="ru.vlsu.ispi.DAO.ClubDAO">
         <property name="impl">
             <ref bean="stub"/>
+        </property>
+    </bean>
+
+    <!-- more bean definitions go here -->
+    <bean id="Connector" class="ru.vlsu.ispi.logic.Connector">
+        <property name="impl">
+            <ref bean="conn"/>
+        </property>
+    </bean>
+
+    <!-- more bean definitions go here -->
+    <bean id="Handler" class="ru.vlsu.ispi.logic.Handler">
+        <property name="impl">
+            <ref bean="handle"/>
         </property>
     </bean>
 

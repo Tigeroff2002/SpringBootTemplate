@@ -63,6 +63,23 @@ public class ClubDAO implements IClubDAO{
         }
         return currClub;
     }
+
+    @Override
+    public boolean ifClubExists(Club club, Connection connection) throws SQLException {
+        String query = "SELECT * FROM Clubs WHERE Id=?";
+        Club currClub = null;
+        try (PreparedStatement stmt = connection.prepareStatement(query)){
+            stmt.setLong(1, club.getId());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
     public List<Sportsman> getSportsmenByClubId(long id, Connection conn) throws SQLException{
         String query = "SELECT * FROM Sportsmen WHERE ClubId = " + Long.toString(id);
         impl.sportsmen = new HashMap<Long, Sportsman>();

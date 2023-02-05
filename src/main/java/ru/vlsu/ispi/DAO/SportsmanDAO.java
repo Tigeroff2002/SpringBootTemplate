@@ -74,6 +74,23 @@ public class SportsmanDAO implements ISportsmanDAO {
         }
         return currSportsman;
     }
+
+    @Override
+    public boolean ifSportsmanExists(Sportsman sportsman, Connection connection) throws SQLException {
+        String query = "SELECT * FROM Sportsmen WHERE Id=?";
+        Sportsman currSportsman = null;
+        try (PreparedStatement stmt = connection.prepareStatement(query)){
+            stmt.setLong(1, sportsman.getId());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
     public Club getClubBySportsmanId(long id, Connection conn) throws SQLException{
         String query = "SELECT Clubs.Id, Clubs.Name FROM Clubs JOIN Sportsmen ON Clubs.Id = Sportsmen.ClubId WHERE Sportsmen.Id= " + Long.toString(id);
         Club currClub = new Club();

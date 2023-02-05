@@ -12,6 +12,7 @@ public interface IClubDAO {
     public void update(Club club, Connection conn) throws SQLException;
     public void delete(long id, Connection conn) throws SQLException;
     public Club getById(long Id, Connection conn) throws SQLException;
+    public boolean ifClubExists(Club club, Connection connection) throws SQLException;
     public List<Sportsman> getSportsmenByClubId(long id, Connection conn) throws SQLException;
     public List<Club> getAllClubs(Connection conn) throws SQLException;
 }
