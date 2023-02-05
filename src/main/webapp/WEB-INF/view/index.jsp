@@ -1,11 +1,32 @@
-<%@page contentType="text/html;charset=UTF-8" language="java" %>
-<%@page isELIgnored="false" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-   <head></head>
-   <body>
-      <h1>Hello from index.jsp of MainController!</h1>
-      ${message} <br/>
-      ${club.name} <br/>
-      ${clubList.size()} <br/>
-   </body>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Login Page</title>
+</head>
+<body>
+<h1 align="center">Login</h1>
+<form id="form1" name="loginform" action="LoginCheck.jsp" method="post">
+ <table  border = "0"   >
+    <tr>
+        <td>Username</td>
+        <td><input type ="text" name="username" size="20" /></td>
+    </tr>
+    <tr>
+        <td>Password</td>
+        <td><input type="password" name ="password" size="20" /></td>
+    </tr>
+    <tr>
+        <td  ><a >New User?</a>
+            <input name="a" type="submit" id="s" value="Login" />
+            <input name="reset" type="reset" id="s" value="Reset" /></td>
+    </tr>
+
+ </table>
+
+</form>
+
+</body>
 </html>
