@@ -22,7 +22,7 @@ import java.util.Properties;
 
 @Controller
 
-public class MainController {
+public class ClubController {
     @Autowired
     private IHandler _handler;
 
@@ -54,22 +54,4 @@ public class MainController {
         return "club";
     }
 
-    @GetMapping("/sportsman")
-    public String sportsmanForm(Model model){
-        _handler.SportsmanFormOpen(model);
-
-        return "sportsmen";
-    }
-
-    @PostMapping("/sportsman")
-    public String sportsmanSubmit(@Valid @ModelAttribute Sportsman sportsman, BindingResult result, Model model){
-        if (result.hasErrors()){
-            return "sportsmen";
-        }
-        else {
-            _handler.SportsmanFormSubmit(sportsman, model);
-
-            return "sportsman";
-        }
-    }
 }

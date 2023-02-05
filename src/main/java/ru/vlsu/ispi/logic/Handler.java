@@ -25,20 +25,6 @@ public class Handler implements IHandler {
     private IConnector _connector;
 
     @Override
-    public void HandleIndex(Long id, Long playerId, Model model) {
-        System.out.println("id" + id);
-        System.out.println(("PlayerId" + playerId));
-        model.addAttribute("message", "Hello, World!");
-        Club club = new Club();
-        club.setId(1L);
-        club.setName("Zenit");
-        model.addAttribute(club);
-        List<Club> clubs = new ArrayList<Club>();
-        clubs.add(club);
-        model.addAttribute(clubs);
-    }
-
-    @Override
     public void ClubFormOpen(Long id, Model model) {
         Connection connection = null;
         try{
@@ -67,6 +53,20 @@ public class Handler implements IHandler {
                 exception.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void HandleIndex(Long id, Long playerId, Model model) {
+        System.out.println("id" + id);
+        System.out.println(("PlayerId" + playerId));
+        model.addAttribute("message", "Hello, World!");
+        Club club = new Club();
+        club.setId(1L);
+        club.setName("Zenit");
+        model.addAttribute(club);
+        List<Club> clubs = new ArrayList<Club>();
+        clubs.add(club);
+        model.addAttribute(clubs);
     }
 
     @Override
