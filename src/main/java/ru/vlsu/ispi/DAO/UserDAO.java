@@ -1,6 +1,7 @@
 package ru.vlsu.ispi.DAO;
 
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.daoimpl.DAOConnector;
 import ru.vlsu.ispi.daoimpl.IUserDAO;
 import ru.vlsu.ispi.enums.RoleType;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class UserDAO implements IUserDAO {
+public class UserDAO extends DAOConnector implements IUserDAO {
     private final DBContext _context;
 
     public UserDAO(DBContext context){
@@ -19,11 +20,12 @@ public class UserDAO implements IUserDAO {
         _context = context;
     }
     @Override
-    public void Create(User user, Connection conn) throws SQLException {
+    public void Create(User user) throws SQLException {
+        Connection connection = getConnection();
         String query = "INSERT INTO Users " +
                 "(Id, RoleId, Email, NickName, Password, Gender, ContactNumber, RegisterDate, BirthdayDate, Rating, Resume, Balance, Bonus) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = conn.prepareStatement(query)) {
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, user.getId());
             statement.setInt(2, user.getRoleId());
             statement.setString(3, user.getEmail());
@@ -47,11 +49,12 @@ public class UserDAO implements IUserDAO {
 
 
     @Override
-    public void Update(User user, Connection conn) throws SQLException {
+    public void Update(User user) throws SQLException {
+        Connection connection = getConnection();
         String query = "UPDATE Users " +
                 "SET RoleId=?, Email=?, NickName=?, Password=?, Gender=?, ContactNumber=?, RegisterDate=?, BirthdayDate=?, Rating=?, Resume=?, Balance=?, Bonus=?" +
                 " WHERE Id=?";
-        try (PreparedStatement statement = conn.prepareStatement(query)) {
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, user.getRoleId());
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getNickName());
@@ -74,9 +77,10 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public void Delete(Long id, Connection conn) throws SQLException {
+    public void Delete(Long id) throws SQLException {
+        Connection connection = getConnection();
         String query = "DELETE FROM Users WHERE Id=?";
-        try (PreparedStatement statement = conn.prepareStatement(query)){
+        try (PreparedStatement statement = connection.prepareStatement(query)){
             statement.setLong(1, id);
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0)
@@ -87,10 +91,11 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public User FindUser(Long id, Connection conn) throws SQLException {
+    public User FindUser(Long id) throws SQLException {
+        Connection connection = getConnection();
         String query = "SELECT * FROM Users WHERE Id = " + Long.toString(id);
         User currUser = new User();
-        try (Statement stmt = conn.createStatement()){
+        try (Statement stmt = connection.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
             if (rs.next()){
                 currUser.setId(rs.getLong("Id"));
@@ -113,10 +118,38 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public List<User> GetUsersByRole(RoleType roleType, Connection conn) throws SQLException {
+    public User FindUserByName(String nickName) throws SQLException {
+        Connection connection = getConnection();
+        String query = "SELECT * FROM Users WHERE NickName = " + nickName;
+        User currUser = new User();
+        try (Statement stmt = connection.createStatement()){
+            ResultSet rs = stmt.executeQuery(query);
+            if (rs.next()){
+                currUser.setId(rs.getLong("Id"));
+                currUser.setRoleId(rs.getInt("RoleId"));
+                currUser.setEmail(rs.getString("Email"));
+                currUser.setNickName(rs.getString("NickName"));
+                currUser.setPassword(rs.getString("Password"));
+                currUser.setContactNumber(rs.getString("ContactNumber"));
+                currUser.setRegisterDate(rs.getDate("RegisterDate"));
+                currUser.setBirthdayDate(rs.getDate("BirthdayDate"));
+                currUser.setRating(rs.getFloat("Rating"));
+                currUser.setResume(rs.getString("Resume"));
+                currUser.setBalance(rs.getFloat("Balance"));
+                currUser.setBonus(rs.getFloat("Bonus"));
+            }
+        } catch (SQLException ex){
+            System.out.println("Query was not successfully executed");
+        }
+        return currUser;
+    }
+
+    @Override
+    public List<User> GetUsersByRole(RoleType roleType) throws SQLException {
+        Connection connection = getConnection();
         String query = "SELECT * FROM Users WHERE RoleId = " + Integer.toString(roleType.getValue());
         _context.Users = new HashMap<Long, User>();
-        try (Statement stmt = conn.createStatement()){
+        try (Statement stmt = connection.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()){
                 User currUser = new User();
@@ -141,10 +174,11 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public List<User> GetAllUsers(Connection conn) throws SQLException {
+    public List<User> GetAllUsers() throws SQLException {
+        Connection connection = getConnection();
         String query = "SELECT * FROM Users";
         _context.Users = new HashMap<Long, User>();
-        try (Statement stmt = conn.createStatement()){
+        try (Statement stmt = connection.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()){
                 User currUser = new User();

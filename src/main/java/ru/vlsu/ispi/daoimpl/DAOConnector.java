@@ -1,16 +1,11 @@
-package ru.vlsu.ispi.logic;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.vlsu.ispi.daoimpl.IClubDAO;
-import ru.vlsu.ispi.daoimpl.ISportsmanDAO;
-import ru.vlsu.ispi.logic.abstractions.IConnector;
+package ru.vlsu.ispi.daoimpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class Connector implements IConnector {
+public abstract class DAOConnector {
     private final String userName = "postgres";
     private final String password = "root";
     private final String dbms = "postgresql";

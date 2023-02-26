@@ -10,6 +10,7 @@ import ru.vlsu.ispi.beans.Sportsman;
 import ru.vlsu.ispi.logic.abstractions.IHandler;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 
 @Controller
 
@@ -25,14 +26,14 @@ public class SportsmanController {
     }
 
     @GetMapping("/sportsman")
-    public String sportsmanForm(Model model){
+    public String sportsmanForm(Model model) throws SQLException {
         _handler.SportsmanFormOpen(model);
 
         return "sportsmen";
     }
 
     @PostMapping("/sportsman")
-    public String sportsmanSubmit(@Valid @ModelAttribute Sportsman sportsman, BindingResult result, Model model){
+    public String sportsmanSubmit(@Valid @ModelAttribute Sportsman sportsman, BindingResult result, Model model) throws SQLException{
         if (result.hasErrors()){
             return "sportsmen";
         }

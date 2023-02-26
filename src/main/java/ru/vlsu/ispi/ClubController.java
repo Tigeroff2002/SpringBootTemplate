@@ -34,21 +34,21 @@ public class ClubController {
     }
 
     @GetMapping("/club")
-    public String clubForm(@RequestParam(required = false, name = "id") Long id, Model model){
+    public String clubForm(@RequestParam(required = false, name = "id") Long id, Model model) throws SQLException{
         _handler.ClubFormOpen(id, model);
 
         return "clubs";
     }
 
     @PostMapping("/club")
-    public String clubSubmit(@ModelAttribute Club club, Model model){
+    public String clubSubmit(@ModelAttribute Club club, Model model) throws SQLException{
         _handler.ClubFormSubmit(club, model);
 
         return "club";
     }
 
     @GetMapping("/club/{id}")
-    public String deleteClub(@PathVariable Long id, Model model){
+    public String deleteClub(@PathVariable Long id, Model model) throws SQLException{
         _handler.DeleteClub(id, model);
 
         return "club";

@@ -6,7 +6,6 @@ import ru.vlsu.ispi.beans.Club;
 import ru.vlsu.ispi.beans.Sportsman;
 import ru.vlsu.ispi.daoimpl.IClubDAO;
 import ru.vlsu.ispi.daoimpl.ISportsmanDAO;
-import ru.vlsu.ispi.logic.abstractions.IConnector;
 import ru.vlsu.ispi.logic.abstractions.IHandler;
 
 import java.sql.Connection;
@@ -21,38 +20,18 @@ public class Handler implements IHandler {
     @Autowired
     private ISportsmanDAO sportsmanDAO;
 
-    @Autowired
-    private IConnector _connector;
-
     @Override
-    public void ClubFormOpen(Long id, Model model) {
-        Connection connection = null;
-        try{
-            connection = _connector.getConnection();
-            if (id == null) {
-                model.addAttribute("isCreate", true);
-                model.addAttribute("club", new Club());
-            }
-            else {
-                model.addAttribute("isCreate", false);
-                model.addAttribute("club", clubDAO.getById(id, connection));
-            }
-            System.out.println(clubDAO.getAllClubs(connection).size());
-            model.addAttribute(clubDAO.getAllClubs(connection));
+    public void ClubFormOpen(Long id, Model model) throws SQLException{
+        if (id == null) {
+            model.addAttribute("isCreate", true);
+            model.addAttribute("club", new Club());
         }
-        catch (SQLException ex){
-            ex.printStackTrace();
+        else {
+            model.addAttribute("isCreate", false);
+            model.addAttribute("club", clubDAO.getById(id));
         }
-        finally {
-            try{
-                if (connection != null){
-                    connection.close();
-                }
-            }
-            catch (SQLException exception){
-                exception.printStackTrace();
-            }
-        }
+        System.out.println(clubDAO.getAllClubs().size());
+        model.addAttribute(clubDAO.getAllClubs());
     }
 
     @Override
@@ -70,113 +49,44 @@ public class Handler implements IHandler {
     }
 
     @Override
-    public void ClubFormSubmit(Club club, Model model) {
+    public void ClubFormSubmit(Club club, Model model) throws SQLException{
         System.out.println("Club name: " + club.getName());
-        Connection connection = null;
-        try{
-            connection = _connector.getConnection();
-            if (!clubDAO.ifClubExists(club, connection)){
-                clubDAO.create(club, connection);
-            }
-            else {
-                clubDAO.update(club, connection);
-            }
-            System.out.println(clubDAO.getAllClubs(connection).size());
-            model.addAttribute(clubDAO.getAllClubs(connection));
+        if (!clubDAO.ifClubExists(club)){
+            clubDAO.create(club);
         }
-        catch (SQLException ex){
-            ex.printStackTrace();
+        else {
+            clubDAO.update(club);
         }
-        finally {
-            try{
-                if (connection != null){
-                    connection.close();
-                }
-            }
-            catch (SQLException exception){
-                exception.printStackTrace();
-            }
-        }
+        System.out.println(clubDAO.getAllClubs().size());
+        model.addAttribute(clubDAO.getAllClubs());
     }
 
     @Override
-    public void DeleteClub(Long id, Model model) {
+    public void DeleteClub(Long id, Model model) throws SQLException{
         System.out.println("id: " + id);
-        Connection connection = null;
-        try{
-            connection = _connector.getConnection();
-            clubDAO.delete(id, connection);
-            System.out.println("A club with id = " + id + " was removed from list");
-            System.out.println(clubDAO.getAllClubs(connection).size());
-            model.addAttribute(clubDAO.getAllClubs(connection));
-        }
-        catch (SQLException ex){
-            ex.printStackTrace();
-        }
-        finally {
-            try{
-                if (connection != null){
-                    connection.close();
-                }
-            }
-            catch (SQLException exception){
-                exception.printStackTrace();
-            }
-        }
+        clubDAO.delete(id);
+        System.out.println("A club with id = " + id + " was removed from list");
+        System.out.println(clubDAO.getAllClubs().size());
+        model.addAttribute(clubDAO.getAllClubs());
     }
 
     @Override
-    public void SportsmanFormOpen(Model model) {
-        Connection connection = null;
-        try{
-            connection = _connector.getConnection();
-            model.addAttribute(new Sportsman());
-            model.addAttribute(sportsmanDAO.getAllSportsmen(connection));
-            System.out.println(clubDAO.getAllClubs(connection).size());
-            model.addAttribute(clubDAO.getAllClubs(connection));
-        }
-        catch (SQLException ex){
-            ex.printStackTrace();
-        }
-        finally {
-            try{
-                if (connection != null){
-                    connection.close();
-                }
-            }
-            catch (SQLException exception){
-                exception.printStackTrace();
-            }
-        }
+    public void SportsmanFormOpen(Model model) throws SQLException{
+        model.addAttribute(new Sportsman());
+        model.addAttribute(sportsmanDAO.getAllSportsmen());
+        System.out.println(clubDAO.getAllClubs().size());
+        model.addAttribute(clubDAO.getAllClubs());
     }
 
     @Override
-    public void SportsmanFormSubmit(Sportsman sportsman, Model model) {
+    public void SportsmanFormSubmit(Sportsman sportsman, Model model) throws SQLException {
         System.out.println("Sportsman name: " + sportsman.getName());
-        Connection connection = null;
-        try{
-            connection = _connector.getConnection();
-            if (sportsmanDAO.ifSportsmanExists(sportsman, connection)){
-                sportsmanDAO.create(sportsman, connection);
-            }
-            else {
-                sportsmanDAO.update(sportsman, connection);
-            }
-            System.out.println(sportsmanDAO.getAllSportsmen(connection).size());
-            model.addAttribute(sportsmanDAO.getAllSportsmen(connection));
+        if (sportsmanDAO.ifSportsmanExists(sportsman)) {
+            sportsmanDAO.create(sportsman);
+        } else {
+            sportsmanDAO.update(sportsman);
         }
-        catch (SQLException ex){
-            ex.printStackTrace();
-        }
-        finally {
-            try{
-                if (connection != null){
-                    connection.close();
-                }
-            }
-            catch (SQLException exception){
-                exception.printStackTrace();
-            }
-        }
+        System.out.println(sportsmanDAO.getAllSportsmen().size());
+        model.addAttribute(sportsmanDAO.getAllSportsmen());
     }
 }

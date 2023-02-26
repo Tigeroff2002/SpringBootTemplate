@@ -5,7 +5,6 @@
    <body>
       <h1>Create\update the club form: </h1>
       <form action="club" method="post">
-
         <c:choose>
             <c:when test="${isCreate == true}">
                 <p>Id : <input type="text" name="id" id="id" value="${club.id}"/></p>

@@ -4,7 +4,6 @@
 <br>
 <h3> You are new user </h3>
 <br>
-<a href="">Войти</a>
-<a href="">Зарегистрироваться</a>
+<a href="">Выйти</a>
 </body>
 </html>

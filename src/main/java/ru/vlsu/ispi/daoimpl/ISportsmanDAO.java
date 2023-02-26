@@ -8,11 +8,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ISportsmanDAO {
-    public void create(Sportsman sportsman, Connection conn) throws SQLException;
-    public void update(Sportsman sportsman, Connection conn) throws SQLException;
-    public void delete(long id, Connection conn) throws SQLException;
-    public Sportsman getById(long Id, Connection conn) throws SQLException;
-    public boolean ifSportsmanExists(Sportsman sportsman, Connection connection) throws SQLException;
-    public Club getClubBySportsmanId(long Id, Connection conn) throws SQLException;
-    public List<Sportsman> getAllSportsmen(Connection conn) throws SQLException;
+    public void create(Sportsman sportsman) throws SQLException;
+    public void update(Sportsman sportsman) throws SQLException;
+    public void delete(long id) throws SQLException;
+    public Sportsman getById(long Id) throws SQLException;
+    public boolean ifSportsmanExists(Sportsman sportsman) throws SQLException;
+    public Club getClubBySportsmanId(long Id) throws SQLException;
+    public List<Sportsman> getAllSportsmen() throws SQLException;
 }

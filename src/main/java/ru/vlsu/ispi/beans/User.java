@@ -74,7 +74,6 @@ public class User extends BaseBean{
         RegisterDate = registerDate;
     }
 
-
     public Date BirthdayDate;
     public Date getBirthdayDate(){
         return BirthdayDate;

@@ -9,10 +9,11 @@ import java.sql.SQLException;
 
 
 public interface IUserDAO {
-    public void Create(User user, Connection conn) throws SQLException;
-    public void Update(User user, Connection conn) throws SQLException;
-    public void Delete(Long id, Connection conn) throws SQLException;
-    public User FindUser(Long id, Connection conn) throws SQLException;
-    public List<User> GetUsersByRole(RoleType roleType, Connection conn) throws SQLException;
-    public List<User> GetAllUsers(Connection conn) throws SQLException;
+    public void Create(User user) throws SQLException;
+    public void Update(User user) throws SQLException;
+    public void Delete(Long id) throws SQLException;
+    public User FindUser(Long id) throws SQLException;
+    public User FindUserByName(String nickName) throws SQLException;
+    public List<User> GetUsersByRole(RoleType roleType) throws SQLException;
+    public List<User> GetAllUsers() throws SQLException;
 }

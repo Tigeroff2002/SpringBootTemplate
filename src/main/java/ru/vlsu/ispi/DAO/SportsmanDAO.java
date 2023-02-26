@@ -2,6 +2,7 @@ package ru.vlsu.ispi.DAO;
 
 import ru.vlsu.ispi.beans.Club;
 import ru.vlsu.ispi.beans.Sportsman;
+import ru.vlsu.ispi.daoimpl.DAOConnector;
 import ru.vlsu.ispi.daoimpl.ISportsmanDAO;
 
 import java.sql.*;
@@ -9,16 +10,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SportsmanDAO implements ISportsmanDAO {
+public class SportsmanDAO extends DAOConnector implements ISportsmanDAO {
 
     private final DBImplementation impl;
 
     public SportsmanDAO(DBImplementation impl){
         this.impl = impl;
     }
-    public void create(Sportsman sportsman, Connection conn) throws SQLException{
+    public void create(Sportsman sportsman) throws SQLException{
+        Connection connection = getConnection();
         String query = "INSERT INTO Sportsmen (Id, ClubId, Name, gender, Age) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = conn.prepareStatement(query)) {
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, sportsman.getId());
             statement.setLong(2, sportsman.getClubId());
             statement.setString(3, sportsman.getName());
@@ -31,9 +33,10 @@ public class SportsmanDAO implements ISportsmanDAO {
             System.out.println("Query was not successfully executed");
         }
     }
-    public void update(Sportsman sportsman, Connection conn) throws SQLException{
+    public void update(Sportsman sportsman) throws SQLException{
+        Connection connection = getConnection();
         String query = "UPDATE Sportsmen SET ClubId=?, Name=?, gender=?, Age=? WHERE Id=?";
-        try (PreparedStatement statement = conn.prepareStatement(query)) {
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, sportsman.getClubId());
             statement.setString(2, sportsman.getName());
             statement.setString(3, sportsman.getGender());
@@ -46,9 +49,10 @@ public class SportsmanDAO implements ISportsmanDAO {
             System.out.println("Query was not successfully executed");
         }
     }
-    public void delete(long id, Connection conn) throws SQLException{
+    public void delete(long id) throws SQLException{
+        Connection connection = getConnection();
         String query = "DELETE FROM Sportsmen WHERE Id=?";
-        try (PreparedStatement statement = conn.prepareStatement(query)){
+        try (PreparedStatement statement = connection.prepareStatement(query)){
             statement.setLong(1, id);
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0)
@@ -57,10 +61,11 @@ public class SportsmanDAO implements ISportsmanDAO {
             System.out.println("Query was not successfully executed");
         }
     }
-    public Sportsman getById(long id, Connection conn) throws SQLException{
+    public Sportsman getById(long id) throws SQLException{
+        Connection connection = getConnection();
         String query = "SELECT * FROM Sportsmen WHERE Id = " + Long.toString(id);
         Sportsman currSportsman = new Sportsman();
-        try (Statement stmt = conn.createStatement()){
+        try (Statement stmt = connection.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
             if (rs.next()){
                 currSportsman.setId(rs.getLong("Id"));
@@ -76,7 +81,8 @@ public class SportsmanDAO implements ISportsmanDAO {
     }
 
     @Override
-    public boolean ifSportsmanExists(Sportsman sportsman, Connection connection) throws SQLException {
+    public boolean ifSportsmanExists(Sportsman sportsman) throws SQLException {
+        Connection connection = getConnection();
         String query = "SELECT * FROM Sportsmen WHERE Id=?";
         Sportsman currSportsman = null;
         try (PreparedStatement stmt = connection.prepareStatement(query)){
@@ -91,10 +97,11 @@ public class SportsmanDAO implements ISportsmanDAO {
         }
     }
 
-    public Club getClubBySportsmanId(long id, Connection conn) throws SQLException{
+    public Club getClubBySportsmanId(long id) throws SQLException{
+        Connection connection = getConnection();
         String query = "SELECT Clubs.Id, Clubs.Name FROM Clubs JOIN Sportsmen ON Clubs.Id = Sportsmen.ClubId WHERE Sportsmen.Id= " + Long.toString(id);
         Club currClub = new Club();
-        try (Statement statement = conn.createStatement()){
+        try (Statement statement = connection.createStatement()){
             ResultSet rs = statement.executeQuery(query);
             if (rs.next()){
                 currClub.setId(rs.getLong("Club.Id"));
@@ -105,10 +112,11 @@ public class SportsmanDAO implements ISportsmanDAO {
         }
         return currClub;
     }
-    public List<Sportsman> getAllSportsmen(Connection conn) throws SQLException{
+    public List<Sportsman> getAllSportsmen() throws SQLException{
+        Connection connection = getConnection();
         String query = "SELECT * FROM Sportsmen";
         impl.sportsmen = new HashMap<Long, Sportsman>();
-        try (Statement stmt = conn.createStatement()){
+        try (Statement stmt = connection.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()){
                 Sportsman currSportsman = new Sportsman();
