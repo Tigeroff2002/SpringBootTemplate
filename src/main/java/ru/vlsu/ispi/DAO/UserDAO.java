@@ -20,7 +20,7 @@ public class UserDAO extends DAOConnector implements IUserDAO {
         this.context = context;
     }
     @Override
-    public void Create(User user) throws SQLException {
+    public int Create(User user) throws SQLException {
         Connection connection = getConnection();
         String query1 = "SELECT Count(*) FROM Users";
         int count = 0;
@@ -55,6 +55,7 @@ public class UserDAO extends DAOConnector implements IUserDAO {
         } catch (SQLException ex){
             System.out.println("Query was not successfully executed");
         }
+        return count + 1;
     }
 
 

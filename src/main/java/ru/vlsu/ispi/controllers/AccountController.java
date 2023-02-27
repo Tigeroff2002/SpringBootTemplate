@@ -22,25 +22,50 @@ public class AccountController {
     @Autowired
     private UserHandler userHandler;
 
-    @GetMapping("index")
-    public String AuthIndex(@ModelAttribute User user, Model model){
-        model.addAttribute("user", user);
+    @GetMapping("index/{id}")
+    public String AuthIndex(@PathVariable Long id, Model model) throws SQLException{
+        User user = userHandler.FindUserById(id);
 
-        return "auth_index";
+        if (user == null){
+            return "redirect:/";
+        }
+        else {
+            model.addAttribute("user", user);
+
+            return "auth_index";
+        }
     }
 
-    @GetMapping("lk")
-    public String LK(@ModelAttribute User user, Model model){
-        model.addAttribute("user", user);
+    @GetMapping("lk/{id}")
+    public String LK(@PathVariable Long id, Model model) throws SQLException{
+        User user = userHandler.FindUserById(id);
 
-        return "lk";
+        if (user == null){
+            return "redirect:/";
+        }
+        else {
+            model.addAttribute("user", user);
+
+            return "lk";
+        }
     }
 
-    @GetMapping("admin")
-    public String AdminPage(@ModelAttribute User user, Model model){
-        model.addAttribute("user", user);
+    @GetMapping("lk/admin/{id}")
+    public String AdminPage(@PathVariable Long id, Model model) throws SQLException{
+        User user = userHandler.FindUserById(id);
 
-        return "adminPage";
+        if (user == null){
+            return "redirect:/";
+        }
+        else if (user.getRoleId() == 3){
+            model.addAttribute("user", user);
+
+            return "adminPage";
+        }
+        else {
+
+            return "redirect:/api/account/lk/" + Long.toString(user.getId()) + "";
+        }
     }
 
     @GetMapping("register")
@@ -64,7 +89,7 @@ public class AccountController {
         else {
             attributes.addFlashAttribute("user", user);
 
-            return "redirect:/api/account/index";
+            return "redirect:/api/account/index/" + Long.toString(user.getId()) + "";
         }
     }
 
@@ -89,7 +114,7 @@ public class AccountController {
         else {
             attributes.addFlashAttribute("user", user);
 
-            return "redirect:/api/account/index";
+            return "redirect:/api/account/index/" + Long.toString(user.getId()) + "";
         }
     }
 

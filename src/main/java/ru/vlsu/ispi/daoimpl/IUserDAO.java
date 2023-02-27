@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 
 public interface IUserDAO {
-    public void Create(User user) throws SQLException;
+    public int Create(User user) throws SQLException;
     public void Update(User user) throws SQLException;
     public void Delete(Long id) throws SQLException;
     public User FindUser(Long id) throws SQLException;

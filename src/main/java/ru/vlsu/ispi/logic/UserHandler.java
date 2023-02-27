@@ -36,7 +36,9 @@ public class UserHandler implements IUserHandler {
             newUser.setEmail(model.getEmail());
             newUser.setRoleId(model.getRoleType());
 
-            userDAO.Create(newUser);
+            int id = userDAO.Create(newUser);
+            newUser.setId(Integer.toUnsignedLong(id));
+
             return newUser;
         }
         else {
@@ -55,6 +57,9 @@ public class UserHandler implements IUserHandler {
 
     @Override
     public User FindUserById(Long id) throws SQLException{
+        if (id == null){
+            throw new IllegalArgumentException("Null id was provided");
+        }
         return userDAO.FindUser(id);
     }
 }
