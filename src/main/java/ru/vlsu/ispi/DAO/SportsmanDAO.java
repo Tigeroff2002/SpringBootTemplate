@@ -88,12 +88,7 @@ public class SportsmanDAO extends DAOConnector implements ISportsmanDAO {
         try (PreparedStatement stmt = connection.prepareStatement(query)){
             stmt.setLong(1, sportsman.getId());
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()){
-                return true;
-            }
-            else {
-                return false;
-            }
+            return rs.next();
         }
     }
 

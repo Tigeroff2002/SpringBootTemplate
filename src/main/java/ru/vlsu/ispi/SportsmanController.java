@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import ru.vlsu.ispi.beans.Club;
 import ru.vlsu.ispi.beans.Sportsman;
+import ru.vlsu.ispi.logic.SportsmanHandler;
 import ru.vlsu.ispi.logic.abstractions.IHandler;
 
 import javax.validation.Valid;
@@ -15,19 +16,24 @@ import java.sql.SQLException;
 @Controller
 
 public class SportsmanController {
-    @Autowired
-    private IHandler _handler;
 
-    @GetMapping("/hello/{id}")
+    @Autowired
+    private SportsmanHandler sportsmanHandler;
+
+    public SportsmanController(SportsmanHandler sportsmanHandler){
+        this.sportsmanHandler = sportsmanHandler;
+    }
+
+    @GetMapping("/sportsman/hello/{id}")
     public String handle(@PathVariable Long id, @RequestParam(required = false, name = "playerId") Long playerId, Model model){
-        _handler.HandleIndex(id, playerId, model);
+        sportsmanHandler.HandleIndex(id, playerId, model);
 
         return "index";
     }
 
     @GetMapping("/sportsman")
     public String sportsmanForm(Model model) throws SQLException {
-        _handler.SportsmanFormOpen(model);
+        sportsmanHandler.SportsmanFormOpen(model);
 
         return "sportsmen";
     }
@@ -38,7 +44,7 @@ public class SportsmanController {
             return "sportsmen";
         }
         else {
-            _handler.SportsmanFormSubmit(sportsman, model);
+            sportsmanHandler.SportsmanFormSubmit(sportsman, model);
 
             return "sportsman";
         }

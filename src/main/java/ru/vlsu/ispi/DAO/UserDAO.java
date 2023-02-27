@@ -11,22 +11,32 @@ import java.util.HashMap;
 import java.util.List;
 
 public class UserDAO extends DAOConnector implements IUserDAO {
-    private final DBContext _context;
+    private final DBContext context;
 
     public UserDAO(DBContext context){
         if (context == null){
             throw new IllegalArgumentException("Context should not be null!");
         }
-        _context = context;
+        this.context = context;
     }
     @Override
     public void Create(User user) throws SQLException {
         Connection connection = getConnection();
+        String query1 = "SELECT Count(*) FROM Users";
+        int count = 0;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet rs = statement.executeQuery(query1);
+            if (rs.next()){
+                count = rs.getInt("count");
+            }
+        }
+        catch (SQLException ex) {}
+
         String query = "INSERT INTO Users " +
                 "(Id, RoleId, Email, NickName, Password, Gender, ContactNumber, RegisterDate, BirthdayDate, Rating, Resume, Balance, Bonus) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setLong(1, user.getId());
+            statement.setLong(1, count + 1);
             statement.setInt(2, user.getRoleId());
             statement.setString(3, user.getEmail());
             statement.setString(4, user.getNickName());
@@ -118,13 +128,14 @@ public class UserDAO extends DAOConnector implements IUserDAO {
     }
 
     @Override
-    public User FindUserByName(String nickName) throws SQLException {
+    public User FindUserByEmail(String email) throws SQLException {
         Connection connection = getConnection();
-        String query = "SELECT * FROM Users WHERE NickName = " + nickName;
-        User currUser = new User();
-        try (Statement stmt = connection.createStatement()){
-            ResultSet rs = stmt.executeQuery(query);
+        String query = "SELECT * FROM Users WHERE Email = '" + email + "';";
+        User currUser = null;
+        try (Statement statement = connection.createStatement()){
+            ResultSet rs = statement.executeQuery(query);
             if (rs.next()){
+                currUser = new User();
                 currUser.setId(rs.getLong("Id"));
                 currUser.setRoleId(rs.getInt("RoleId"));
                 currUser.setEmail(rs.getString("Email"));
@@ -139,7 +150,7 @@ public class UserDAO extends DAOConnector implements IUserDAO {
                 currUser.setBonus(rs.getFloat("Bonus"));
             }
         } catch (SQLException ex){
-            System.out.println("Query was not successfully executed");
+            System.out.println("Query for searching user with email was not successfully executed");
         }
         return currUser;
     }
@@ -148,7 +159,7 @@ public class UserDAO extends DAOConnector implements IUserDAO {
     public List<User> GetUsersByRole(RoleType roleType) throws SQLException {
         Connection connection = getConnection();
         String query = "SELECT * FROM Users WHERE RoleId = " + Integer.toString(roleType.getValue());
-        _context.Users = new HashMap<Long, User>();
+        context.Users = new HashMap<Long, User>();
         try (Statement stmt = connection.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()){
@@ -165,19 +176,19 @@ public class UserDAO extends DAOConnector implements IUserDAO {
                 currUser.setResume(rs.getString("Resume"));
                 currUser.setBalance(rs.getFloat("Balance"));
                 currUser.setBonus(rs.getFloat("Bonus"));
-                _context.Users.put(currUser.getId(), currUser);
+                context.Users.put(currUser.getId(), currUser);
             }
         } catch (SQLException ex){
             System.out.println("Query was not successfully executed");
         }
-        return new ArrayList<>(_context.Users.values());
+        return new ArrayList<>(context.Users.values());
     }
 
     @Override
     public List<User> GetAllUsers() throws SQLException {
         Connection connection = getConnection();
         String query = "SELECT * FROM Users";
-        _context.Users = new HashMap<Long, User>();
+        context.Users = new HashMap<Long, User>();
         try (Statement stmt = connection.createStatement()){
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()){
@@ -194,11 +205,11 @@ public class UserDAO extends DAOConnector implements IUserDAO {
                 currUser.setResume(rs.getString("Resume"));
                 currUser.setBalance(rs.getFloat("Balance"));
                 currUser.setBonus(rs.getFloat("Bonus"));
-                _context.Users.put(currUser.getId(), currUser);
+                context.Users.put(currUser.getId(), currUser);
             }
         } catch (SQLException ex){
             System.out.println("Query was not successfully executed");
         }
-        return new ArrayList<>(_context.Users.values());
+        return new ArrayList<>(context.Users.values());
     }
 }

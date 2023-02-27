@@ -1,22 +1,82 @@
 package ru.vlsu.ispi.models;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
+import javax.validation.constraints.NotEmpty;
 
 public class RegisterModel {
+    @NotEmpty(message = "Provide a not empty email address")
+    private String Email;
 
-    public String Email;
+    public String getEmail(){
+        return Email;
+    }
 
-    public String NickName;
+    public void setEmail(String email) {
+        Email = email;
+    }
 
-    public boolean IsRoleChosen;
+    @NotEmpty(message = "Provide a not empty nickname")
+    private String NickName;
 
-    public int RoleType;
+    public String getNickName() {
+        return NickName;
+    }
 
-    public String Password;
+    public void setNickName(String nickName) {
+        NickName = nickName;
+    }
 
-    public String ConfirmPassword;
+    private boolean IsRoleChosen;
 
-    public String ContactNumber;
+    public boolean isRoleChosen() {
+        return IsRoleChosen;
+    }
+
+    public void setRoleChosen(boolean roleChosen) {
+        IsRoleChosen = roleChosen;
+    }
+
+    private int RoleType;
+
+    public int getRoleType() {
+        return RoleType;
+    }
+
+    public void setRoleType(int roleType) {
+        RoleType = roleType;
+    }
+
+    @NotEmpty(message = "Provide a not empty password")
+    private String Password;
+
+    public String getPassword() {
+        return Password;
+    }
+
+    public void setPassword(String password) {
+        Password = password;
+    }
+
+    @NotEmpty(message = "Provide a not empty password confirmation")
+    private String ConfirmPassword;
+
+    public String getConfirmPassword() {
+        return ConfirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        ConfirmPassword = confirmPassword;
+    }
+
+    @NotEmpty(message = "Provide a not empty contact number")
+    private String ContactNumber;
+
+    public String getContactNumber() {
+        return ContactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        ContactNumber = contactNumber;
+    }
 
     public RegisterModel(){
         if (!IsRoleChosen){
@@ -36,11 +96,8 @@ public class RegisterModel {
         }
         Email = email;
 
-        if (nickName == null || nickName == ""){
-            NickName = Email;
-        }
-        else {
-            NickName = nickName;
+        if (nickName == null || nickName == "") {
+            throw new IllegalArgumentException("Wrong nick name string provided");
         }
 
         if (password == null || password == ""){

@@ -1,6 +1,9 @@
 package ru.vlsu.ispi.logic;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import ru.vlsu.ispi.DAO.ClubDAO;
+import ru.vlsu.ispi.DAO.SportsmanDAO;
 import ru.vlsu.ispi.beans.Club;
 import ru.vlsu.ispi.beans.Sportsman;
 import ru.vlsu.ispi.daoimpl.IClubDAO;
@@ -12,12 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SportsmanHandler implements ISportsmanHandler {
-    private final ISportsmanDAO _sportsmanDAO;
-    private final IClubDAO _clubDAO;
+    private final SportsmanDAO sportsmanDAO;
 
-    public SportsmanHandler(ISportsmanDAO sportsmanDAO, IClubDAO clubDAO){
-        this._sportsmanDAO = sportsmanDAO;
-        this._clubDAO = clubDAO;
+    private final ClubDAO clubDAO;
+
+    public SportsmanHandler(SportsmanDAO sportsmanDAO, ClubDAO clubDAO){
+        this.sportsmanDAO = sportsmanDAO;
+        this.clubDAO = clubDAO;
     }
 
     @Override
@@ -36,20 +40,20 @@ public class SportsmanHandler implements ISportsmanHandler {
     @Override
     public void SportsmanFormOpen(Model model) throws SQLException {
         model.addAttribute(new Sportsman());
-        model.addAttribute(_sportsmanDAO.getAllSportsmen());
-        System.out.println(_clubDAO.getAllClubs().size());
-        model.addAttribute(_clubDAO.getAllClubs());
+        model.addAttribute(sportsmanDAO.getAllSportsmen());
+        System.out.println(clubDAO.getAllClubs().size());
+        model.addAttribute(clubDAO.getAllClubs());
     }
 
     @Override
     public void SportsmanFormSubmit(Sportsman sportsman, Model model) throws SQLException {
         System.out.println("Sportsman name: " + sportsman.getName());
-        if (_sportsmanDAO.ifSportsmanExists(sportsman)) {
-            _sportsmanDAO.create(sportsman);
+        if (sportsmanDAO.ifSportsmanExists(sportsman)) {
+            sportsmanDAO.create(sportsman);
         } else {
-            _sportsmanDAO.update(sportsman);
+            sportsmanDAO.update(sportsman);
         }
-        System.out.println(_sportsmanDAO.getAllSportsmen().size());
-        model.addAttribute(_sportsmanDAO.getAllSportsmen());
+        System.out.println(sportsmanDAO.getAllSportsmen().size());
+        model.addAttribute(sportsmanDAO.getAllSportsmen());
     }
 }

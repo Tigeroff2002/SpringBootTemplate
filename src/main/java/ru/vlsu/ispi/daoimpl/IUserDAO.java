@@ -13,7 +13,7 @@ public interface IUserDAO {
     public void Update(User user) throws SQLException;
     public void Delete(Long id) throws SQLException;
     public User FindUser(Long id) throws SQLException;
-    public User FindUserByName(String nickName) throws SQLException;
+    public User FindUserByEmail(String email) throws SQLException;
     public List<User> GetUsersByRole(RoleType roleType) throws SQLException;
     public List<User> GetAllUsers() throws SQLException;
 }

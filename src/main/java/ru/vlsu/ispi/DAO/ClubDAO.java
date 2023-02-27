@@ -97,6 +97,7 @@ public class ClubDAO extends DAOConnector implements IClubDAO{
             }
         }
     }
+
     public Club getById(long id) throws SQLException{
         Connection connection = null;
         Club currClub = new Club();
@@ -129,14 +130,15 @@ public class ClubDAO extends DAOConnector implements IClubDAO{
     @Override
     public boolean ifClubExists(Club club) throws SQLException {
         Connection connection = null;
-        ResultSet rs = null;
+        boolean existense = false;
         try {
             connection = getConnection();
             String query = "SELECT * FROM Clubs WHERE Id=?";
             Club currClub = null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
                 stmt.setLong(1, club.getId());
-                rs = stmt.executeQuery();
+                ResultSet rs = stmt.executeQuery();
+                existense = rs.next();
             }
         }
         catch (SQLException ex) {}
@@ -150,7 +152,7 @@ public class ClubDAO extends DAOConnector implements IClubDAO{
                 exception.printStackTrace();
             }
         }
-        return rs.next();
+        return existense;
     }
 
     public List<Sportsman> getSportsmenByClubId(long id) throws SQLException{

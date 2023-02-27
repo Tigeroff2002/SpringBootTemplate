@@ -7,26 +7,25 @@ import java.util.List;
 import java.util.Objects;
 
 public class User extends BaseBean{
-    public RoleType RoleId;
+    private int RoleId;
     public int getRoleId(){
-        return RoleId.getValue();
+        return RoleId;
     }
     public void setRoleId(int roleId){
-        switch (roleId)
-        {
-            case 1:
-                RoleId = RoleType.User;
-                break;
-            case 2:
-                RoleId = RoleType.Manager;
-                break;
-            case 3:
-                RoleId = RoleType.Admin;
-                break;
-        }
+        RoleId = roleId;
     }
 
-    public String Email;
+    private RoleType Role;
+
+    public RoleType getRole() {
+        return Role;
+    }
+
+    public void setRole(RoleType role) {
+        Role = role;
+    }
+
+    private String Email;
     public String getEmail(){
         return Email;
     }
@@ -34,7 +33,7 @@ public class User extends BaseBean{
         Email = email;
     }
 
-    public String NickName;
+    private String NickName;
     public String getNickName(){
         return NickName;
     }
@@ -42,7 +41,7 @@ public class User extends BaseBean{
         NickName = nickName;
     }
 
-    public String Password;
+    private String Password;
     public String getPassword(){
         return Password;
     }
@@ -50,7 +49,7 @@ public class User extends BaseBean{
         Password = password;
     }
 
-    public String Gender;
+    private String Gender;
     public String getGender(){
         return Gender;
     }
@@ -58,7 +57,7 @@ public class User extends BaseBean{
         Gender = gender;
     }
 
-    public String ContactNumber;
+    private String ContactNumber;
     public String getContactNumber(){
         return ContactNumber;
     }
@@ -66,7 +65,7 @@ public class User extends BaseBean{
         ContactNumber = contactNumber;
     }
 
-    public Date RegisterDate;
+    private Date RegisterDate;
     public Date getRegisterDate(){
         return RegisterDate;
     }
@@ -74,7 +73,7 @@ public class User extends BaseBean{
         RegisterDate = registerDate;
     }
 
-    public Date BirthdayDate;
+    private Date BirthdayDate;
     public Date getBirthdayDate(){
         return BirthdayDate;
     }
@@ -82,7 +81,7 @@ public class User extends BaseBean{
         BirthdayDate = birthdayDate;
     }
 
-    public float Rating;
+    private float Rating;
     public float getRating(){
         return Rating;
     }
@@ -90,7 +89,7 @@ public class User extends BaseBean{
         Rating = rating;
     }
 
-    public String Resume;
+    private String Resume;
     public String getResume(){
         return Resume;
     }
@@ -98,7 +97,7 @@ public class User extends BaseBean{
         Resume = resume;
     }
 
-    public float Balance;
+    private float Balance;
     public float getBalance(){
         return Balance;
     }
@@ -106,7 +105,7 @@ public class User extends BaseBean{
         Balance = balance;
     }
 
-    public float Bonus;
+    private float Bonus;
     public float getBonus(){
         return Bonus;
     }

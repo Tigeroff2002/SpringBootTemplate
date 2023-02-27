@@ -1,6 +1,7 @@
 package ru.vlsu.ispi.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.vlsu.ispi.DAO.UserDAO;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.daoimpl.IUserDAO;
 import ru.vlsu.ispi.enums.RoleType;
@@ -12,8 +13,11 @@ import java.sql.SQLException;
 
 public class UserHandler implements IUserHandler {
 
-    @Autowired
-    private IUserDAO _userDAO;
+    private final UserDAO userDAO;
+
+    public UserHandler(UserDAO userDAO){
+        this.userDAO = userDAO;
+    }
 
     @Override
     public User RegisterUser(RegisterModel model) throws SQLException {
@@ -21,20 +25,23 @@ public class UserHandler implements IUserHandler {
             throw new IllegalArgumentException("Null register model was provided");
         }
 
-        User user = new User();
-        user.NickName = model.NickName;
-        user.Password = model.Password;
-        user.ContactNumber = model.ContactNumber;
-        user.Email = model.Email;
-        user.RoleId = model.RoleType == 1
-                ? RoleType.User
-                : model.RoleType == 2
-                    ? RoleType.Manager
-                    : RoleType.Admin;
+        User user = userDAO.FindUserByEmail(model.getEmail());
 
-        _userDAO.Create(user);
+        if (user == null){
+            User newUser = new User();
+            newUser.setId(1L);
+            newUser.setNickName(model.getNickName());
+            newUser.setPassword(model.getPassword());
+            newUser.setContactNumber(model.getContactNumber());
+            newUser.setEmail(model.getEmail());
+            newUser.setRoleId(model.getRoleType());
 
-        return user;
+            userDAO.Create(newUser);
+            return newUser;
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -43,11 +50,11 @@ public class UserHandler implements IUserHandler {
             throw new IllegalArgumentException("Null login model was provided");
         }
 
-        return _userDAO.FindUserByName(model.NickName);
+        return userDAO.FindUserByEmail(model.getEmail());
     }
 
     @Override
     public User FindUserById(Long id) throws SQLException{
-        return _userDAO.FindUser(id);
+        return userDAO.FindUser(id);
     }
 }
