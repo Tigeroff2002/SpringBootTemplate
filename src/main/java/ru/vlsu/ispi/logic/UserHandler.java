@@ -12,7 +12,6 @@ import ru.vlsu.ispi.models.RegisterModel;
 import java.sql.SQLException;
 
 public class UserHandler implements IUserHandler {
-
     private final UserDAO userDAO;
 
     public UserHandler(UserDAO userDAO){
