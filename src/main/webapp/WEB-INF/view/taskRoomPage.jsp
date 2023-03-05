@@ -3,14 +3,19 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <html>
 <body>
-<h3> <a href="/SpringMVC/account/logout"> Logout </a> </h3>
+<h3>Task room page: </h3>
+<h3> <a href="<c:url value ='/account/logout'/>"> Logout </a> </h3>
 <br>
-<h3> Hello, on account index page! </h3>
+<c:url value="/account/index/${user.id}" var="indexURL" />
+<h3> <a href="${indexURL}"> Back to index </a> </h3>
 <br>
-<c:url value="/account/lk/${user.id}" var="lkURL" />
-<h3> Your nick is ${user.email}</h3>
+<h3> <a href="<c:url value ='/menu/${user.id}/details/task/${task.id}'/>"> Go back to details page </a> </h3>
 <br>
-<h3> <a href="${lkURL}"> Go to your LK </a> </h3>
-<br>
+<h3> Details of task: </h3>
+<h4> "${task.caption}" </h4>
+<h4> "${task.type}" </h4>
+<h4> "${task.price}" </h4>
+<h4> "${task.description}" </h4>
+<h4> "${task.executorId}" </h4>
 </body>
 </html>

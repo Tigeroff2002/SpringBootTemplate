@@ -5,13 +5,16 @@
 <body>
 <c:url value="/account/index/${user.id}" var="indexURL" />
 <c:url value="/account/lk/admin/${user.id}" var="lkAdminURL" />
+<c:url value="/account/lk/moderator/${user.id}" var="lkModeratorURL" />
 <h3> Hello in your LK ${user.email} ! </h3>
 <h3> <a href="${indexURL}"> Back to index </a> </h3>
 <br>
 <h3> <a href="${lkAdminURL}"> Go to your admin page </a> </h3>
 <br>
+<h3> <a href="${lkModeratorURL}"> Go to your moderator page </a> </h3>
 <br>
-<h3> <a href="/SpringMVC/account/logout"> Logout </a> </h3>
+<br>
+<h3> <a href="<c:url value ='/account/logout'/>"> Logout </a> </h3>
 <br>
 <h3> You are auth user! Its your LK! </h3>
 <br>

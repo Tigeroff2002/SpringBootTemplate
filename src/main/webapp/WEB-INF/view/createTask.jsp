@@ -2,15 +2,13 @@
 <%@page isELIgnored="false" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <html>
-<body>
-<h3> <a href="/SpringMVC/account/logout"> Logout </a> </h3>
-<br>
-<h3> Hello, on account index page! </h3>
-<br>
-<c:url value="/account/lk/${user.id}" var="lkURL" />
-<h3> Your nick is ${user.email}</h3>
-<br>
-<h3> <a href="${lkURL}"> Go to your LK </a> </h3>
-<br>
-</body>
+   <body>
+      <h1>Create a new task: </h1>
+      <form action="<c:url value ='/menu/${user.id}/createPost'/>" method="post">
+        <p>Caption : <input type="text" name="caption" id="name" value="${task.caption}"/></p>
+        <p>Price : <input type="number" name="price" id="name" value="${task.price}"/></p>
+        <p>Description : <input type="text" name="description" id="name" value="${task.description}"/></p>
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /> </p>
+      </form>
+   </body>
 </html>

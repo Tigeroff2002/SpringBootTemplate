@@ -4,7 +4,7 @@
 <html>
    <body>
       <h1>Login with existing account: </h1>
-      <form action="/SpringMVC/account/registerPost" method="post">
+      <form action="<c:url value ='/account/registerPost'/>" method="post">
         <p>Email : <input type="text" name="email" id="name" value="${register.email}"/></p>
         <p>Nickname: <input type="text" name="nickname" id="name" value="${register.nickName}"/></p>
         <p>Contact number : <input type="text" name="contactNumber" id="name" value="${register.contactNumber}"/></p>
