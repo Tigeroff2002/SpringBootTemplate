@@ -2,6 +2,7 @@ package ru.vlsu.ispi.beans;
 
 import ru.vlsu.ispi.enums.RoleType;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +34,7 @@ public class User extends BaseBean{
         Email = email;
     }
 
+    @NotEmpty(message = "Provide a not empty nickname")
     private String NickName;
     public String getNickName(){
         return NickName;

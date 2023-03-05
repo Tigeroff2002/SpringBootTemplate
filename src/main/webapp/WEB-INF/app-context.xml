@@ -31,6 +31,18 @@
         <constructor-arg ref="cont"/>
     </bean>
 
+    <bean id="eventDAO" class="ru.vlsu.ispi.DAO.UserDAO">
+        <constructor-arg ref="cont"/>
+    </bean>
+
+    <bean id="taskDAO" class="ru.vlsu.ispi.DAO.UserDAO">
+        <constructor-arg ref="cont"/>
+    </bean>
+
+    <bean id="organizationDAO" class="ru.vlsu.ispi.DAO.UserDAO">
+        <constructor-arg ref="cont"/>
+    </bean>
+
     <bean id="clubHandler" class="ru.vlsu.ispi.logic.ClubHandler">
         <constructor-arg ref="clubDAO"/>
     </bean>

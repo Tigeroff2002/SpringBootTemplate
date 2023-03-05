@@ -17,7 +17,7 @@ import ru.vlsu.ispi.models.RegisterModel;
 import java.sql.SQLException;
 
 @Controller
-@RequestMapping(value = "/api/account/")
+@RequestMapping(value = "/account/")
 public class AccountController {
     @Autowired
     private UserHandler userHandler;
@@ -64,7 +64,7 @@ public class AccountController {
         }
         else {
 
-            return "redirect:/api/account/lk/" + Long.toString(user.getId()) + "";
+            return "redirect:/account/lk/" + Long.toString(user.getId()) + "";
         }
     }
 
@@ -84,12 +84,12 @@ public class AccountController {
 
         if (user == null){
 
-            return "redirect:/api/account/login";
+            return "redirect:/account/login";
         }
         else {
             attributes.addFlashAttribute("user", user);
 
-            return "redirect:/api/account/index/" + Long.toString(user.getId()) + "";
+            return "redirect:/account/index/" + Long.toString(user.getId()) + "";
         }
     }
 
@@ -109,12 +109,12 @@ public class AccountController {
 
         if (user == null){
 
-            return "redirect:/api/account/register";
+            return "redirect:/account/register";
         }
         else {
             attributes.addFlashAttribute("user", user);
 
-            return "redirect:/api/account/index/" + Long.toString(user.getId()) + "";
+            return "redirect:/account/index/" + Long.toString(user.getId()) + "";
         }
     }
 
