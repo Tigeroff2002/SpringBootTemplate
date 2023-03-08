@@ -31,15 +31,15 @@
         <constructor-arg ref="cont"/>
     </bean>
 
-    <bean id="eventDAO" class="ru.vlsu.ispi.DAO.UserDAO">
+    <bean id="eventDAO" class="ru.vlsu.ispi.DAO.EventDAO">
         <constructor-arg ref="cont"/>
     </bean>
 
-    <bean id="taskDAO" class="ru.vlsu.ispi.DAO.UserDAO">
+    <bean id="taskDAO" class="ru.vlsu.ispi.DAO.TaskDAO">
         <constructor-arg ref="cont"/>
     </bean>
 
-    <bean id="organizationDAO" class="ru.vlsu.ispi.DAO.UserDAO">
+    <bean id="organizationDAO" class="ru.vlsu.ispi.DAO.OrganizationDAO">
         <constructor-arg ref="cont"/>
     </bean>
 
@@ -54,5 +54,9 @@
 
     <bean id="userHandler" class="ru.vlsu.ispi.logic.UserHandler">
         <constructor-arg ref="userDAO"/>
+    </bean>
+
+    <bean id="taskHandler" class="ru.vlsu.ispi.logic.TaskHandler">
+        <constructor-arg ref="taskDAO"/>
     </bean>
 </beans>

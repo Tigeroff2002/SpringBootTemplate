@@ -4,9 +4,19 @@ import ru.vlsu.ispi.enums.TaskStatus;
 import ru.vlsu.ispi.enums.TaskType;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class TaskModel {
+    @NotNull(message = "Id should be not null")
+    private Long TaskId;
+    public Long getTaskId() {
+        return TaskId;
+    }
+    public void setTaskId(Long taskId) {
+        TaskId = taskId;
+    }
+
     @NotEmpty(message = "Provide a not empty task caption")
     private String Caption;
     public String getCaption() {

@@ -2,6 +2,9 @@
 <%@page isELIgnored="false" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <html>
+<head>
+<link href="<c:url value="/resources/style.css" />" rel="stylesheet">
+</head>
 <body>
 <h3> <a href="<c:url value ='/account/logout'/>"> Logout </a> </h3>
 <br>
@@ -12,7 +15,7 @@
 <br>
 <h3> <a href="${lkURL}"> Go to your LK </a> </h3>
 <br>
-<h3> <a href="<c:url value ='/menu/${user.id}/create'/>"> Create a new task </a> </h3>
+<h3> <a href="<c:url value ='/menu/${user.id}/new-task'/>"> Create a new task </a> </h3>
 <br>
 <h3> List of tasks: </h3>
     <table border="2">

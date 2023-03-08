@@ -2,7 +2,7 @@
 <%@page isELIgnored="false" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <html>
-   <body>
+<body>
       <h1>Login with existing account: </h1>
       <form action="<c:url value ='/account/registerPost'/>" method="post">
         <p>Email : <input type="text" name="email" id="name" value="${register.email}"/></p>
@@ -12,5 +12,10 @@
         <p>Password confirmation: <input type="text" name="confirmPassword" id="name" value="${register.confirmPassword}"/></p>
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /> </p>
       </form>
-   </body>
+      <h3> <a href="<c:url value ='/account/login'/>"> Already have an account? </a> </h3>
+      <br>
+      <c:url value="/" var="indexURL" />
+      <h3> <a href="${indexURL}"> Back to index </a> </h3>
+      <br>
+</body>
 </html>

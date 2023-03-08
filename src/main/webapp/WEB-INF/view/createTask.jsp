@@ -11,4 +11,8 @@
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /> </p>
       </form>
    </body>
+
+   <c:url value="/account/index/${user.id}" var="indexURL" />
+   <h3> <a href="${indexURL}"> Back to index </a> </h3>
+   <br>
 </html>
