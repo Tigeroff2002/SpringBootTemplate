@@ -12,18 +12,51 @@
     <context:component-scan base-package="ru.vlsu.ispi"/>
 
     <bean id="stub" class="ru.vlsu.ispi.DAO.DBImplementation" scope="singleton">
-        <!-- collaborators and configuration for this bean go here -->
+    </bean>
+
+    <bean id="cont" class="ru.vlsu.ispi.DAO.DBContext" scope="singleton">
     </bean>
 
     <bean id="sportsmanDAO" class="ru.vlsu.ispi.DAO.SportsmanDAO">
         <constructor-arg ref="stub"/>
     </bean>
 
-    <!-- more bean definitions go here -->
     <bean id="clubDAO" class="ru.vlsu.ispi.DAO.ClubDAO">
         <property name="impl">
             <ref bean="stub"/>
         </property>
     </bean>
 
+    <bean id="userDAO" class="ru.vlsu.ispi.DAO.UserDAO">
+        <constructor-arg ref="cont"/>
+    </bean>
+
+    <bean id="eventDAO" class="ru.vlsu.ispi.DAO.EventDAO">
+        <constructor-arg ref="cont"/>
+    </bean>
+
+    <bean id="taskDAO" class="ru.vlsu.ispi.DAO.TaskDAO">
+        <constructor-arg ref="cont"/>
+    </bean>
+
+    <bean id="organizationDAO" class="ru.vlsu.ispi.DAO.OrganizationDAO">
+        <constructor-arg ref="cont"/>
+    </bean>
+
+    <bean id="clubHandler" class="ru.vlsu.ispi.logic.ClubHandler">
+        <constructor-arg ref="clubDAO"/>
+    </bean>
+
+    <bean id="sportsmanHandler" class="ru.vlsu.ispi.logic.SportsmanHandler">
+        <constructor-arg index="0" ref="sportsmanDAO"/>
+        <constructor-arg index="1" ref="clubDAO"/>
+    </bean>
+
+    <bean id="userHandler" class="ru.vlsu.ispi.logic.UserHandler">
+        <constructor-arg ref="userDAO"/>
+    </bean>
+
+    <bean id="taskHandler" class="ru.vlsu.ispi.logic.TaskHandler">
+        <constructor-arg ref="taskDAO"/>
+    </bean>
 </beans>

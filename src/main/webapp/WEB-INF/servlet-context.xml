@@ -13,6 +13,7 @@
 
     <context:component-scan base-package="ru.vlsu.ispi"/>
     <mvc:annotation-driven/>
+    <mvc:resources mapping="/WEB-INF/view/resources/**" location="/resources/" />
     <bean id="viewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/view/" />
