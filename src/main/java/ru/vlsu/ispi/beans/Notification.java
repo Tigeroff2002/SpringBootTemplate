@@ -1,30 +1,35 @@
 package ru.vlsu.ispi.beans;
 
-import javax.validation.constraints.NotEmpty;
-import java.time.format.DateTimeFormatter;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public class Notification extends BaseBean{
-    private String NotifyText;
-    public String getNotifyText(){
-        return NotifyText;
-    }
-    public void setNotifyText(String notifyText){
-        NotifyText = notifyText;
+import java.time.LocalTime;
+
+@Data
+@Entity
+@Table(name = "Notifications")
+@AllArgsConstructor
+public class Notification {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(columnDefinition = "Text")
+    private String text;
+
+    private LocalTime time;
+
+    @ManyToOne
+    private User executor;
+
+    public Notification() {
+
     }
 
-    private DateTimeFormatter Time;
-    public DateTimeFormatter getTime(){
-        return Time;
-    }
-    public void setTime(DateTimeFormatter time){
-        Time = time;
-    }
-
-    private Long ExecutorId;
-    public Long getExecutorId(){
-        return ExecutorId;
-    }
-    public void setExecutorId(Long executorId){
-        ExecutorId = executorId;
+    public Notification(String text, LocalTime time, User executor){
+        this.text = text;
+        this.time = time;
+        this.executor = executor;
     }
 }

@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: "1-create-task-table"
+      id: "1-create-users-table"
       author: kirill.parakhin
       changes:
         - createTable:
-            tableName: task
+            tableName: organizations
             columns:
               - column:
                   name: id
@@ -14,13 +14,17 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: description
-                  type: varchar(512)
+                  name: caption
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
-                  name: completed
-                  type: boolean
-                  defaultValueBoolean: false
+                  name: city
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: site
+                  type: varchar(255)
                   constraints:
                     nullable: false

@@ -30,11 +30,11 @@
         <constructor-arg ref="cont"/>
     </bean>
 
-    <bean id="userHandler" class="ru.vlsu.ispi.logic.UserHandler">
+    <bean id="userHandler" class="ru.vlsu.ispi.logic.UserService">
         <constructor-arg ref="userDAO"/>
     </bean>
 
-    <bean id="taskHandler" class="ru.vlsu.ispi.logic.TaskHandler">
+    <bean id="taskHandler" class="ru.vlsu.ispi.logic.TaskService">
         <constructor-arg ref="taskDAO"/>
     </bean>
 </beans>

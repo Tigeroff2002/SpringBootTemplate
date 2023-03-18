@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1-create-users-table"
+      author: kirill.parakhin
+      changes:
+        - createTable:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: caption
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: createDate
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: executor_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: users
+                    referencedColumnNames: id
+                    foreignKeyName: executor_id
+                    deleteCascade: true
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

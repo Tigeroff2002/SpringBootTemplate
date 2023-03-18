@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<h3> Hello! </h3>
+<br>
+<h3> You are new user </h3>
+<br>
+<h3> <a href="/account/login"> Create a new task </a> </h3>
+<br>
+<h3> <a href="/account/register"> Sign up </a> </h3>
+<br>
+<h3> <a href="/account/login"> Sign in </a> </h3>
+<br>
+<h3> List of tasks: </h3>
+<table border="2">
+    <tr>
+        <td>id</td>
+        <td>caption</td>
+        <td>price</td>
+        <td>description</td>
+        <td>task details</td>
+    </tr>
+        <tr th:each="task : ${taskList}">
+            <td th:text="${task.id}"> Id </td>
+            <td th:text=${task.caption}"> Caption </td>
+            <td th:text=${task.price}"> Price </td>
+            <td th:text="${task.description}"> Description </td>
+            <td><a th:href = "@{/menu/details/task/} + ${task.id}"> details </a></td>
+        </tr>
+</table>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package ru.vlsu.ispi.configs;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,19 +10,26 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.enums.RoleType;
+import ru.vlsu.ispi.repositories.UserRepository;
 
 @Configuration
 @EnableWebSecurity
+@ConditionalOnProperty(name = "spring.security.enabled", havingValue = "false")
 public class WebSecurityConfig {
-    private final UserDetailsService userDetailsService;
-
-    @Autowired
-    public WebSecurityConfig(UserDetailsService userDetailsService){
-        this.userDetailsService = userDetailsService;
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return username -> {
+            User user = userRepository.findUserByName(username);
+            if (user != null) return user;
+            throw new UsernameNotFoundException("User " + username + " not found!");
+        };
     }
 
     @Bean
@@ -31,9 +39,10 @@ public class WebSecurityConfig {
                 .requestMatchers("/admin/**").hasRole(RoleType.Admin.name())
                 .requestMatchers("/moderator/**").hasRole(RoleType.Moderator.name())
                 .requestMatchers("/user/**").hasRole(RoleType.User.name())
-                .requestMatchers("/login").permitAll()
-                .requestMatchers("/register").permitAll()
+                .requestMatchers("/acc/hello").permitAll()
+                .requestMatchers("/account/register").permitAll()
                 .requestMatchers("/").permitAll()
+                .requestMatchers("/hello").permitAll()
                 .requestMatchers("/**").authenticated()
                 .anyRequest().authenticated()
                 .and().httpBasic()
@@ -48,11 +57,18 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder(12);
     }
 
+    /*
     @Bean
     public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
         return new ProviderManager(daoAuthenticationProvider);
+    }
+    */
+
+    @Bean(name = "mvcHandlerMappingIntrospector")
+    public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
+        return new HandlerMappingIntrospector();
     }
 }

@@ -1,41 +1,39 @@
 package ru.vlsu.ispi.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.vlsu.ispi.DAO.UserDAO;
+import org.springframework.stereotype.Service;
 import ru.vlsu.ispi.beans.User;
-import ru.vlsu.ispi.daoimpl.IUserDAO;
-import ru.vlsu.ispi.enums.RoleType;
-import ru.vlsu.ispi.logic.abstractions.IUserHandler;
 import ru.vlsu.ispi.models.LoginModel;
 import ru.vlsu.ispi.models.RegisterModel;
+import ru.vlsu.ispi.repositories.UserRepository;
 
 import java.sql.SQLException;
+import java.util.List;
 
-public class UserHandler implements IUserHandler {
-    private final UserDAO userDAO;
+@Service
+public class UserService {
+    @Autowired
+    private UserRepository userRepository;
 
-    public UserHandler(UserDAO userDAO){
-        this.userDAO = userDAO;
-    }
-
-    @Override
     public User RegisterUser(RegisterModel model) throws SQLException {
         if (model == null){
             throw new IllegalArgumentException("Null register model was provided");
         }
 
-        User user = userDAO.FindUserByEmail(model.getEmail());
+        User user = userRepository.findUserByEmail(model.getEmail());
 
         if (user == null){
             User newUser = new User();
             newUser.setId(1L);
-            newUser.setNickName(model.getNickName());
+            newUser.setNickname(model.getNickName());
             newUser.setPassword(model.getPassword());
-            newUser.setContactNumber(model.getContactNumber());
+            newUser.setContactnumber(model.getContactNumber());
             newUser.setEmail(model.getEmail());
-            newUser.setRoleId(model.getRoleType());
+            newUser.setRole(model.getRole());
 
-            int id = userDAO.Create(newUser);
+            userRepository.save(newUser);
+
+            int id = userRepository.calculateCountUsers();
             newUser.setId(Integer.toUnsignedLong(id));
 
             return newUser;
@@ -45,20 +43,22 @@ public class UserHandler implements IUserHandler {
         }
     }
 
-    @Override
     public User LoginUser(LoginModel model) throws SQLException{
         if (model == null){
             throw new IllegalArgumentException("Null login model was provided");
         }
 
-        return userDAO.FindUserByEmail(model.getEmail());
+        return userRepository.findUserByEmail(model.getEmail());
     }
 
-    @Override
     public User FindUserById(Long id) throws SQLException{
         if (id == null){
             throw new IllegalArgumentException("Null id was provided");
         }
-        return userDAO.FindUser(id);
+        return userRepository.findUserById(id);
+    }
+
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
     }
 }

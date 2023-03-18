@@ -1,5 +1,8 @@
 package ru.vlsu.ispi.models;
 
+import ru.vlsu.ispi.enums.RoleType;
+
+import javax.management.relation.Role;
 import javax.validation.constraints.NotEmpty;
 
 public class RegisterModel {
@@ -35,14 +38,14 @@ public class RegisterModel {
         IsRoleChosen = roleChosen;
     }
 
-    private int RoleType;
+    private RoleType Role;
 
-    public int getRoleType() {
-        return RoleType;
+    public RoleType getRole() {
+        return Role;
     }
 
-    public void setRoleType(int roleType) {
-        RoleType = roleType;
+    public void setRole(RoleType role) {
+        Role = role;
     }
 
     @NotEmpty(message = "Provide a not empty password")
@@ -80,14 +83,14 @@ public class RegisterModel {
 
     public RegisterModel(){
         if (!IsRoleChosen){
-            RoleType = 1;
+            Role = RoleType.User;
         }
     }
 
     public RegisterModel(
             String email,
             String nickName,
-            int roleType,
+            RoleType role,
             String password,
             String confirmPassword,
             String contactNumber){
@@ -121,6 +124,6 @@ public class RegisterModel {
             ContactNumber = contactNumber;
         }
 
-        RoleType = roleType;
+        Role = role;
     }
 }

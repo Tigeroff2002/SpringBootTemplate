@@ -1,68 +1,54 @@
 package ru.vlsu.ispi.beans;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Generated;
 import ru.vlsu.ispi.enums.TaskStatus;
 import ru.vlsu.ispi.enums.TaskType;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
-public class Task extends BaseBean{
-    @NotEmpty(message = "Provide a not empty task caption")
-    private String Caption;
-    public String getCaption() {
-        return Caption;
-    }
-    public void setCaption(String caption) {
-        Caption = caption;
+@Data
+@Entity
+@Table(name="Tasks")
+@AllArgsConstructor
+public class Task {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(columnDefinition = "caption")
+    private String caption;
+
+    private Date createDate;
+
+    private float price;
+
+    @Enumerated(value = EnumType.STRING)
+    private TaskType type;
+
+    @Column(columnDefinition = "description")
+    private String description;
+
+    @ManyToOne
+    private User executor;
+
+    @Enumerated(value = EnumType.STRING)
+    private TaskStatus taskStatus;
+
+    public Task() {
+
     }
 
-    private Date CreateDate;
-
-    public Date getCreateDate() {
-        return CreateDate;
-    }
-    public void setCreateDate(Date createDate) {
-        CreateDate = createDate;
-    }
-
-    private float Price;
-    public float getPrice() {
-        return Price;
-    }
-    public void setPrice(float price) {
-        Price = price;
-    }
-
-    private TaskType Type;
-    public TaskType getType(){
-        return Type;
-    }
-    public void setType(TaskType type) {
-        Type = type;
-    }
-
-    @NotEmpty(message = "Provide a not empty task description")
-    private String Description;
-    public String getDescription() {
-        return Description;
-    }
-    public void setDescription(String description) {
-        Description = description;
-    }
-
-    private Long ExecutorId;
-    public Long getExecutorId() {
-        return ExecutorId;
-    }
-    public void setExecutorId(Long executorId){
-        ExecutorId = executorId;
-    }
-
-    private TaskStatus TaskStatus;
-    public TaskStatus getTaskStatus(){
-        return TaskStatus;
-    }
-    public void setTaskStatus(TaskStatus taskStatus){
-        TaskStatus = taskStatus;
+    public Task(String caption, Date createDate, float price, TaskType type, String description, User executor, TaskStatus taskStatus) {
+        this.caption = caption;
+        this.createDate = createDate;
+        this.price = price;
+        this.type = type;
+        this.description = description;
+        this.executor = executor;
+        this.taskStatus = taskStatus;
     }
 }

@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.enums.RoleType;
 import ru.vlsu.ispi.enums.TaskType;
-import ru.vlsu.ispi.logic.UserHandler;
+import ru.vlsu.ispi.logic.UserService;
 import ru.vlsu.ispi.models.LoginModel;
 import ru.vlsu.ispi.models.RegisterModel;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 @RequestMapping(value = "/account/")
 public class AccountController {
     @Autowired
-    private UserHandler userHandler;
+    private UserService userHandler;
 
     @GetMapping("index/{id}")
     public String AuthIndex(@PathVariable Long id, Model model) throws SQLException{
@@ -39,7 +40,7 @@ public class AccountController {
             task1.setCaption("Починить двигатель");
             task1.setPrice(1000f);
             task1.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-            task1.setExecutorId(10L);
+            task1.setExecutor(new User());
 
             Task task2 = new Task();
             task2.setId(2L);
@@ -47,7 +48,7 @@ public class AccountController {
             task2.setCaption("Помыть квартиру");
             task2.setPrice(500f);
             task2.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-            task2.setExecutorId(11L);
+            task2.setExecutor(new User());
 
             taskList.add(task1);
             taskList.add(task2);
@@ -93,7 +94,7 @@ public class AccountController {
         if (user == null){
             return "redirect:/";
         }
-        else if (user.getRoleId() == 3){
+        else if (user.getRole() == RoleType.Admin){
             model.addAttribute("user", user);
 
             return "adminPage";
@@ -111,7 +112,7 @@ public class AccountController {
         if (user == null){
             return "redirect:/";
         }
-        else if (user.getRoleId() == 2){
+        else if (user.getRole() == RoleType.Moderator){
             model.addAttribute("user", user);
 
             return "moderatorPage";

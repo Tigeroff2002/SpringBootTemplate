@@ -8,8 +8,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.enums.TaskType;
-import ru.vlsu.ispi.logic.TaskHandler;
-import ru.vlsu.ispi.logic.UserHandler;
+import ru.vlsu.ispi.logic.TaskService;
+import ru.vlsu.ispi.logic.UserService;
 import ru.vlsu.ispi.models.TaskModel;
 
 import java.sql.SQLException;
@@ -18,10 +18,10 @@ import java.sql.SQLException;
 @RequestMapping(value = "/menu/")
 public class TaskController {
     @Autowired
-    private UserHandler userHandler;
+    private UserService userHandler;
 
     @Autowired
-    private TaskHandler taskHandler;
+    private TaskService taskHandler;
     @GetMapping("{userId}/new-task")
     public String CreateTask(@PathVariable Long userId, Model model) throws SQLException {
         User user = userHandler.FindUserById(userId);
@@ -56,7 +56,7 @@ public class TaskController {
                 task.setCaption("Помыть квартиру");
                 task.setPrice(500);
                 task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-                task.setExecutorId(11L);
+                task.setExecutor(new User());
             }
             else {
                 task.setId(1L);
@@ -64,7 +64,7 @@ public class TaskController {
                 task.setCaption("Починить двигатель");
                 task.setPrice(1000);
                 task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-                task.setExecutorId(10L);
+                task.setExecutor(new User());
             }
 
             attributes.addFlashAttribute("task", task);
@@ -88,7 +88,7 @@ public class TaskController {
                 task.setCaption("Починить двигатель");
                 task.setPrice(1000);
                 task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-                task.setExecutorId(10L);
+                task.setExecutor(new User());
             }
             else if (taskId == 2) {
                 task.setId(2L);
@@ -96,7 +96,7 @@ public class TaskController {
                 task.setCaption("Помыть квартиру");
                 task.setPrice(500);
                 task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-                task.setExecutorId(11L);
+                task.setExecutor(new User());
 
             }
 
@@ -116,7 +116,7 @@ public class TaskController {
             task.setCaption("Починить двигатель");
             task.setPrice(1000);
             task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-            task.setExecutorId(10L);
+            task.setExecutor(new User());
         }
         else if (taskId == 2) {
             task.setId(2L);
@@ -124,7 +124,7 @@ public class TaskController {
             task.setCaption("Помыть квартиру");
             task.setPrice(500);
             task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-            task.setExecutorId(11L);
+            task.setExecutor(new User());
 
         }
 
@@ -146,7 +146,7 @@ public class TaskController {
                 task.setCaption("Починить двигатель");
                 task.setPrice(1000);
                 task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-                task.setExecutorId(10L);
+                task.setExecutor(new User());
             }
             else if (taskId == 2) {
                 task.setId(2L);
@@ -154,7 +154,7 @@ public class TaskController {
                 task.setCaption("Помыть квартиру");
                 task.setPrice(500);
                 task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-                task.setExecutorId(11L);
+                task.setExecutor(new User());
 
             }
 

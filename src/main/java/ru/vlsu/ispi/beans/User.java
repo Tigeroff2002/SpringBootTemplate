@@ -1,130 +1,103 @@
 package ru.vlsu.ispi.beans;
 
+import lombok.Generated;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import ru.vlsu.ispi.enums.Gender;
 import ru.vlsu.ispi.enums.RoleType;
 
-import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class User extends BaseBean{
-    private int RoleId;
-    public int getRoleId(){
-        return RoleId;
-    }
-    public void setRoleId(int roleId){
-        RoleId = roleId;
-    }
+import lombok.Data;
+import jakarta.persistence.*;
 
-    private RoleType Role;
+@Data
+@Entity
+@Table(name="Users")
+public class User implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public RoleType getRole() {
-        return Role;
-    }
+    private String email;
 
-    public void setRole(RoleType role) {
-        Role = role;
-    }
+    private String nickname;
 
-    private String Email;
-    public String getEmail(){
-        return Email;
-    }
-    public void setEmail(String email){
-        Email = email;
-    }
+    private String password;
 
-    @NotEmpty(message = "Provide a not empty nickname")
-    private String NickName;
-    public String getNickName(){
-        return NickName;
-    }
-    public void setNickName(String nickName){
-        NickName = nickName;
-    }
+    @Enumerated(value = EnumType.STRING)
+    private RoleType role;
 
-    private String Password;
-    public String getPassword(){
-        return Password;
-    }
-    public void setPassword(String password){
-        Password = password;
-    }
+    @Enumerated(value = EnumType.STRING)
+    private Gender gender;
 
-    private String Gender;
-    public String getGender(){
-        return Gender;
-    }
-    public void setGender(String gender){
-        Gender = gender;
-    }
+    private String contactnumber;
 
-    private String ContactNumber;
-    public String getContactNumber(){
-        return ContactNumber;
-    }
-    public void setContactNumber(String contactNumber){
-        ContactNumber = contactNumber;
-    }
-
-    private Date RegisterDate;
-    public Date getRegisterDate(){
-        return RegisterDate;
-    }
-    public void setRegisterDate(Date registerDate){
-        RegisterDate = registerDate;
-    }
-
-    private Date BirthdayDate;
-    public Date getBirthdayDate(){
-        return BirthdayDate;
-    }
-    public void setBirthdayDate(Date birthdayDate){
-        BirthdayDate = birthdayDate;
-    }
-
-    private float Rating;
-    public float getRating(){
-        return Rating;
-    }
-    public void setRating(float rating){
-        Rating = rating;
-    }
-
-    private String Resume;
-    public String getResume(){
-        return Resume;
-    }
-    public void setResume(String resume){
-        Resume = resume;
-    }
-
-    private float Balance;
-    public float getBalance(){
-        return Balance;
-    }
-    public void setBalance(float balance){
-        Balance = balance;
-    }
-
-    private float Bonus;
-    public float getBonus(){
-        return Bonus;
-    }
-    public void setBonus(float bonus){
-        Bonus = bonus;
-    }
+    /*
+    private Date registerDate;
+    private Date birthdayDate;
+    private float rating;
+    private String resume;
+    private float balance;
+    private float bonus;
+    */
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(Email, user.Email);
+        return Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Email);
+        return Objects.hash(email);
+    }
+
+    public User() {
+
+    }
+
+    public User(String email, String nickname, String password, RoleType role, Gender gender, String contactnumber) {
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+        this.role = role;
+        this.gender = gender;
+        this.contactnumber = contactnumber;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }

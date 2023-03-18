@@ -1,3 +1,7 @@
 databaseChangeLog:
-  - includeAll:
-      path: db/changelog/changeset/
+  - include:
+      file: db/changelog/changeset/1-create-users-table.yaml
+  - include:
+      file: db/changelog/changeset/2-create-tasks-table.yaml
+  - include:
+      file: db/changelog/changeset/3-create-organizations-table.yaml
