@@ -17,7 +17,6 @@ import java.sql.SQLException;
 @Controller
 @RequestMapping(value = "/menu/")
 public class TaskController {
-
     @Autowired
     private UserHandler userHandler;
 
