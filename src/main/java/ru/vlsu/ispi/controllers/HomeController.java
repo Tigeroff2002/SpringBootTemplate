@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @Controller
 public class HomeController {
-    @GetMapping("/")
+    @GetMapping
     public String Index(Model model){
         ArrayList<Task> taskList = new ArrayList<>();
 
@@ -36,7 +36,7 @@ public class HomeController {
 
         model.addAttribute("taskList", taskList);
 
-        return "catalog";
+        return "profile";
     }
 
     @GetMapping("/hello")

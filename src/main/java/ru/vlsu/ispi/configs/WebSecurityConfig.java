@@ -33,23 +33,17 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
                 .authorizeHttpRequests()
-                .requestMatchers("/admin/**").hasRole(RoleType.Admin.name())
-                .requestMatchers("/moderator/**").hasRole(RoleType.Moderator.name())
-                .requestMatchers("/user/**").hasRole(RoleType.User.name())
-                .requestMatchers("/acc/hello").permitAll()
-                .requestMatchers("/account/register").permitAll()
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/hello").permitAll()
-                .requestMatchers("/**").authenticated()
-                .anyRequest().authenticated()
-                .and().httpBasic()
-                .and().formLogin().defaultSuccessUrl("/account/index")
-                .and().logout()
-                .and().csrf().disable();
-        return http.build();
+                .requestMatchers("/user/").hasRole("User")
+                .requestMatchers("/", "/**").permitAll()
+                .and()
+                .formLogin()
+                .loginPage("/account/login")
+                .defaultSuccessUrl("/account/index")
+                .and()
+                .build();
     }
 
     @Bean
