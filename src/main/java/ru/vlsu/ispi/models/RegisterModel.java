@@ -1,5 +1,6 @@
 package ru.vlsu.ispi.models;
 
+import ru.vlsu.ispi.enums.Gender;
 import ru.vlsu.ispi.enums.RoleType;
 
 import javax.management.relation.Role;
@@ -7,97 +8,93 @@ import javax.validation.constraints.NotEmpty;
 
 public class RegisterModel {
     @NotEmpty(message = "Provide a not empty email address")
-    private String Email;
+    private String email;
 
     public String getEmail(){
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     @NotEmpty(message = "Provide a not empty nickname")
-    private String NickName;
+    private String nickname;
 
     public String getNickName() {
-        return NickName;
+        return nickname;
     }
 
-    public void setNickName(String nickName) {
-        NickName = nickName;
+    public void setNickName(String nickname) {
+        this.nickname = nickname;
     }
 
-    private boolean IsRoleChosen;
-
-    public boolean isRoleChosen() {
-        return IsRoleChosen;
-    }
-
-    public void setRoleChosen(boolean roleChosen) {
-        IsRoleChosen = roleChosen;
-    }
-
-    private RoleType Role;
+    private RoleType role;
 
     public RoleType getRole() {
-        return Role;
+        return role;
     }
 
     public void setRole(RoleType role) {
-        Role = role;
+        this.role = role;
+    }
+
+    private Gender gender;
+
+    public Gender getGender() { return gender; };
+
+    public void setGender(Gender gender){
+        this.gender = gender;
     }
 
     @NotEmpty(message = "Provide a not empty password")
-    private String Password;
+    private String password;
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
     @NotEmpty(message = "Provide a not empty password confirmation")
-    private String ConfirmPassword;
+    private String confirmpassword;
 
     public String getConfirmPassword() {
-        return ConfirmPassword;
+        return confirmpassword;
     }
 
-    public void setConfirmPassword(String confirmPassword) {
-        ConfirmPassword = confirmPassword;
+    public void setConfirmPassword(String confirmpassword) {
+        this.confirmpassword = confirmpassword;
     }
 
     @NotEmpty(message = "Provide a not empty contact number")
-    private String ContactNumber;
+    private String contactnumber;
 
     public String getContactNumber() {
-        return ContactNumber;
+        return contactnumber;
     }
 
-    public void setContactNumber(String contactNumber) {
-        ContactNumber = contactNumber;
+    public void setContactNumber(String contactnumber) {
+        this.contactnumber = contactnumber;
     }
 
     public RegisterModel(){
-        if (!IsRoleChosen){
-            Role = RoleType.User;
-        }
     }
 
     public RegisterModel(
             String email,
             String nickName,
+            String contactNumber,
             RoleType role,
+            Gender gender,
             String password,
-            String confirmPassword,
-            String contactNumber){
+            String confirmPassword){
         if (email == null || email == ""){
             throw new IllegalArgumentException("Wrong email string provided");
         }
-        Email = email;
+        this.email = email;
 
         if (nickName == null || nickName == "") {
             throw new IllegalArgumentException("Wrong nick name string provided");
@@ -106,24 +103,25 @@ public class RegisterModel {
         if (password == null || password == ""){
             throw new IllegalArgumentException("Wrong password string provided");
         }
-        Password = password;
+        this.password = password;
 
         if (confirmPassword == null || confirmPassword == ""){
             throw new IllegalArgumentException("Wrong confirmation password string provided");
         }
-        ConfirmPassword = confirmPassword;
+        this.confirmpassword = confirmPassword;
 
-        if (!Password.equals(ConfirmPassword)){
+        if (!password.equals(confirmpassword)){
             throw new IllegalArgumentException("Confirmation does not equals password!");
         }
 
         if (contactNumber == null || contactNumber == ""){
-            ContactNumber = "None";
+            this.contactnumber = "None";
         }
         else {
-            ContactNumber = contactNumber;
+            this.contactnumber = contactNumber;
         }
 
-        Role = role;
+        this.role = role;
+        this.gender = gender;
     }
 }

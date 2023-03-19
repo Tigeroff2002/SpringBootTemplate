@@ -26,10 +26,11 @@ public class AccountController {
     public String AuthIndex(@PathVariable Long id, Model model) throws SQLException{
         User user = userHandler.FindUserById(id);
 
-        if (user == null){
+        if (id == 2){
             return "redirect:/";
         }
         else {
+            user = new User();
             model.addAttribute("user", user);
 
             ArrayList<Task> taskList = new ArrayList<>();
@@ -63,7 +64,7 @@ public class AccountController {
     public String Profile(@PathVariable Long id, Model model) throws SQLException{
         User user = userHandler.FindUserById(id);
 
-        if (user == null){
+        if (id == null){
             return "redirect:/";
         }
         else {
@@ -77,10 +78,11 @@ public class AccountController {
     public String LK(@PathVariable Long id, Model model) throws SQLException{
         User user = userHandler.FindUserById(id);
 
-        if (user == null){
+        if (id == 2){
             return "redirect:/";
         }
         else {
+            user = new User();
             model.addAttribute("user", user);
 
             return "lk";

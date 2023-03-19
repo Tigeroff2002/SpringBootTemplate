@@ -8,6 +8,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry viewControllerRegistry){
-        viewControllerRegistry.addViewController("/").setViewName("catalog.jsp");
+        viewControllerRegistry.addViewController("/").setViewName("mycatalog");
+        viewControllerRegistry.addViewController("/hello").setViewName("profile");
+        viewControllerRegistry.addViewController("/account/login").setViewName("loginForm");
+        viewControllerRegistry.addViewController("/account/register").setViewName("registerForm");
     }
 }

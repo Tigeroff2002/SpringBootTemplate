@@ -34,16 +34,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .authorizeHttpRequests()
-                .requestMatchers("/user/").hasRole("User")
-                .requestMatchers("/", "/**").permitAll()
-                .and()
-                .formLogin()
-                .loginPage("/account/login")
-                .defaultSuccessUrl("/account/index")
-                .and()
-                .build();
+        return httpSecurity.build();
     }
 
     @Bean

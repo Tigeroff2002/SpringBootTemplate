@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<h1>Создать новую учетную запись: </h1>
+<form th:action="@{/account/registerPost}" th:method="post" th:object="${register}">
+    <div>
+        <label for="email"> Электронная почта  </label>
+        <input type="text" th:field="*{email}" id="email"/>
+        <br>
+
+        <label for="nickname"> Никнэйм  </label>
+        <input type="text" th:field="*{nickname}" id="nickname"/>
+        <br>
+
+        <label for="contactnumber"> Номер телефона  </label>
+        <input type="text" th:field="*{contactnumber}" id="contactnumber"/>
+        <br>
+
+        <label for="role"> Роль  </label>
+        <input type="text" th:field="*{role}" id="role"/>
+
+        <label for="gender"> Пол  </label>
+        <input type="text" th:field="*{gender}" id="gender"/>
+        <br>
+
+        <label for="password"> Пароль  </label>
+        <input type="text" th:field="*{password}" id="password"/>
+        <br>
+
+        <label for="confirmpassword"> Подтверждение пароля  </label>
+        <input type="text" th:field="*{confirmpassword}" id="confirmpassword"/>
+        <br>
+
+        <input type="submit" value="Отправить">
+    </div>
+</form>
+<h3> <a href="/account/login"> Уже есть учетная запись? </a> </h3>
+<br>
+<h3> <a href="/"> Вернуться назад к каталогу </a> </h3>
+<br>
+</body>
+</html>

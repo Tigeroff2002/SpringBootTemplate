@@ -1,8 +1,11 @@
 package ru.vlsu.ispi.controllers;
 
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.enums.TaskType;
@@ -10,8 +13,8 @@ import ru.vlsu.ispi.enums.TaskType;
 import java.util.ArrayList;
 
 @Controller
-public class HomeController {
-    @GetMapping
+public class HomeController implements ErrorController {
+    @GetMapping("/")
     public String Index(Model model){
         ArrayList<Task> taskList = new ArrayList<>();
 
@@ -35,12 +38,19 @@ public class HomeController {
         taskList.add(task2);
 
         model.addAttribute("taskList", taskList);
+        model.addAttribute("task1", task1);
 
-        return "profile";
+        return "mycatalog";
     }
 
     @GetMapping("/hello")
+    @ResponseBody
     public String Test(){
         return "hello";
+    }
+
+    @RequestMapping("/error")
+    public String getErrorPath(){
+        return "redirect:/";
     }
 }
