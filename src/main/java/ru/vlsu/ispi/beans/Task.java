@@ -22,7 +22,7 @@ public class Task {
     @Column(columnDefinition = "caption")
     private String caption;
 
-    private Date createDate;
+    private Date createdate;
 
     private float price;
 
@@ -36,19 +36,19 @@ public class Task {
     private User executor;
 
     @Enumerated(value = EnumType.STRING)
-    private TaskStatus taskStatus;
+    private TaskStatus status;
 
     public Task() {
 
     }
 
-    public Task(String caption, Date createDate, float price, TaskType type, String description, User executor, TaskStatus taskStatus) {
+    public Task(String caption, Date createdate, float price, TaskType type, String description, User executor, TaskStatus status) {
         this.caption = caption;
-        this.createDate = createDate;
+        this.createdate = createdate;
         this.price = price;
         this.type = type;
         this.description = description;
         this.executor = executor;
-        this.taskStatus = taskStatus;
+        this.status = status;
     }
 }

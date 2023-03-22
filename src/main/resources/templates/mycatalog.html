@@ -7,7 +7,6 @@
 <h3> <a href="/account/login"> Создать новое объявление </a> </h3>
 <br>
 <h3> <a href="/account/register"> Зарегистрироваться </a> </h3>
-<br>
 <h3> <a href="/account/login"> Войти в учетную запись </a> </h3>
 <br>
 <h3> Список объявлений: </h3>
@@ -20,7 +19,7 @@
     <tr th:each="task : ${taskList}">
         <td th:text="${task.caption}"> Caption </td>
         <td th:text="${task.price}"> Price </td>
-        <td><a th:href = "@{/menu/details/task/} + ${task.id}"> Посмотреть </a></td>
+        <td><a th:href = "@{/menu/details/task/} + ${task.id}"> Посмотреть подробнее </a></td>
     </tr>
 </table>
 </body>

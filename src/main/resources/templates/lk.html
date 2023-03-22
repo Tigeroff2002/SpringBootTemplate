@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<h3 th:text="${user.nickname}"></h3>
+<h3> <a href="@{/account/index/} + ${user.id}"> Вернуться на главную </a> </h3>
+<br>
+<h3> <a href="@{/menu/} + ${user.id} + @{/new-task}"> Создать новое объявление </a> </h3>
+<br>
+<h3> <a href="@{/account/lk/admin/} + ${user.id}"> Перейти на страницу администратора </a> </h3>
+<br>
+<h3> <a href="@{/account/lk/moderator/} + ${user.id}"> Перейти на страницу модератора </a> </h3>
+<br>
+<br>
+<h3> <a href="/account/logout"> Выйти из учетной записи </a> </h3>
+<br>
+<h3> Добро пожаловать в личный кабинет! </h3>
+<br>
+<h4 th:text="${user.email}"> </h4>
+<h4 th:text="${user.password}"> </h4>
+<h4 th:text="${user.contactnumber}"> </h4>
+<h4 th:text="${user.role}"> </h4>
+</body>
+</html>

@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <body>
 <h3> Добро пожаловать </h3>
-<h3 th:text="${user.email}"></h3>
+<h3 th:text="${user.nickname}"></h3>
 <br>
 <h3> <a href="@{/account/lk/} + ${user.id}"> Личный кабинет </a> </h3>
 <br>

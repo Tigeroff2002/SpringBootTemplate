@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<h3> <a href="/"> Вернуться на главную </a> </h3>
+<br>
+<h3> <a href="/account/register"> Зарегистрироваться </a> </h3>
+<h3> <a href="/account/login"> Войти в учетную запись </a> </h3>
+<br>
+<h3> Подробная информация о задаче: </h3>
+<h4 th:text="${task.caption}"> </h4>
+<h4 th:text="${task.price}"> </h4>
+<h4 th:text="${task.createdate}"> </h4>
+<h4 th:text="${task.type}"> </h4>
+<h4 th:text="${task.status}"> </h4>
+<h4 th:text="${task.description}"> </h4>
+<h4 th:text="@{/account/profile/} + ${task.executor.id}"> Профиль заказчика </h4>
+</body>
+</html>

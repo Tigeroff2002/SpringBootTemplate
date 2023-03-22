@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<h3> Заполните информацию и создайте новое объявление </h3>
+<form th:action="@{/menu/} + ${user.id} + @{/createPost}" th:method="post" th:object="${task}">
+    <div>
+        <label for="caption"> Название объявления  </label>
+        <input type="text" th:field="*{caption}" id="caption"/>
+        <br>
+
+        <label for="description"> Описание задачи  </label>
+        <input type="text" th:field="*{description}" id="description"/>
+        <br>
+
+        <label for="price"> Пароль  </label>
+        <input type="number" th:field="*{price}" id="price"/>
+        <br>
+
+        <input type="submit" value="Отправить">
+    </div>
+</form>
+<br>
+<h3> <a href="@{/account/index/} + ${user.id}"> Вернуться на главную </a> </h3>
+</body>
+</html>

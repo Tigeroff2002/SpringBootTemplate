@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<h3 th:text="${user.nickname}"></h3>
+<h3> <a href="@{/account/index/} + ${user.id}"> Вернуться на главную </a> </h3>
+<br>
+<h3> <a href="/account/logout"> Выйти из учетной записи </a> </h3>
+<br>
+<h3> Профиль пользователя: </h3>
+<h3 th:text="${user.nickname}"></h3>
+<br>
+<h4> Информация о пользователе (задачи, рейтинг)... </h4>
+</body>
+</html>
