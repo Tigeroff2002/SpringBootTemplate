@@ -53,10 +53,11 @@ public class TaskService {
         newTask.setCreatedate(new Date());
         newTask.setStatus(TaskStatus.ToDo);
 
-        int taskId = taskRepository.calculateMaxTaskId() + 1;
-        newTask.setId(Integer.toUnsignedLong(taskId));
-
         taskRepository.save(newTask);
+
+        int newId = taskRepository.calculateMaxTaskId(newTask.getCreatedate());
+
+        newTask.setId(Integer.toUnsignedLong(newId));
 
         return newTask;
     }

@@ -72,8 +72,12 @@ public class AccountController {
             User executor = new User();
             executor.setId(executorId);
             executor.setNickname("Товарищ-заказчик");
+
+            List<Task> taskList = taskHandler.getAllExecutorTasks(executorId);
+
             model.addAttribute("executor", executor);
             model.addAttribute("user", user);
+            model.addAttribute("taskList", taskList);
 
             return "profile";
         }
@@ -87,7 +91,10 @@ public class AccountController {
             return "redirect:/";
         }
         else {
+            List<Task> taskList = taskHandler.getAllExecutorTasks(executorId);
+
             model.addAttribute("executor", executor);
+            model.addAttribute("taskList", taskList);
 
             return "profile_nouser";
         }

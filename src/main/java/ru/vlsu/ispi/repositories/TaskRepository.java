@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -29,6 +30,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t WHERE t.executor.id = :id")
     List<Task> getAllTaskFromCertainExecutor(@Param("id") Long executorId);
 
-    @Query("SELECT MAX(id) FROM Task")
-    int calculateMaxTaskId();
+    @Query("SELECT id FROM Task t WHERE t.createdate = :date")
+    int calculateMaxTaskId(@Param("date") Date date);
 }

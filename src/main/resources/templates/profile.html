@@ -13,5 +13,19 @@
 <h3 th:text="${executor.nickname}"></h3>
 <br>
 <h4> Информация о пользователе (задачи, рейтинг)... </h4>
+<br>
+<h4> Список объявлений данного пользователя: </h4>
+<table border="2">
+    <tr>
+        <td>название</td>
+        <td>стоимость выполнения</td>
+        <td>ссылки</td>
+    </tr>
+    <tr th:each="task : ${taskList}">
+        <td th:text="${task.caption}"> Caption </td>
+        <td th:text="${task.price}"> Price </td>
+        <td><a th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> Посмотреть </a></td>
+    </tr>
+</table>
 </body>
 </html>
