@@ -1,6 +1,7 @@
 package ru.vlsu.ispi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,12 @@ public class AccountController {
 
     @Autowired
     private TaskService taskHandler;
+
+    private final PasswordEncoder passwordEncoder;
+
+    public AccountController(PasswordEncoder passwordEncoder){
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("index/{id}")
     public String AuthIndex(@PathVariable Long id, Model model) throws SQLException{
@@ -148,6 +155,9 @@ public class AccountController {
         if (registerModel == null){
             throw new IllegalArgumentException("Null register model was provided");
         }
+
+        registerModel.setPassword(passwordEncoder.encode(registerModel.getPassword()));
+
         User user = userHandler.RegisterUser(registerModel);
 
         if (user == null) {
