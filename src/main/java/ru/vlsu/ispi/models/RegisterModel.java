@@ -76,7 +76,7 @@ public class RegisterModel {
         return contactnumber;
     }
 
-    public void setContactnumber(String contactnumber) {
+    public void setContactNumber(String contactnumber) {
         this.contactnumber = contactnumber;
     }
 

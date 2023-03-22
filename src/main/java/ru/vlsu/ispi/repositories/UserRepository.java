@@ -21,6 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.id = :id")
     User findUserById(@Param("id") Long id);
 
-    @Query("SELECT COUNT(*) FROM User")
-    int calculateCountUsers();
+    @Query("SELECT MAX(id) FROM User")
+    int calculateMaxUserId();
 }

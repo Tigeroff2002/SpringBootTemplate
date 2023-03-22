@@ -145,13 +145,11 @@ public class AccountController {
         }
         User user = userHandler.RegisterUser(registerModel);
 
-        if (user == null){
-
+        if (user == null) {
             return "redirect:/account/login";
         }
         else {
             attributes.addFlashAttribute("user", user);
-
             return "redirect:/account/index/" + Long.toString(user.getId()) + "";
         }
     }
@@ -172,7 +170,6 @@ public class AccountController {
 
         if (user != null){
             attributes.addFlashAttribute("user", user);
-
             return "redirect:/account/index/" + Long.toString(user.getId()) + "";
         }
         else {

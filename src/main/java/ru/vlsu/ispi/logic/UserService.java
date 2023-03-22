@@ -24,16 +24,16 @@ public class UserService {
 
         if (user == null){
             User newUser = new User();
-            newUser.setId(1L);
             newUser.setNickname(model.getNickname());
             newUser.setPassword(model.getPassword());
             newUser.setContactnumber(model.getContactnumber());
             newUser.setEmail(model.getEmail());
             newUser.setRole(model.getRole());
+            newUser.setGender(model.getGender());
 
             userRepository.save(newUser);
 
-            int id = userRepository.calculateCountUsers();
+            int id = userRepository.calculateMaxUserId();
             newUser.setId(Integer.toUnsignedLong(id));
 
             return newUser;

@@ -53,10 +53,10 @@ public class HomeController implements ErrorController {
         return "hello";
     }
 
-
+/*
     @RequestMapping("/error")
     public String getErrorPath(){
         return "redirect:/";
     }
-
+*/
 }

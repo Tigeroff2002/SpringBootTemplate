@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"  href="/css/main.css">
+</head>
 <body>
 <h3> Заполните информацию и создайте новое объявление </h3>
 <form th:action="@{/menu/} + ${user.id} + @{/createPost}" th:method="post" th:object="${task}">

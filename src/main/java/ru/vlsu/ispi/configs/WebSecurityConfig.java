@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/account/lk/admin/").hasRole("Admin")
                 .requestMatchers("/account/lk/moderator/").hasRole("Moderator")
-                .requestMatchers("/", "/**").permitAll()
+                .requestMatchers("/", "/**", "/js/**", "/css/**").permitAll()
                 .requestMatchers("/account/index/", "/account/lk/").authenticated()
                 .and()
                 .formLogin()
@@ -53,7 +53,12 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder(12);
     }
 
-    /*
+    @Bean(name = "mvcHandlerMappingIntrospector")
+    public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
+        return new HandlerMappingIntrospector();
+    }
+
+        /*
     @Bean
     public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -62,9 +67,4 @@ public class WebSecurityConfig {
         return new ProviderManager(daoAuthenticationProvider);
     }
     */
-
-    @Bean(name = "mvcHandlerMappingIntrospector")
-    public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
-        return new HandlerMappingIntrospector();
-    }
 }
