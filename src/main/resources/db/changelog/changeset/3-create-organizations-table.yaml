@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: "1-create-users-table"
+      id: "3-create-organizations-table"
       author: kirill.parakhin
       changes:
         - createTable:

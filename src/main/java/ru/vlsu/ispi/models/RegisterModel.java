@@ -21,11 +21,11 @@ public class RegisterModel {
     @NotEmpty(message = "Provide a not empty nickname")
     private String nickname;
 
-    public String getNickName() {
+    public String getNickname() {
         return nickname;
     }
 
-    public void setNickName(String nickname) {
+    public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
@@ -61,22 +61,22 @@ public class RegisterModel {
     @NotEmpty(message = "Provide a not empty password confirmation")
     private String confirmpassword;
 
-    public String getConfirmPassword() {
+    public String getConfirmpassword() {
         return confirmpassword;
     }
 
-    public void setConfirmPassword(String confirmpassword) {
+    public void setConfirmpassword(String confirmpassword) {
         this.confirmpassword = confirmpassword;
     }
 
     @NotEmpty(message = "Provide a not empty contact number")
     private String contactnumber;
 
-    public String getContactNumber() {
+    public String getContactnumber() {
         return contactnumber;
     }
 
-    public void setContactNumber(String contactnumber) {
+    public void setContactnumber(String contactnumber) {
         this.contactnumber = contactnumber;
     }
 

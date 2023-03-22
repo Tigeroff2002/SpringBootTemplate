@@ -14,6 +14,6 @@
 <h4 th:text="${task.type}"> </h4>
 <h4 th:text="${task.status}"> </h4>
 <h4 th:text="${task.description}"> </h4>
-<h4 th:text="@{/account/profile/} + ${task.executor.id}"> Профиль заказчика </h4>
+<h4><a th:href="@{/account/profile/} + ${user.id} + @{/executor/} + ${task.executor.id}"> Профиль заказчика </a> </h4>
 </body>
 </html>

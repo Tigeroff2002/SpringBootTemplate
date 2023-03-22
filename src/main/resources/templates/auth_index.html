@@ -5,9 +5,9 @@
 <h3> Добро пожаловать </h3>
 <h3 th:text="${user.nickname}"></h3>
 <br>
-<h3> <a href="@{/account/lk/} + ${user.id}"> Личный кабинет </a> </h3>
+<h3> <a th:href="@{/account/lk/} + ${user.id}"> Личный кабинет </a> </h3>
 <br>
-<h3> <a href="@{/menu/} + ${user.id} + @{/new-task}"> Создать новое объявление </a> </h3>
+<h3> <a th:href="@{/menu/} + ${user.id} + @{/new-task}"> Создать новое объявление </a> </h3>
 <br>
 <h3> <a href="/account/logout"> Выйти из учетной записи </a> </h3>
 <br>
@@ -16,7 +16,7 @@
     <tr>
         <td>название</td>
         <td>стоимость выполнения</td>
-        <td>task details</td>
+        <td>ссылки</td>
     </tr>
     <tr th:each="task : ${taskList}">
         <td th:text="${task.caption}"> Caption </td>

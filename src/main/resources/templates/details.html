@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <body>
-<h3> <a href="@{/account/index/} + ${user.id}"> Вернуться на главную </a> </h3>
+<h3> <a th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a> </h3>
 <br>
 <h3> <a href="/account/logout"> Выйти из учетной записи </a> </h3>
 <br>
@@ -13,8 +13,8 @@
 <h4 th:text="${task.type}"> </h4>
 <h4 th:text="${task.status}"> </h4>
 <h4 th:text="${task.description}"> </h4>
-<h4 th:text="@{/account/profile/} + ${task.executor.id}"> Профиль заказчика </h4>
+<h4><a th:href="@{/account/profile/} + ${user.id} + @{/executor/} + ${task.executor.id}"> Профиль заказчика </a> </h4>
 <br>
-<h3> <a href="@{/menu/} + ${user.id} + @{/room/task/}/ + ${task.id}"> Страница оформления договора </a> </h3>
+<!-- <h3> <a th:href="@{/menu/} + ${user.id} + @{/room/task/}/ + ${task.id}"> Страница оформления договора </a> </h3> -->
 </body>
 </html>

@@ -56,7 +56,9 @@ public class TaskController {
                 task.setCaption("Помыть квартиру");
                 task.setPrice(500);
                 task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-                task.setExecutor(new User());
+                User user2 = new User();
+                user2.setId(102L);
+                task.setExecutor(user2);
             }
             else {
                 task.setId(1L);
@@ -64,13 +66,15 @@ public class TaskController {
                 task.setCaption("Починить двигатель");
                 task.setPrice(1000);
                 task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-                task.setExecutor(new User());
+                User user1 = new User();
+                user1.setId(101L);
+                task.setExecutor(user1);
             }
 
             attributes.addFlashAttribute("task", task);
             attributes.addFlashAttribute("user", user);
 
-            return "redirect:/menu" + Long.toString(userId) + "/details/task/" + Long.toString(task.getId()) + "";
+            return "redirect:/menu/" + Long.toString(userId) + "/details/task/" + Long.toString(task.getId()) + "";
         }
     }
 
@@ -88,7 +92,9 @@ public class TaskController {
                 task.setCaption("Починить двигатель");
                 task.setPrice(1000);
                 task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-                task.setExecutor(new User());
+                User user1 = new User();
+                user1.setId(101L);
+                task.setExecutor(user1);
             }
             else if (taskId == 2) {
                 task.setId(2L);
@@ -96,7 +102,9 @@ public class TaskController {
                 task.setCaption("Помыть квартиру");
                 task.setPrice(500);
                 task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-                task.setExecutor(new User());
+                User user2 = new User();
+                user2.setId(102L);
+                task.setExecutor(user2);
 
             }
 
@@ -116,7 +124,9 @@ public class TaskController {
             task.setCaption("Починить двигатель");
             task.setPrice(1000);
             task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-            task.setExecutor(new User());
+            User user1 = new User();
+            user1.setId(101L);
+            task.setExecutor(user1);
         }
         else if (taskId == 2) {
             task.setId(2L);
@@ -124,8 +134,9 @@ public class TaskController {
             task.setCaption("Помыть квартиру");
             task.setPrice(500);
             task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-            task.setExecutor(new User());
-
+            User user2 = new User();
+            user2.setId(102L);
+            task.setExecutor(user2);
         }
 
         model.addAttribute("task", task);

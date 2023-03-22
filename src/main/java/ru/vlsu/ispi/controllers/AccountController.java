@@ -26,11 +26,10 @@ public class AccountController {
     public String AuthIndex(@PathVariable Long id, Model model) throws SQLException{
         User user = userHandler.FindUserById(id);
 
-        if (id == 2){
+        if (user == null){
             return "redirect:/";
         }
         else {
-            user = new User();
             model.addAttribute("user", user);
 
             ArrayList<Task> taskList = new ArrayList<>();
@@ -41,7 +40,9 @@ public class AccountController {
             task1.setCaption("Починить двигатель");
             task1.setPrice(1000f);
             task1.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-            task1.setExecutor(new User());
+            User user1 = new User();
+            user1.setId(101L);
+            task1.setExecutor(user1);
 
             Task task2 = new Task();
             task2.setId(2L);
@@ -49,7 +50,9 @@ public class AccountController {
             task2.setCaption("Помыть квартиру");
             task2.setPrice(500f);
             task2.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-            task2.setExecutor(new User());
+            User user2 = new User();
+            user1.setId(102L);
+            task1.setExecutor(user2);
 
             taskList.add(task1);
             taskList.add(task2);
@@ -60,14 +63,18 @@ public class AccountController {
         }
     }
 
-    @GetMapping("profile/{id}")
-    public String Profile(@PathVariable Long id, Model model) throws SQLException{
+    @GetMapping("profile/{id}/executor/{executorId}")
+    public String Profile(@PathVariable Long id, @PathVariable Long executorId, Model model) throws SQLException{
         User user = userHandler.FindUserById(id);
 
         if (id == null){
             return "redirect:/";
         }
         else {
+            User executor = new User();
+            executor.setId(executorId);
+            executor.setNickname("Товарищ-заказчик");
+            model.addAttribute("executor", executor);
             model.addAttribute("user", user);
 
             return "profile";
@@ -78,11 +85,10 @@ public class AccountController {
     public String LK(@PathVariable Long id, Model model) throws SQLException{
         User user = userHandler.FindUserById(id);
 
-        if (id == 2){
+        if (id == null){
             return "redirect:/";
         }
         else {
-            user = new User();
             model.addAttribute("user", user);
 
             return "lk";
@@ -164,20 +170,19 @@ public class AccountController {
         }
         User user = userHandler.LoginUser(loginModel);
 
-        if (user == null){
-
-            return "redirect:/account/register";
-        }
-        else {
+        if (user != null){
             attributes.addFlashAttribute("user", user);
 
             return "redirect:/account/index/" + Long.toString(user.getId()) + "";
+        }
+        else {
+            return "redirect:/account/register";
         }
     }
 
     @GetMapping("logout")
     public String Logout(Model model){
 
-        return "catalog";
+        return "redirect:/";
     }
 }

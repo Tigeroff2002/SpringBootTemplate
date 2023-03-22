@@ -25,9 +25,9 @@ public class UserService {
         if (user == null){
             User newUser = new User();
             newUser.setId(1L);
-            newUser.setNickname(model.getNickName());
+            newUser.setNickname(model.getNickname());
             newUser.setPassword(model.getPassword());
-            newUser.setContactnumber(model.getContactNumber());
+            newUser.setContactnumber(model.getContactnumber());
             newUser.setEmail(model.getEmail());
             newUser.setRole(model.getRole());
 

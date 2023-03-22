@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <body>
-<h1>Создать новую учетную запись: </h1>
+<h3>Создать новую учетную запись: </h3>
 <form th:action="@{/account/registerPost}" th:method="post" th:object="${register}">
     <div>
         <label for="email"> Электронная почта  </label>
@@ -19,6 +19,7 @@
 
         <label for="role"> Роль  </label>
         <input type="text" th:field="*{role}" id="role"/>
+        <br>
 
         <label for="gender"> Пол  </label>
         <input type="text" th:field="*{gender}" id="gender"/>

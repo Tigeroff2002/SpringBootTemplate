@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <body>
-<h1>Войдите в свою учетную запись: </h1>
+<h3>Войдите в свою учетную запись: </h3>
 <form th:action="@{/account/loginPost}" th:method="post" th:object="${login}">
     <div>
         <label for="email"> Электронная почта  </label>

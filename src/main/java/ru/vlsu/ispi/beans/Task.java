@@ -13,13 +13,11 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name="Tasks")
-@AllArgsConstructor
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "caption")
     private String caption;
 
     private Date createdate;
@@ -29,7 +27,6 @@ public class Task {
     @Enumerated(value = EnumType.STRING)
     private TaskType type;
 
-    @Column(columnDefinition = "description")
     private String description;
 
     @ManyToOne

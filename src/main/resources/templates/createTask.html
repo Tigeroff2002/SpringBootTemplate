@@ -13,14 +13,18 @@
         <input type="text" th:field="*{description}" id="description"/>
         <br>
 
-        <label for="price"> Пароль  </label>
+        <label for="price"> Цена  </label>
         <input type="number" th:field="*{price}" id="price"/>
+        <br>
+
+        <label for="type"> Выберите тип задачи  </label>
+        <input type="type" th:field="*{type}" id="type"/>
         <br>
 
         <input type="submit" value="Отправить">
     </div>
 </form>
 <br>
-<h3> <a href="@{/account/index/} + ${user.id}"> Вернуться на главную </a> </h3>
+<h3> <a th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a> </h3>
 </body>
 </html>
