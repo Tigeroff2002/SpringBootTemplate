@@ -5,36 +5,25 @@ import javax.validation.constraints.NotEmpty;
 public class LoginModel {
 
     @NotEmpty(message = "Provide a not empty email adress")
-    private String Email;
+    private String email;
 
     public String getEmail(){
-        return Email;
+        return email;
     }
 
     public void setEmail(String email){
-        this.Email = email;
-    }
-
-    @NotEmpty(message = "Provide a not empty nickname")
-    private String NickName;
-
-    public String getNickName() {
-        return NickName;
-    }
-
-    public void setNickName(String nickName) {
-        NickName = nickName;
+        this.email = email;
     }
 
     @NotEmpty(message = "Provide a not empty password")
-    public String Password;
+    public String password;
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
     private boolean RememberLogin;
@@ -52,8 +41,8 @@ public class LoginModel {
     }
 
     public LoginModel(String email, String password){
-        Email = email;
-        Password = password;
+        this.email = email;
+        this.password = password;
         RememberLogin = true;
     }
 }

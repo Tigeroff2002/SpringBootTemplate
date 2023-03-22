@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: "3-create-organizations-table"
+      author: kirill.parakhin
+      changes:
+        - createTable:
+            tableName: organizations
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: caption
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: city
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: site
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

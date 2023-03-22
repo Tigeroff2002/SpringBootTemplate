@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1-create-users-table"
+      author: kirill.parakhin
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nickname
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: gender
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: contactnumber
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

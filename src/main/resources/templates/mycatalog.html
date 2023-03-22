@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"  href="/css/main.css">
+</head>
+<body>
+<h3> Новый пользователь, добро пожаловать на сайт! </h3>
+<br>
+<h3> <a href="/account/login"> Создать новое объявление </a> </h3>
+<br>
+<h3> <a href="/account/register"> Зарегистрироваться </a> </h3>
+<h3> <a href="/account/login"> Войти в учетную запись </a> </h3>
+<br>
+<h3> Список всех объявлений: </h3>
+<table border="2">
+    <tr>
+        <td>название</td>
+        <td>стоимость выполнения</td>
+        <td>Ссылки</td>
+    </tr>
+    <tr th:each="task : ${taskList}">
+        <td th:text="${task.caption}"> Caption </td>
+        <td th:text="${task.price}"> Price </td>
+        <td><a th:href = "@{/menu/details/task/} + ${task.id}"> Посмотреть подробнее </a></td>
+    </tr>
+</table>
+</body>
+</html>

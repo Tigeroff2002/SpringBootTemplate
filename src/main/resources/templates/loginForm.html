@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"  href="/css/main.css">
+</head>
+<body>
+<h3>Войдите в свою учетную запись: </h3>
+<form th:action="@{/account/loginPost}" th:method="post" th:object="${login}">
+    <div>
+        <label for="email"> Электронная почта  </label>
+        <input type="text" th:field="*{email}" id="email"/>
+        <br>
+
+        <label for="password"> Пароль  </label>
+        <input type="text" th:field="*{password}" id="password"/>
+        <br>
+
+        <input type="submit" value="Отправить">
+    </div>
+</form>
+<h3> <a href="/account/register"> Еще нет учетной записи? </a> </h3>
+<br>
+<h3> <a href="/"> Вернуться назад к каталогу </a> </h3>
+<br>
+</body>
+</html>

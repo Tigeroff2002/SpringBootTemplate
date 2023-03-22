@@ -1,30 +1,34 @@
 package ru.vlsu.ispi.beans;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public class Review extends BaseBean{
-    @NotEmpty(message = "Provide a not empty review text")
-    private String Text;
-    public String getText(){
-        return Text;
-    }
-    public void setText(String text){
-        Text = text;
+
+@Data
+@Entity
+@Table(name = "Reviews")
+@AllArgsConstructor
+public class Review {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(columnDefinition = "Text")
+    private String textreview;
+
+    @OneToOne
+    private Event event;
+
+    private float mark;
+
+    public Review() {
+
     }
 
-    private Long EventId;
-    public Long getEventId(){
-        return EventId;
-    }
-    public void setEventId(Long eventId){
-        EventId = eventId;
-    }
-
-    private float Rate;
-    public float getRate(){
-        return Rate;
-    }
-    public void setRate(float rate){
-        Rate = rate;
+    public Review(String textreview, Event event, float mark){
+        this.textreview = textreview;
+        this.event = event;
+        this.mark = mark;
     }
 }

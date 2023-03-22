@@ -1,31 +1,33 @@
 package ru.vlsu.ispi.beans;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-public class Organization extends BaseBean{
-    @NotEmpty(message = "Provide a not empty org name")
-    private String Name;
-    public String getOrgName(){
-        return Name;
-    }
-    public void setOrgName(String orgName){
-        Name = orgName;
-    }
+@Data
+@Entity
+@Table(name = "Organizations")
+@AllArgsConstructor
+public class Organization {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String City;
-    public String getCity() {
-        return City;
-    }
-    public void setCity(String city){
-        City = city;
-    }
+    private String caption;
 
-    private String OfficialSite;
-    public String getOfficialSite(){
-        return OfficialSite;
+    private String city;
+
+    private String site;
+
+    public Organization() {
+
     }
-    public void setOfficialSite(String officialSite){
-        OfficialSite = officialSite;
+    public Organization(String caption, String city, String site){
+        this.caption = caption;
+        this.city = city;
+        this.site = site;
     }
 }

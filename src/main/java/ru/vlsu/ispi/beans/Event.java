@@ -1,47 +1,40 @@
 package ru.vlsu.ispi.beans;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import ru.vlsu.ispi.enums.EventStatus;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+@Data
+@Entity
+@Table(name = "Events")
+@AllArgsConstructor
 public class Event {
-    private Long TaskId;
-    public Long getTaskId(){
-        return TaskId;
-    }
-    public void setTaskId(Long taskId){
-        TaskId = taskId;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private int EmployerId;
-    public int getEmployerId(){
-        return EmployerId;
-    }
-    public void setEmployerId(int employerId) {
-        EmployerId = employerId;
-    }
+    @OneToOne
+    private Task task;
 
-    private EventStatus Status;
-    public EventStatus getStatus() {
-        return Status;
-    }
-    public void setStatus(EventStatus status) {
-        Status = status;
-    }
+    @ManyToOne
+    private User employer;
 
-    private Date EventCompleteData;
-    public Date getEventCompleteData() {
-        return EventCompleteData;
-    }
-    public void setEventCompleteData(Date eventCompleteData) {
-        EventCompleteData = eventCompleteData;
-    }
+    @Enumerated(value = EnumType.STRING)
+    private EventStatus status;
 
-    private float RealPrice;
-    public float getRealPrice(){
-        return RealPrice;
-    }
-    public void setRealPrice(float realPrice){
-        RealPrice = realPrice;
+    private Date completedate;
+
+    private float totalprice;
+
+    public Event(Task task, User employer, EventStatus status, Date completedate, float totalprice) {
+        this.task = task;
+        this.employer = employer;
+        this.status = status;
+        this.completedate = completedate;
+        this.totalprice = totalprice;
     }
 }

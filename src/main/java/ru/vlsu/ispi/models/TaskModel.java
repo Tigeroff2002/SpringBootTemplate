@@ -1,5 +1,6 @@
 package ru.vlsu.ispi.models;
 
+import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.enums.TaskStatus;
 import ru.vlsu.ispi.enums.TaskType;
 
@@ -8,62 +9,37 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class TaskModel {
-    @NotNull(message = "Id should be not null")
-    private Long TaskId;
-    public Long getTaskId() {
-        return TaskId;
-    }
-    public void setTaskId(Long taskId) {
-        TaskId = taskId;
-    }
-
     @NotEmpty(message = "Provide a not empty task caption")
-    private String Caption;
+    private String caption;
     public String getCaption() {
-        return Caption;
+        return caption;
     }
     public void setCaption(String caption) {
-        Caption = caption;
+        this.caption = caption;
     }
 
-    private float Price;
+    private float price;
     public float getPrice() {
-        return Price;
+        return price;
     }
     public void setPrice(float price) {
-        Price = price;
+        this.price = price;
     }
 
-    private TaskType Type;
+    private TaskType type;
     public TaskType getType(){
-        return Type;
+        return type;
     }
     public void setType(TaskType type) {
-        Type = type;
+        this.type = type;
     }
 
     @NotEmpty(message = "Provide a not empty task description")
-    private String Description;
+    private String description;
     public String getDescription() {
-        return Description;
+        return description;
     }
     public void setDescription(String description) {
-        Description = description;
-    }
-
-    private Long ExecutorId;
-    public Long getExecutorId() {
-        return ExecutorId;
-    }
-    public void setExecutorId(Long executorId){
-        ExecutorId = executorId;
-    }
-
-    private ru.vlsu.ispi.enums.TaskStatus TaskStatus;
-    public TaskStatus getTaskStatus(){
-        return TaskStatus;
-    }
-    public void setTaskStatus(TaskStatus taskStatus){
-        TaskStatus = taskStatus;
+        this.description = description;
     }
 }
