@@ -26,6 +26,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t WHERE t.id = :taskId")
     Task findTaskById(@Param("taskId") Long id);
 
-    @Query("SELECT t FROM Task t WHERE t.executor = :executor")
-    List<Task> getAllTaskFromCertainExecutor(@Param("executor")User user);
+    @Query("SELECT t FROM Task t WHERE t.executor.id = :id")
+    List<Task> getAllTaskFromCertainExecutor(@Param("id") Long executorId);
+
+    @Query("SELECT MAX(id) FROM Task")
+    int calculateMaxTaskId();
 }

@@ -15,17 +15,6 @@ public class LoginModel {
         this.email = email;
     }
 
-    @NotEmpty(message = "Provide a not empty nickname")
-    private String nickname;
-
-    public String getNickName() {
-        return nickname;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickname = nickName;
-    }
-
     @NotEmpty(message = "Provide a not empty password")
     public String password;
 

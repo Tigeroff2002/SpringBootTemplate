@@ -9,18 +9,23 @@ import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.enums.RoleType;
 import ru.vlsu.ispi.enums.TaskType;
+import ru.vlsu.ispi.logic.TaskService;
 import ru.vlsu.ispi.logic.UserService;
 import ru.vlsu.ispi.models.LoginModel;
 import ru.vlsu.ispi.models.RegisterModel;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/account/")
 public class AccountController {
     @Autowired
     private UserService userHandler;
+
+    @Autowired
+    private TaskService taskHandler;
 
     @GetMapping("index/{id}")
     public String AuthIndex(@PathVariable Long id, Model model) throws SQLException{
@@ -32,34 +37,27 @@ public class AccountController {
         else {
             model.addAttribute("user", user);
 
-            ArrayList<Task> taskList = new ArrayList<>();
+            List<Task> taskList = new ArrayList<>();
 
-            Task task1 = new Task();
-            task1.setId(1L);
-            task1.setType(TaskType.Repairing);
-            task1.setCaption("Починить двигатель");
-            task1.setPrice(1000f);
-            task1.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-            User user1 = new User();
-            user1.setId(101L);
-            task1.setExecutor(user1);
-
-            Task task2 = new Task();
-            task2.setId(2L);
-            task2.setType(TaskType.Cleaning);
-            task2.setCaption("Помыть квартиру");
-            task2.setPrice(500f);
-            task2.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-            User user2 = new User();
-            user1.setId(102L);
-            task1.setExecutor(user2);
-
-            taskList.add(task1);
-            taskList.add(task2);
+            taskList = taskHandler.getAllTasks();
 
             model.addAttribute("taskList", taskList);
 
             return "auth_index";
+        }
+    }
+
+    @GetMapping("lk/{id}")
+    public String LK(@PathVariable Long id, Model model) throws SQLException{
+        User user = userHandler.FindUserById(id);
+
+        if (id == null){
+            return "redirect:/";
+        }
+        else {
+            model.addAttribute("user", user);
+
+            return "lk";
         }
     }
 
@@ -81,17 +79,17 @@ public class AccountController {
         }
     }
 
-    @GetMapping("lk/{id}")
-    public String LK(@PathVariable Long id, Model model) throws SQLException{
-        User user = userHandler.FindUserById(id);
+    @GetMapping("profile/executor/{executorId}")
+    public String ProfileNoUser(@PathVariable Long executorId, Model model) throws SQLException{
+        User executor = userHandler.FindUserById(executorId);
 
-        if (id == null){
+        if (executor == null){
             return "redirect:/";
         }
         else {
-            model.addAttribute("user", user);
+            model.addAttribute("executor", executor);
 
-            return "lk";
+            return "profile_nouser";
         }
     }
 

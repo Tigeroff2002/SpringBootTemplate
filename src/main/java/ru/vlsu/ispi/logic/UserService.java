@@ -31,10 +31,10 @@ public class UserService {
             newUser.setRole(model.getRole());
             newUser.setGender(model.getGender());
 
-            userRepository.save(newUser);
-
-            int id = userRepository.calculateMaxUserId();
+            int id = userRepository.calculateMaxUserId() + 1;
             newUser.setId(Integer.toUnsignedLong(id));
+
+            userRepository.save(newUser);
 
             return newUser;
         }

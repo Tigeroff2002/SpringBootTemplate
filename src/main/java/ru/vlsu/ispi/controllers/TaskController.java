@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.enums.TaskStatus;
 import ru.vlsu.ispi.enums.TaskType;
 import ru.vlsu.ispi.logic.TaskService;
 import ru.vlsu.ispi.logic.UserService;
@@ -19,7 +20,6 @@ import java.sql.SQLException;
 public class TaskController {
     @Autowired
     private UserService userHandler;
-
     @Autowired
     private TaskService taskHandler;
     @GetMapping("{userId}/new-task")
@@ -37,8 +37,8 @@ public class TaskController {
     }
 
     @PostMapping("{userId}/createPost")
-    public String SubmitCreateTask(@PathVariable Long userId, @ModelAttribute TaskModel model, RedirectAttributes attributes) throws SQLException{
-        if (model == null){
+    public String SubmitCreateTask(@PathVariable Long userId, @ModelAttribute TaskModel taskModel, RedirectAttributes attributes) throws SQLException{
+        if (taskModel == null){
             throw new IllegalArgumentException("Null model was provided");
         }
 
@@ -47,29 +47,7 @@ public class TaskController {
             return "redirect:/";
         }
         else {
-            Task task = new Task();
-            model.setTaskId(taskHandler.GenerateNewTask(3L));
-
-            if (model.getTaskId() == 2){
-                task.setId(2L);
-                task.setType(TaskType.Cleaning);
-                task.setCaption("Помыть квартиру");
-                task.setPrice(500);
-                task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-                User user2 = new User();
-                user2.setId(102L);
-                task.setExecutor(user2);
-            }
-            else {
-                task.setId(1L);
-                task.setType(TaskType.Repairing);
-                task.setCaption("Починить двигатель");
-                task.setPrice(1000);
-                task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-                User user1 = new User();
-                user1.setId(101L);
-                task.setExecutor(user1);
-            }
+            Task task = taskHandler.SaveTask(taskModel, userId);
 
             attributes.addFlashAttribute("task", task);
             attributes.addFlashAttribute("user", user);
@@ -85,62 +63,31 @@ public class TaskController {
             return "redirect:/";
         }
         else {
-            Task task = new Task();
-            if (taskId == 1){
-                task.setId(1L);
-                task.setType(TaskType.Repairing);
-                task.setCaption("Починить двигатель");
-                task.setPrice(1000);
-                task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-                User user1 = new User();
-                user1.setId(101L);
-                task.setExecutor(user1);
-            }
-            else if (taskId == 2) {
-                task.setId(2L);
-                task.setType(TaskType.Cleaning);
-                task.setCaption("Помыть квартиру");
-                task.setPrice(500);
-                task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-                User user2 = new User();
-                user2.setId(102L);
-                task.setExecutor(user2);
+            Task task = taskHandler.findTaskById(taskId);
 
+            if (task != null){
+                model.addAttribute("task", task);
+                model.addAttribute("user", user);
+                return "details";
             }
-
-            model.addAttribute("task", task);
-            model.addAttribute("user", user);
-            return "details";
+            else {
+                return "redirect:/account/index/" + Long.toString(userId) + "";
+            }
         }
     }
 
     @GetMapping("details/task/{taskId}")
     public String TaskWithoutUserDetails(@PathVariable Long taskId, Model model) throws SQLException{
-        Task task = new Task();
+        Task task = taskHandler.findTaskById(taskId);
 
-        if (taskId == 1){
-            task.setId(1L);
-            task.setType(TaskType.Repairing);
-            task.setCaption("Починить двигатель");
-            task.setPrice(1000);
-            task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-            User user1 = new User();
-            user1.setId(101L);
-            task.setExecutor(user1);
-        }
-        else if (taskId == 2) {
-            task.setId(2L);
-            task.setType(TaskType.Cleaning);
-            task.setCaption("Помыть квартиру");
-            task.setPrice(500);
-            task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-            User user2 = new User();
-            user2.setId(102L);
-            task.setExecutor(user2);
-        }
+        if (task != null){
+            model.addAttribute("task", task);
 
-        model.addAttribute("task", task);
-        return "details_nouser";
+            return "details_nouser";
+        }
+        else {
+            return "redirect:/";
+        }
     }
 
     @GetMapping("{userId}/room/task/{taskId}")
@@ -150,28 +97,16 @@ public class TaskController {
             return "redirect:/";
         }
         else {
-            Task task = new Task();
-            if (taskId == 1){
-                task.setId(1L);
-                task.setType(TaskType.Repairing);
-                task.setCaption("Починить двигатель");
-                task.setPrice(1000);
-                task.setDescription("Требуется починить двигатель внутреннего сгорания в автомобиле");
-                task.setExecutor(new User());
-            }
-            else if (taskId == 2) {
-                task.setId(2L);
-                task.setType(TaskType.Cleaning);
-                task.setCaption("Помыть квартиру");
-                task.setPrice(500);
-                task.setDescription("Требуется помыть пол с моющим средством в двухкомнатной квартире");
-                task.setExecutor(new User());
+            Task task = taskHandler.findTaskById(taskId);
 
+            if (task != null){
+                model.addAttribute("task", task);
+                model.addAttribute("user", user);
+                return "taskRoomPage";
             }
-
-            model.addAttribute("task", task);
-            model.addAttribute("user", user);
-            return "taskRoomPage";
+            else {
+                return "redirect:/account/index/" + Long.toString(userId) + "";
+            }
         }
     }
 
