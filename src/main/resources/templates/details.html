@@ -10,13 +10,40 @@
 <h3> <a href="/account/logout"> Выйти из учетной записи </a> </h3>
 <br>
 <h3> Подробная информация о задаче: </h3>
-<h4 th:text="${task.caption}"> </h4>
-<h4 th:text="${task.price}"> </h4>
-<h4 th:text="${task.createdate}"> </h4>
-<h4 th:text="${task.type}"> </h4>
-<h4 th:text="${task.status}"> </h4>
-<h4 th:text="${task.description}"> </h4>
-<h4><a th:href="@{/account/profile/} + ${user.id} + @{/executor/} + ${task.executor.id}"> Профиль заказчика </a> </h4>
+<table>
+    <tr>
+        <td>/</td>
+        <td>Детали</td>
+    </tr>
+    <tr>
+        <td>Название</td>
+        <td th:text="${task.caption}"></td>
+    </tr>
+    <tr>
+        <td>Описание</td>
+        <td th:text="${task.description}"></td>
+    </tr>
+    <tr>
+        <td>Тип</td>
+        <td th:text="${task.type}"></td>
+    </tr>
+    <tr>
+        <td>Дата создания</td>
+        <td th:text="${task.createdate}"></td>
+    </tr>
+    <tr>
+        <td>Вознаграждение</td>
+        <td th:text="${task.price}"></td>
+    </tr>
+    <tr>
+        <td>Текущий статус</td>
+        <td th:text="${task.status}"></td>
+    </tr>
+    <tr>
+        <td>Заказчик</td>
+        <td><a th:href="@{/account/profile/} + ${user.id} + @{/executor/} + ${task.executor.id}"> Профиль заказчика </a></td>
+    </tr>
+</table>
 <br>
 <!-- <h3> <a th:href="@{/menu/} + ${user.id} + @{/room/task/}/ + ${task.id}"> Страница оформления договора </a> </h3> -->
 </body>

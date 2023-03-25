@@ -34,6 +34,14 @@ public class TaskModel {
         this.type = type;
     }
 
+    private TaskStatus status;
+    public TaskStatus getStatus(){
+        return status;
+    }
+    public void setStatus(TaskStatus status){
+        this.status = status;
+    }
+
     @NotEmpty(message = "Provide a not empty task description")
     private String description;
     public String getDescription() {

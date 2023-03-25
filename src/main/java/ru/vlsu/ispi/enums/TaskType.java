@@ -5,5 +5,6 @@ public enum TaskType {
     Cleaning,
     Repairing,
     Consulting,
-    Cooking
+    Cooking,
+    Freelancing
 }

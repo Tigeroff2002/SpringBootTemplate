@@ -35,6 +35,7 @@ public class TaskService {
         Task newTask = new Task();
         newTask.setCaption(taskModel.getCaption());
         newTask.setType(taskModel.getType());
+        newTask.setStatus(taskModel.getStatus());
         newTask.setDescription(taskModel.getDescription());
         newTask.setPrice(taskModel.getPrice());
 
@@ -51,7 +52,6 @@ public class TaskService {
         }
 
         newTask.setCreatedate(new Date());
-        newTask.setStatus(TaskStatus.ToDo);
 
         taskRepository.save(newTask);
 
@@ -60,6 +60,27 @@ public class TaskService {
         newTask.setId(Integer.toUnsignedLong(newId));
 
         return newTask;
+    }
+
+    public Task editTask(TaskModel taskModel, Long taskId){
+        if (taskModel == null){
+            throw new IllegalArgumentException("Null register model was provided");
+        }
+
+        Task newTask = new Task();
+        newTask.setId(taskId);
+        newTask.setCaption(taskModel.getCaption());
+        newTask.setType(taskModel.getType());
+        newTask.setStatus(taskModel.getStatus());
+        newTask.setDescription(taskModel.getDescription());
+        newTask.setPrice(taskModel.getPrice());
+        taskRepository.updateTaskInfo(taskId, newTask.getCaption(), newTask.getType(), newTask.getStatus(), newTask.getDescription(), newTask.getPrice());
+
+        return newTask;
+    }
+
+    public void deleteTask(Long taskId){
+        taskRepository.deleteTask(taskId);
     }
 
     public Task findTaskById(Long id){

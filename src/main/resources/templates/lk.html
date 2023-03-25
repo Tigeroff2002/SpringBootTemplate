@@ -7,24 +7,35 @@
 <body>
 <h3> <a href="/account/logout"> Выйти из учетной записи </a> </h3>
 <br>
-<h3 th:text="${user.nickname}"></h3>
 <h3> <a th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a> </h3>
 <br>
 <h3> <a th:href="@{/menu/} + ${user.id} + @{/new-task}"> Создать новое объявление </a> </h3>
-<div sec:authorize="hasRole('Admin')">
-    <br>
-    <h3> <a th:href="@{/account/lk/admin/} + ${user.id}"> Перейти на страницу администратора </a> </h3>
-</div>
-<div sec:authorize="hasRole('Moderator)">
-    <br>
-    <h3> <a th:href="@{/account/lk/moderator/} + ${user.id}"> Перейти на страницу модератора </a> </h3>
-</div>
-<br>
 <h3> Добро пожаловать в личный кабинет! </h3>
+<h3 th:text="${user.nickname}"></h3>
+<h3 th:text="${user.role}"></h3>
+<h4><span th:if="${user.role} == 'Admin'"><a th:href="@{/account/lk/admin/} + ${user.id}"> Перейти на страницу администратора </a></span></h4>
+<h4><span th:if="${user.role} == 'Moderator'"><a th:href="@{/account/lk/moderator/} + ${user.id}"> Перейти на страницу модератора </a></span></h4>
 <br>
-<h4 th:text="${user.email}"> </h4>
-<h4 th:text="${user.password}"> </h4>
-<h4 th:text="${user.contactnumber}"> </h4>
-<h4 th:text="${user.role}"> </h4>
+<h4>Список ваших объявлений: </h4>
+<table border="2">
+    <tr>
+        <td>название</td>
+        <td>тип</td>
+        <td>статус</td>
+        <td>вознаграждение</td>
+        <td>подробнее</td>
+        <td>изменить</td>
+        <td>удалить</td>
+    </tr>
+    <tr th:each="task : ${taskList}">
+        <td th:text="${task.caption}"> Caption </td>
+        <td th:text="${task.type}"> Type </td>
+        <td th:text="${task.status}"> Status </td>
+        <td th:text="${task.price}"> Price </td>
+        <td><a th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> Посмотреть </a></td>
+        <td><a th:href = "@{/menu/} + ${user.id} + @{/edit/task/} + ${task.id}"> Изменить </a></td>
+        <td><a th:href = "@{/menu/} + ${user.id} + @{/delete/task/} + ${task.id}"> Удалить </a></td>
+    </tr>
+</table>
 </body>
 </html>
