@@ -18,23 +18,18 @@ public class Event {
     private Long id;
 
     @OneToOne
-    private Task task;
-
-    @ManyToOne
-    private User employer;
+    private Action taskaction;
 
     @Enumerated(value = EnumType.STRING)
-    private EventStatus status;
+    private EventStatus eventstatus;
+
+    private Date formalizedate;
 
     private Date completedate;
 
     private float totalprice;
 
-    public Event(Task task, User employer, EventStatus status, Date completedate, float totalprice) {
-        this.task = task;
-        this.employer = employer;
-        this.status = status;
-        this.completedate = completedate;
-        this.totalprice = totalprice;
+    public Event(){
+
     }
 }
