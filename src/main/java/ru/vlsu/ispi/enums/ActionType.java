@@ -1,9 +1,9 @@
 package ru.vlsu.ispi.enums;
 
 public enum ActionType {
-    Read,
     Liked,
-    Asked,
+    Unliked,
     Commented,
-    Preformalized
+    Preformalized,
+    UnPreformalized
 }
