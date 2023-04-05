@@ -13,8 +13,9 @@
 <h3> Добро пожаловать в личный кабинет! </h3>
 <h3 th:text="${user.nickname}"></h3>
 <h3 th:text="${user.role}"></h3>
-<h4><span th:if="${user.role} == 'Admin'"><a th:href="@{/account/lk/admin/} + ${user.id}"> Перейти на страницу администратора </a></span></h4>
-<h4><span th:if="${user.role} == 'Moderator'"><a th:href="@{/account/lk/moderator/} + ${user.id}"> Перейти на страницу модератора </a></span></h4>
+<h4 th:text="${user.role} == 'Admin'"></h4>
+<h4 th:if="${user.role} == 'Admin'"><a th:href="@{/account/lk/admin/} + ${user.id}"> Перейти на страницу администратора </a></h4>
+<h4 th:if="${user.role} == 'Moderator'"><a th:href="@{/account/lk/moderator/} + ${user.id}"> Перейти на страницу модератора </a></h4>
 <br>
 <h4>Список ваших объявлений: </h4>
 <table border="2">
