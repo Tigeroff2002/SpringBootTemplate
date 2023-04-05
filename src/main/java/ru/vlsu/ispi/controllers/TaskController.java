@@ -90,6 +90,67 @@ public class TaskController {
         }
     }
 
+    @GetMapping("{userId}/edit/task/{taskId}")
+    public String EditTask(@PathVariable Long userId, @PathVariable Long taskId, Model model) throws SQLException{
+        User user = userHandler.FindUserById(userId);
+        if (user == null){
+            return "redirect:/";
+        }
+        else {
+            Task task = taskHandler.findTaskById(taskId);
+
+            if (task != null){
+                model.addAttribute("task", task);
+                model.addAttribute("user", user);
+                return "editTask";
+            }
+            else {
+                return "redirect:/account/index/" + Long.toString(userId) + "";
+            }
+        }
+    }
+
+    @PostMapping("{userId}/task/{taskId}/editPost")
+    public String SubmitEditTask(@PathVariable Long userId, @PathVariable Long taskId, @ModelAttribute TaskModel taskModel, RedirectAttributes attributes)
+            throws SQLException{
+        if (taskModel == null){
+            throw new IllegalArgumentException("Null model was provided");
+        }
+        User user = userHandler.FindUserById(userId);
+        if (user == null){
+            return "redirect:/";
+        }
+        else {
+            Task task = taskHandler.editTask(taskModel, taskId);
+
+            attributes.addFlashAttribute("task", task);
+            attributes.addFlashAttribute("user", user);
+
+            return "redirect:/account/lk/" + Long.toString(userId) + "";
+        }
+    }
+
+    @GetMapping("{userId}/delete/task/{taskId}")
+    public String DeleteTask(@PathVariable Long userId, @PathVariable Long taskId, Model model, RedirectAttributes attributes) throws SQLException{
+        User user = userHandler.FindUserById(userId);
+        if (user == null){
+            return "redirect:/";
+        }
+        else {
+            Task task = taskHandler.findTaskById(taskId);
+
+            if (task != null){
+                taskHandler.deleteTask(taskId);
+                attributes.addFlashAttribute("user", user);
+                return "redirect:/account/lk/" + Long.toString(userId) + "";
+            }
+            else {
+                attributes.addFlashAttribute("user", user);
+                return "redirect:/account/index/" + Long.toString(userId) + "";
+            }
+        }
+    }
+
     @GetMapping("{userId}/room/task/{taskId}")
     public String TaskRoom(@PathVariable Long userId, @PathVariable Long taskId, Model model) throws SQLException{
         User user = userHandler.FindUserById(userId);

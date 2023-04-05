@@ -2,7 +2,10 @@ package ru.vlsu.ispi.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.enums.Gender;
+import ru.vlsu.ispi.enums.RoleType;
 import ru.vlsu.ispi.models.LoginModel;
 import ru.vlsu.ispi.models.RegisterModel;
 import ru.vlsu.ispi.repositories.UserRepository;
@@ -61,5 +64,30 @@ public class UserService {
 
     public List<User> getAllUsers(){
         return userRepository.findAll();
+    }
+
+    @Transactional
+    public void TestFirstTransactionalCase() throws RuntimeException{
+        // Insert and Delete Methods in one transaction
+        User testUser = new User();
+        testUser.setEmail("1@email.com");
+        testUser.setNickname("1first");
+        testUser.setPassword("1111");
+        userRepository.insertOneUser(testUser.getEmail(), testUser.getNickname(), testUser.getPassword());
+
+        //throw new RuntimeException("Runtime exception was thrown after inserting");
+
+        userRepository.deleteOneUser(testUser.getId());
+    }
+
+    public void TestSecondTransactionalCase() throws RuntimeException{
+        // Insert and Delete Methods in 2 different transactions
+        User testUser = new User();
+        testUser.setEmail("1@email.com");
+        testUser.setNickname("1first");
+        testUser.setPassword("1111");
+        userRepository.insertOneUser(testUser.getEmail() , testUser.getNickname(), testUser.getPassword());
+
+        userRepository.deleteOneUser(testUser.getId());
     }
 }

@@ -62,8 +62,10 @@ public class AccountController {
             return "redirect:/";
         }
         else {
-            model.addAttribute("user", user);
+            List<Task> taskList = taskHandler.getAllExecutorTasks(id);
 
+            model.addAttribute("user", user);
+            model.addAttribute("taskList", taskList);
             return "lk";
         }
     }
@@ -72,21 +74,24 @@ public class AccountController {
     public String Profile(@PathVariable Long id, @PathVariable Long executorId, Model model) throws SQLException{
         User user = userHandler.FindUserById(id);
 
-        if (id == null){
+        if (user == null){
             return "redirect:/";
         }
         else {
-            User executor = new User();
-            executor.setId(executorId);
-            executor.setNickname("Товарищ-заказчик");
+            User executor = userHandler.FindUserById(executorId);
 
-            List<Task> taskList = taskHandler.getAllExecutorTasks(executorId);
+            if (executor == null){
+                return "redirect:/account/index/" + Long.toString(id) + "";
+            }
+            else {
+                List<Task> taskList = taskHandler.getAllExecutorTasks(executorId);
 
-            model.addAttribute("executor", executor);
-            model.addAttribute("user", user);
-            model.addAttribute("taskList", taskList);
+                model.addAttribute("executor", executor);
+                model.addAttribute("user", user);
+                model.addAttribute("taskList", taskList);
 
-            return "profile";
+                return "profile";
+            }
         }
     }
 

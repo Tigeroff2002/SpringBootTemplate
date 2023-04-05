@@ -16,11 +16,15 @@
 <table border="2">
     <tr>
         <td>название</td>
-        <td>стоимость выполнения</td>
-        <td>Ссылки</td>
+        <td>тип</td>
+        <td>статус</td>
+        <td>вознаграждение</td>
+        <td>подробнее</td>
     </tr>
     <tr th:each="task : ${taskList}">
         <td th:text="${task.caption}"> Caption </td>
+        <td th:text="${task.type}"> Type </td>
+        <td th:text="${task.status}"> Status </td>
         <td th:text="${task.price}"> Price </td>
         <td><a th:href = "@{/menu/details/task/} + ${task.id}"> Посмотреть подробнее </a></td>
     </tr>

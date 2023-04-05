@@ -20,12 +20,19 @@
         <input type="text" th:field="*{contactnumber}" id="contactnumber"/>
         <br>
 
-        <label for="role"> Роль  </label>
-        <input type="text" th:field="*{role}" id="role"/>
+        <label> Укажите роль </label>
+        <select th:field="*{role}">
+            <option th:value="'User'" th:text="User"></option>
+            <option th:value="'Moderator'" th:text="Moderator"></option>
+            <option th:value="'Admin'" th:text="Admin"></option>
+        </select>
         <br>
 
-        <label for="gender"> Пол  </label>
-        <input type="text" th:field="*{gender}" id="gender"/>
+        <label> Укажите пол </label>
+        <select th:field="*{gender}">
+            <option th:value="'Male'" th:text="Male"></option>
+            <option th:value="'Female'" th:text="Female"></option>
+        </select>
         <br>
 
         <label for="password"> Пароль  </label>

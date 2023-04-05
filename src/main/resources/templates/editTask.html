@@ -5,8 +5,8 @@
     <link rel="stylesheet"  href="/css/main.css">
 </head>
 <body>
-<h3> Заполните информацию и создайте новое объявление </h3>
-<form th:action="@{/menu/} + ${user.id} + @{/createPost}" th:method="post" th:object="${task}">
+<h3> Измените текущее объявление </h3>
+<form th:action="@{/menu/} + ${user.id} + @{/task/} + ${task.id} + @{/editPost}" th:method="post" th:object="${task}">
     <div>
         <label for="caption"> Название объявления  </label>
         <input type="text" th:field="*{caption}" id="caption"/>
@@ -20,7 +20,7 @@
         <input type="number" th:field="*{price}" id="price"/>
         <br>
 
-        <label> Выберите тип задачи  </label>
+        <label> Измените тип задачи  </label>
         <select th:field="*{type}">
             <option th:value="'Building'" th:text="Building"></option>
             <option th:value="'Cleaning'" th:text="Cleaning"></option>
