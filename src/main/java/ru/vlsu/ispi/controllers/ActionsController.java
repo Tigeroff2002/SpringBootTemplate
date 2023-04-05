@@ -48,6 +48,41 @@ public class ActionsController {
         }
     }
 
+    @GetMapping("{userId}/task/{taskId}/comment")
+    public String CommentTask(@PathVariable Long userId, @PathVariable Long taskId,
+                              RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
+        User user = userHandler.FindUserById(userId);
+        Task task = taskHandler.findTaskById(taskId);
+
+        if (user == null || task == null) {
+            return "redirect:/";
+        }
+        else {
+            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Commented);
+            attributes.addFlashAttribute("user", user);
+
+            return getPreviousPageByRequest(request).orElse("/");
+        }
+    }
+
+    @GetMapping("{userId}/task/{taskId}/preformalize")
+    public String PreformalizeTask(@PathVariable Long userId, @PathVariable Long taskId,
+                                   RedirectAttributes attributes, HttpServletRequest request) throws SQLException {
+        User user = userHandler.FindUserById(userId);
+        Task task = taskHandler.findTaskById(taskId);
+
+        if (user == null || task == null) {
+            return "redirect:/";
+        }
+        else {
+            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Preformalized);
+            attributes.addFlashAttribute("user", user);
+
+            return getPreviousPageByRequest(request).orElse("/");
+        }
+    }
+
+    /*
     @GetMapping("{userId}/task/{taskId}/unlike")
     public String UnlikeTask(@PathVariable Long userId, @PathVariable Long taskId,
                              RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
@@ -73,26 +108,9 @@ public class ActionsController {
         }
     }
 
-    @GetMapping("{userId}/task/{taskId}/comment")
-    public String CommentTask(@PathVariable Long userId, @PathVariable Long taskId,
-                              RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        Task task = taskHandler.findTaskById(taskId);
-
-        if (user == null || task == null) {
-            return "redirect:/";
-        }
-        else {
-            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Commented);
-            attributes.addFlashAttribute("user", user);
-
-            return getPreviousPageByRequest(request).orElse("/");
-        }
-    }
-
     @GetMapping("{userId}/task/{taskId}/uncomment")
     public String DeleteCommentTask(@PathVariable Long userId, @PathVariable Long taskId,
-                              RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
+                                    RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
         User user = userHandler.FindUserById(userId);
         Task task = taskHandler.findTaskById(taskId);
 
@@ -111,23 +129,6 @@ public class ActionsController {
 
                 return getPreviousPageByRequest(request).orElse("/");
             }
-        }
-    }
-
-    @GetMapping("{userId}/task/{taskId}/preformalize")
-    public String PreformalizeTask(@PathVariable Long userId, @PathVariable Long taskId,
-                                   RedirectAttributes attributes, HttpServletRequest request) throws SQLException {
-        User user = userHandler.FindUserById(userId);
-        Task task = taskHandler.findTaskById(taskId);
-
-        if (user == null || task == null) {
-            return "redirect:/";
-        }
-        else {
-            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Preformalized);
-            attributes.addFlashAttribute("user", user);
-
-            return getPreviousPageByRequest(request).orElse("/");
         }
     }
 
@@ -181,6 +182,7 @@ public class ActionsController {
             }
         }
     }
+    */
 
     protected Optional<String> getPreviousPageByRequest(HttpServletRequest request)
     {

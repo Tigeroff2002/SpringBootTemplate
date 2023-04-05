@@ -50,8 +50,8 @@ public interface ActionRepository extends JpaRepository<Action, Long> {
     @Query("SELECT a FROM Action a WHERE a.actiontype = :type, a.task.id = :taskId")
     List<Action> getAllActionsByTaskAndType(@Param("taskId") Long taskId, @Param("type") ActionType type);
 
-    @Query("SELECT a FROM Action a WHERE a.actiontype = :type, a.user.id = :userId, a.task.id = :taskId")
-    List<Action> getActionByWholeParams(@Param("userId") Long userId, @Param("taskId") Long taskId, @Param("type") ActionType type);
+    @Query("SELECT a FROM Action a WHERE a.actiontype = :type")
+    List<Action> getActionByWholeParams(@Param("type") ActionType type);
 
     @Query("SELECT a FROM Action a WHERE a.isFormalized = :condition")
     List<Action> getAllFormalizedActions(@Param("condition") boolean condition);
