@@ -69,9 +69,12 @@ public class AccountController {
 
             List<Task> taskList2 = actionHandler.findAllLikedUserTasks(id);
 
+            List<Task> taskList3 = taskHandler.getAllExecutorTasks(id);
+
             model.addAttribute("user", user);
             model.addAttribute("taskList1", taskList1);
             model.addAttribute("taskList2", taskList2);
+            model.addAttribute("taskList3", taskList3);
 
             return "lk";
         }
@@ -218,7 +221,7 @@ public class AccountController {
         return "redirect:/";
     }
 
-    @GetMapping("{userId}/edit/role/user/{siteUserId}")
+    @PostMapping("{userId}/role/user/editPost/{siteUserId}")
     public String EditUserRole(@PathVariable("userId") Long userId, @PathVariable("siteUserId") Long siteUserId,
                                HttpServletRequest request) throws SQLException {
         User user = userHandler.FindUserById(userId);

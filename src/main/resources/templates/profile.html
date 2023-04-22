@@ -12,7 +12,9 @@
     <a class = "btn btn-primary" role = "button" href="/account/logout"> Выйти из учетной записи </a>
 </div>
 <br>
-<a th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+<div class = "form-group">
+    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+</div>
 <br>
 <h3> Профиль пользователя: </h3>
 <h4 th:text="${executor.nickname}"></h4>

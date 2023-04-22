@@ -50,6 +50,8 @@
     <button type="submit" class="btn btn-primary mb-2">Создать</button>
 </form>
 <br>
-<a th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+<div class = "form-group">
+    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+</div>
 </body>
 </html>

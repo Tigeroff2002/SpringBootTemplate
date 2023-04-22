@@ -13,8 +13,9 @@
        href="/account/logout"> Выйти из учетной записи </a>
 </div>
 <br>
-<a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-        th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+<div class = "form-group">
+    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+</div>
 <br>
 <h3> Подробная информация о задаче: </h3>
 <table class = "table">

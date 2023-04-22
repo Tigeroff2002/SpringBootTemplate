@@ -16,7 +16,9 @@
     <a class = "btn btn-primary" role = "button" th:href="@{/account/lk/} + ${user.id}"> Личный кабинет </a>
 </div>
 <br>
-<a th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+<div class = "form-group">
+    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+</div>
 <br>
 <h3> Вы находитесь на странице модератора </h3>
 <br>

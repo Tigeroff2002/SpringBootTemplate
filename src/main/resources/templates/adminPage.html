@@ -8,7 +8,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 </head>
 <body>
-<a th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+<div class = "form-group">
+    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+</div>
 <br>
 <br>
 <div class = "form-group">
@@ -42,7 +44,24 @@
             <td th:text="${siteUser.nickname}"> Nickname </td>
             <td th:text="${siteUser.role}"> Role </td>
             <td><a class = "btn btn-primary" role = "button" th:href = "@{/account/profile/} + ${user.id} + @{/executor/} + ${siteUser.id}"> Профиль </a></td>
-            <td><a class = "btn btn-warning" role = "button" th:href = "@{/account/} + ${user.id} + @{/edit/role/user/} + ${siteUser.id}"> Изменить роль </a></td>
+            <td>
+                <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Изменить роль
+                </button>
+                <div class="collapse" th:id="collapseExample">
+                    <div class="card card-body">
+                        <form th:method = "post" th:action = "@{/account/} + ${user.id} + @{/role/user/editPost/} + ${siteUser.id}" th:object = "${user}">
+                            <label for="exampleFormControlSelect1"> Укажите роль </label>
+                            <select class="form-control" id="exampleFormControlSelect1" th:field="*{role}">
+                                <option th:value="'User'" th:text="User"></option>
+                                <option th:value="'Moderator'" th:text="Moderator"></option>
+                                <option th:value="'Admin'" th:text="Admin"></option>
+                            </select>
+                            <button type="submit" class="btn btn-primary mb-2">Изменить</button>
+                        </form>
+                    </div>
+                </div>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -70,7 +89,7 @@
             <td th:text="${task.status}"> Status </td>
             <td th:text="${task.price}"> Price </td>
             <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> Посмотреть </a></td>
-            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/task/} + ${task.id} + @{/editPost}"> Изменить статус </a></td>
+            <td><a class = "btn btn-warning" role = "button" th:href = "@{/menu/} + ${user.id} + @{/task/} + ${task.id} + @{/editPost}"> Изменить статус </a></td>
         </tr>
         </tbody>
     </table>
