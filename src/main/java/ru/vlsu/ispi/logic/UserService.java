@@ -1,8 +1,13 @@
 package ru.vlsu.ispi.logic;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.enums.Gender;
 import ru.vlsu.ispi.enums.RoleType;
@@ -12,11 +17,18 @@ import ru.vlsu.ispi.repositories.UserRepository;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(PasswordEncoder passwordEncoder){
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public User RegisterUser(RegisterModel model) throws SQLException {
         if (model == null){
@@ -25,7 +37,16 @@ public class UserService {
 
         User user = userRepository.findUserByEmail(model.getEmail());
 
-        if (user == null){
+        if (user == null) {
+
+            if (!Objects.equals(model.getPassword(), model.getConfirmpassword())){
+                User testUser = new User();
+                testUser.setId(-1L);
+                return testUser;
+            }
+
+            model.setPassword(passwordEncoder.encode(model.getPassword()));
+
             User newUser = new User();
             newUser.setNickname(model.getNickname());
             newUser.setPassword(model.getPassword());
@@ -42,9 +63,8 @@ public class UserService {
 
             return newUser;
         }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     public User LoginUser(LoginModel model) throws SQLException{
@@ -52,7 +72,17 @@ public class UserService {
             throw new IllegalArgumentException("Null login model was provided");
         }
 
-        return userRepository.findUserByEmail(model.getEmail());
+        User user = userRepository.findUserByEmail(model.getEmail());
+
+        if (user != null){
+            if (Objects.equals(user.getPassword(), model.getPassword())){
+                return user;
+            }
+            else {
+                return null;
+            }
+        }
+        return user;
     }
 
     public User FindUserById(Long id) throws SQLException{
@@ -66,28 +96,52 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    @Transactional
-    public void TestFirstTransactionalCase() throws RuntimeException{
-        // Insert and Delete Methods in one transaction
-        User testUser = new User();
-        testUser.setEmail("1@email.com");
-        testUser.setNickname("1first");
-        testUser.setPassword("1111");
-        userRepository.insertOneUser(testUser.getEmail(), testUser.getNickname(), testUser.getPassword());
+    /* Code examples for lab4 with transactions
 
-        //throw new RuntimeException("Runtime exception was thrown after inserting");
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, noRollbackFor = { RuntimeException.class })
+    public void InsertingUsersWithoutException() throws RuntimeException{
+        User test1User = new User();
+        test1User.setEmail("1@email.com");
+        test1User.setNickname("1first");
+        test1User.setPassword("1111");
+        userRepository.insertOneUser(test1User.getEmail(), test1User.getNickname(), test1User.getPassword());
+        User test2User = new User();
+        test2User.setEmail("2@email.com");
+        test2User.setNickname("2second");
+        test2User.setPassword("2222");
+        userRepository.insertOneUser(test2User.getEmail(), test2User.getNickname(), test2User.getPassword());
 
-        userRepository.deleteOneUser(testUser.getId());
+        //throw new RuntimeException("Exception thrown during insert transaction");
     }
 
-    public void TestSecondTransactionalCase() throws RuntimeException{
-        // Insert and Delete Methods in 2 different transactions
-        User testUser = new User();
-        testUser.setEmail("1@email.com");
-        testUser.setNickname("1first");
-        testUser.setPassword("1111");
-        userRepository.insertOneUser(testUser.getEmail() , testUser.getNickname(), testUser.getPassword());
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, noRollbackFor = { RuntimeException.class })
+    public void DeletingOneUserWithException() throws RuntimeException {
+        Long lastId = userRepository.calculateLastCreatedUserId();
 
-        userRepository.deleteOneUser(testUser.getId());
+        User lastUser = userRepository.findUserById(lastId);
+
+        if (lastUser != null) {
+            userRepository.deleteOneUser(lastId);
+            //throw new RuntimeException("Exception thrown during delete transaction");
+        }
     }
+
+    private void DeleteWithException() throws RuntimeException {
+        Long lastId = userRepository.calculateLastCreatedUserId();
+
+        userRepository.deleteOneUser(lastId);
+
+        throw new RuntimeException("Exception throw during delete transaction");
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = { RuntimeException.class })
+    public void DeleteNonExistingUserWithRuntimeException() throws RuntimeException {
+        try {
+            DeleteWithException();
+        }
+        catch (RuntimeException ex){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+    }
+    */
 }

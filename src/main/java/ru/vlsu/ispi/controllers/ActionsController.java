@@ -33,7 +33,8 @@ public class ActionsController {
     private ActionService actionsHandler;
 
     @GetMapping("{userId}/task/{taskId}/like")
-    public String LikeTask(@PathVariable Long userId, @PathVariable Long taskId, RedirectAttributes attributes, HttpServletRequest request) throws SQLException {
+    public String LikeTask(@PathVariable Long userId, @PathVariable Long taskId, RedirectAttributes attributes, HttpServletRequest request)
+            throws SQLException {
         User user = userHandler.FindUserById(userId);
         Task task = taskHandler.findTaskById(taskId);
 
@@ -82,7 +83,7 @@ public class ActionsController {
         }
     }
 
-    /*
+
     @GetMapping("{userId}/task/{taskId}/unlike")
     public String UnlikeTask(@PathVariable Long userId, @PathVariable Long taskId,
                              RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
@@ -166,14 +167,12 @@ public class ActionsController {
 
         if (user == null || task == null) {
             return "redirect:/";
-        }
-        else {
+        } else {
             Action action = actionsHandler.findCertainActionByWholeParams(userId, taskId, ActionType.Preformalized).get();
 
-            if (action == null){
+            if (action == null) {
                 return getPreviousPageByRequest(request).orElse("/");
-            }
-            else {
+            } else {
                 action.setFormalized(true);
                 actionsHandler.editActionFormalized(true, action.getId());
                 attributes.addFlashAttribute("user", user);
@@ -182,7 +181,6 @@ public class ActionsController {
             }
         }
     }
-    */
 
     protected Optional<String> getPreviousPageByRequest(HttpServletRequest request)
     {

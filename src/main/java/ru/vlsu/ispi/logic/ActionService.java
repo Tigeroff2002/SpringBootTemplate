@@ -112,11 +112,10 @@ public class ActionService {
         return actionRepository.getAllActionsByTaskAndType(taskId, type);
     }
 
-    /*
+
     public Optional<Action> findCertainActionByWholeParams(Long userId, Long taskId, ActionType type){
         return actionRepository.getActionByWholeParams(userId, taskId, type).stream().findFirst();
     }
-    */
 
     public List<Action> findAllActionsForMyTasks(Long userId){
         List<Task> myTasks = taskRepository.getAllTaskFromCertainExecutor(userId);
