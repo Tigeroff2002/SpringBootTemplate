@@ -51,8 +51,22 @@
         <td><a class = "btn btn-primary" role = "button" th:href="@{/account/profile/} + ${user.id} + @{/executor/} + ${task.executor.id}"> Профиль заказчика </a></td>
     </tr>
     <tr>
-        <td>Like</td>
-        <td><a class = "btn btn-light" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/like}">Like</a></td>
+        <td>
+            <span th:if="${task.Liked == 'Liked'}">
+                Unlike
+            </span>
+            <span th:unless="${task.Liked == 'Liked'}">
+                Like
+            </span>
+        </td>
+        <td>
+            <span th:if="${task.Liked == 'Liked'}">
+                <a class = "btn btn-danger" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/unlike}">Unlike</a>
+            </span>
+            <span th:unless="${task.Liked == 'Liked'}">
+                <a class = "btn btn-light" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/like}">Like</a>
+            </span>
+        </td>
     </tr>
 </table>
 <br>

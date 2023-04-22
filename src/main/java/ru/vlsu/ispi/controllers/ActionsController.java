@@ -182,6 +182,12 @@ public class ActionsController {
         }
     }
 
+    @GetMapping("{userId}/request")
+    public String requestRoleChanging(@PathVariable Long userId, HttpServletRequest request){
+
+        return getPreviousPageByRequest(request).orElse("/");
+    }
+
     protected Optional<String> getPreviousPageByRequest(HttpServletRequest request)
     {
         return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);

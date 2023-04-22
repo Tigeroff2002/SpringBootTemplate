@@ -56,6 +56,11 @@ public interface ActionRepository extends JpaRepository<Action, Long> {
     @Query("SELECT a FROM Action a WHERE a.isFormalized = :condition")
     List<Action> getAllFormalizedActions(@Param("condition") boolean condition);
 
+    @Query("SELECT a.actiontype FROM Action a WHERE a.user.id = :userId AND a.task.id = :taskId" +
+            " AND a.actiontype IN ('Liked', 'Unliked')" +
+            " ORDER BY id DESC LIMIT 1")
+    ActionType getActionLastLikedStatus(@Param("userId") Long userId, @Param("taskId") Long taskId);
+
     @Query("SELECT id FROM Action a WHERE a.timemoment = :date")
     int calculateMaxActionId(@Param("date") Date date);
 }

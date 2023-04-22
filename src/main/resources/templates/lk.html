@@ -21,9 +21,23 @@
 <br>
 <h4> Добро пожаловать в личный кабинет! </h4>
 <br>
-<h6 sec:authorize="hasRole('Admin')"><a th:href="@{/account/lk/admin/} + ${user.id}"> Перейти на страницу администратора </a></h6>
-<h6 sec:authorize="hasRole('Moderator')"><a th:href="@{/account/lk/moderator/} + ${user.id}"> Перейти на страницу модератора </a></h6>
-<br>
+<table class = "table">
+    <tbody>
+        <tr>
+            <td>
+                <span th:if="${user.isAdmin}">
+                    <a class = "btn btn-primary" role = "button" th:href="@{/account/lk/admin/} + ${user.id}"> Перейти на страницу администратора </a>
+                </span>
+                <span th:if="${user.isModerator}">
+                    <a class = "btn btn-primary" role = "button" th:href="@{/account/lk/moderator/} + ${user.id}"> Перейти на страницу модератора </a>
+                </span>
+                <span th:if="${user.isUser}">
+                    <a class = "btn btn-primary" role = "button" th:href="@{/actions/} + ${user.id} + @{/request}"> Запросить изменение роли </a>
+                </span>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <div class="container-fluid">
     <h4 class = "center"> Список ваших объявлений: </h4>

@@ -40,7 +40,14 @@
             <td th:text="${task.status}"> Status </td>
             <td th:text="${task.price}"> Price </td>
             <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}">Посмотреть</a></td>
-            <td><a class = "btn btn-light" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/like}">Like</a></td>
+            <td>
+                <span th:if="${task.Liked == 'Liked'}">
+                    <a class = "btn btn-danger" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/unlike}">Unlike</a>
+                </span>
+                <span th:unless="${task.Liked == 'Liked'}">
+                    <a class = "btn btn-light" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/like}">Like</a>
+                </span>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -9,6 +9,7 @@ import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.enums.TaskStatus;
 import ru.vlsu.ispi.enums.TaskType;
+import ru.vlsu.ispi.logic.ActionService;
 import ru.vlsu.ispi.logic.TaskService;
 import ru.vlsu.ispi.logic.UserService;
 import ru.vlsu.ispi.models.TaskModel;
@@ -22,6 +23,10 @@ public class TaskController {
     private UserService userHandler;
     @Autowired
     private TaskService taskHandler;
+
+    @Autowired
+    private ActionService actionHandler;
+
     @GetMapping("{userId}/new-task")
     public String CreateTask(@PathVariable Long userId, Model model) throws SQLException {
         User user = userHandler.FindUserById(userId);
@@ -63,10 +68,10 @@ public class TaskController {
             return "redirect:/";
         }
         else {
-            Task task = taskHandler.findTaskById(taskId);
+            Task extraTask = actionHandler.nameLikedOrUnlikedTask(userId, taskId);
 
-            if (task != null){
-                model.addAttribute("task", task);
+            if (extraTask != null){
+                model.addAttribute("task", extraTask);
                 model.addAttribute("user", user);
                 return "details";
             }

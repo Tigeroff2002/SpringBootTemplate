@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.beans.extrabeans.ExtraUser;
 import ru.vlsu.ispi.enums.Gender;
 import ru.vlsu.ispi.enums.RoleType;
 import ru.vlsu.ispi.models.LoginModel;
@@ -45,7 +46,7 @@ public class UserService {
                 return testUser;
             }
 
-            model.setPassword(passwordEncoder.encode(model.getPassword()));
+            //model.setPassword(passwordEncoder.encode(model.getPassword()));
 
             User newUser = new User();
             newUser.setNickname(model.getNickname());
@@ -94,6 +95,37 @@ public class UserService {
 
     public List<User> getAllUsers(){
         return userRepository.findAll();
+    }
+
+    public ExtraUser nameRoleUser(Long userId){
+        User user = userRepository.findUserById(userId);
+
+        if (user != null){
+            ExtraUser extraUser = new ExtraUser();
+            extraUser.setId(user.getId());
+            extraUser.setRole(user.getRole());
+            extraUser.setGender(user.getGender());
+            extraUser.setEmail(user.getEmail());
+            extraUser.setNickname(user.getNickname());
+            extraUser.setPassword(user.getPassword());
+            extraUser.setContactnumber(user.getContactnumber());
+            extraUser.isModerator = false;
+            extraUser.isAdmin = false;
+            extraUser.isUser = false;
+            if (extraUser.getRole() == RoleType.Admin){
+                extraUser.isAdmin = true;
+            }
+            else if (extraUser.getRole() == RoleType.Moderator){
+                extraUser.isModerator = true;
+            }
+            else {
+                extraUser.isUser = true;
+            }
+
+            return extraUser;
+        }
+
+        return null;
     }
 
     /* Code examples for lab4 with transactions

@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
+import ru.vlsu.ispi.beans.extrabeans.ExtraUser;
 import ru.vlsu.ispi.enums.RoleType;
 import ru.vlsu.ispi.enums.TaskType;
+import ru.vlsu.ispi.logic.ActionService;
 import ru.vlsu.ispi.logic.TaskService;
 import ru.vlsu.ispi.logic.UserService;
 import ru.vlsu.ispi.models.LoginModel;
@@ -28,6 +31,9 @@ public class AccountController {
     @Autowired
     private TaskService taskHandler;
 
+    @Autowired
+    private ActionService actionHandler;
+
     public AccountController(){
     }
 
@@ -41,9 +47,7 @@ public class AccountController {
         else {
             model.addAttribute("user", user);
 
-            List<Task> taskList = new ArrayList<>();
-
-            taskList = taskHandler.getAllTasks();
+            List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(id);
 
             model.addAttribute("taskList", taskList);
 
@@ -53,19 +57,20 @@ public class AccountController {
 
     @GetMapping("lk/{id}")
     public String LK(@PathVariable Long id, Model model) throws SQLException{
-        User user = userHandler.FindUserById(id);
+        ExtraUser user = userHandler.nameRoleUser(id);
 
-        if (id == null){
+        if (user == null){
             return "redirect:/";
         }
         else {
             List<Task> taskList1 = taskHandler.getAllExecutorTasks(id);
 
-            List<Task> taskList2 = taskHandler.getAllTasks().subList(0, 3);
+            List<Task> taskList2 = actionHandler.findAllLikedUserTasks(id);
 
             model.addAttribute("user", user);
             model.addAttribute("taskList1", taskList1);
             model.addAttribute("taskList2", taskList2);
+
             return "lk";
         }
     }
@@ -84,7 +89,7 @@ public class AccountController {
                 return "redirect:/account/index/" + Long.toString(id) + "";
             }
             else {
-                List<Task> taskList = taskHandler.getAllExecutorTasks(executorId);
+                List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(id);
 
                 model.addAttribute("executor", executor);
                 model.addAttribute("user", user);

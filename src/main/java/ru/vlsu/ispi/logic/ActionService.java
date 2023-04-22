@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 import ru.vlsu.ispi.beans.Action;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
 import ru.vlsu.ispi.enums.ActionType;
 import ru.vlsu.ispi.repositories.ActionRepository;
 import ru.vlsu.ispi.repositories.TaskRepository;
 import ru.vlsu.ispi.repositories.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -120,7 +122,7 @@ public class ActionService {
     public List<Action> findAllActionsForMyTasks(Long userId){
         List<Task> myTasks = taskRepository.getAllTaskFromCertainExecutor(userId);
 
-        List<Action> actions = null;
+        List<Action> actions = new ArrayList<>();
 
         for (var task:myTasks) {
             Long currentTaskId = task.getId();
@@ -135,7 +137,7 @@ public class ActionService {
     public List<Action> findAllActionsWithCertainTypeForMyTasks(Long userId, ActionType type){
         List<Task> myTasks = taskRepository.getAllTaskFromCertainExecutor(userId);
 
-        List<Action> actions = null;
+        List<Action> actions = new ArrayList<>();
 
         for (var task:myTasks) {
             Long currentTaskId = task.getId();
@@ -145,5 +147,99 @@ public class ActionService {
             }
         }
         return actions;
+    }
+
+    public List<Task> findAllLikedUserTasks(Long userId){
+        List<Task> allTasks = taskRepository.findAll();
+
+        List<Task> likedTasks = new ArrayList<>();
+
+        for (var task:allTasks){
+            if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
+                likedTasks.add(task);
+            }
+        }
+
+        return likedTasks;
+    }
+
+    public List<ExtraTask> nameAllLikedAndUnlikedTasks(Long userId){
+        List<Task> allTasks = taskRepository.findAll();
+
+        List<ExtraTask> extraTasks = new ArrayList<>();
+
+        for (var task: allTasks){
+            ExtraTask extraTask = new ExtraTask();
+            extraTask.setId(task.getId());
+            extraTask.setCaption(task.getCaption());
+            extraTask.setPrice(task.getPrice());
+            extraTask.setType(task.getType());
+            extraTask.setCreatedate(task.getCreatedate());
+            extraTask.setDescription(task.getDescription());
+            extraTask.setExecutor(task.getExecutor());
+            extraTask.setStatus(task.getStatus());
+
+            if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
+                extraTask.Liked = "Liked";
+            }
+            else {
+                extraTask.Liked = "Unliked";
+            }
+            extraTasks.add(extraTask);
+        }
+
+        return extraTasks;
+    }
+
+    public List<ExtraTask> nameAllLikedAndUnlikedTasksByUser(Long userId){
+        List<Task> allTasks = taskRepository.getAllTaskFromCertainExecutor(userId);
+
+        List<ExtraTask> extraTasks = new ArrayList<>();
+
+        for (var task: allTasks){
+            ExtraTask extraTask = new ExtraTask();
+            extraTask.setId(task.getId());
+            extraTask.setCaption(task.getCaption());
+            extraTask.setPrice(task.getPrice());
+            extraTask.setType(task.getType());
+            extraTask.setCreatedate(task.getCreatedate());
+            extraTask.setDescription(task.getDescription());
+            extraTask.setExecutor(task.getExecutor());
+            extraTask.setStatus(task.getStatus());
+
+            if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
+                extraTask.Liked = "Liked";
+            }
+            else {
+                extraTask.Liked = "Unliked";
+            }
+            extraTasks.add(extraTask);
+        }
+
+        return extraTasks;
+    }
+
+    public ExtraTask nameLikedOrUnlikedTask(Long userId, Long taskId){
+        Task task = taskRepository.findTaskById(taskId);
+
+        if (task != null){
+            ExtraTask extraTask = new ExtraTask();
+            extraTask.setId(task.getId());
+            extraTask.setCaption(task.getCaption());
+            extraTask.setPrice(task.getPrice());
+            extraTask.setType(task.getType());
+            extraTask.setCreatedate(task.getCreatedate());
+            extraTask.setDescription(task.getDescription());
+            extraTask.setExecutor(task.getExecutor());
+            extraTask.setStatus(task.getStatus());
+            if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
+                extraTask.Liked = "Liked";
+            }
+            else {
+                extraTask.Liked = "Unliked";
+            }
+            return extraTask;
+        }
+        return null;
     }
 }
