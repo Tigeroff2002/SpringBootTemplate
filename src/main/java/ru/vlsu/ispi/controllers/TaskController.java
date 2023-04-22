@@ -1,5 +1,6 @@
 package ru.vlsu.ispi.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import ru.vlsu.ispi.logic.UserService;
 import ru.vlsu.ispi.models.TaskModel;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/menu/")
@@ -135,6 +137,26 @@ public class TaskController {
         }
     }
 
+    @PostMapping("{userId}/task/{taskId}/request/editPost")
+    public String SubmitRequestEditTask(@PathVariable Long userId, @PathVariable Long taskId,
+                                        @ModelAttribute TaskModel taskModel, RedirectAttributes attributes) throws SQLException {
+        if (taskModel == null){
+            throw new IllegalArgumentException("Null model was provided");
+        }
+        User user = userHandler.FindUserById(userId);
+        if (user == null){
+            return "redirect:/";
+        }
+        else {
+            Task task = taskHandler.editTask(taskModel, taskId);
+
+            attributes.addFlashAttribute("task", task);
+            attributes.addFlashAttribute("user", user);
+
+            return "redirect:/account/lk/" + Long.toString(userId) + "";
+        }
+    }
+
     @GetMapping("{userId}/delete/task/{taskId}")
     public String DeleteTask(@PathVariable Long userId, @PathVariable Long taskId, Model model, RedirectAttributes attributes) throws SQLException{
         User user = userHandler.FindUserById(userId);
@@ -152,6 +174,24 @@ public class TaskController {
             else {
                 attributes.addFlashAttribute("user", user);
                 return "redirect:/account/index/" + Long.toString(userId) + "";
+            }
+        }
+    }
+
+    @GetMapping("{userId}/request/delete/task/{taskId}")
+    public String RequestDeleteTask(@PathVariable Long userId, @PathVariable Long taskId, Model model,
+                                    RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
+        User user = userHandler.FindUserById(userId);
+        if (user == null){
+            return "redirect:/";
+        }
+        else {
+            Task task = taskHandler.findTaskById(taskId);
+            if (task == null){
+                return "redirect:/";
+            }
+            else {
+                return getPreviousPageByRequest(request).orElse("/");
             }
         }
     }
@@ -174,5 +214,9 @@ public class TaskController {
                 return "redirect:/account/index/" + Long.toString(userId) + "";
             }
         }
+    }
+
+    protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
     }
 }

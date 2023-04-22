@@ -188,8 +188,7 @@ public class ActionsController {
         return getPreviousPageByRequest(request).orElse("/");
     }
 
-    protected Optional<String> getPreviousPageByRequest(HttpServletRequest request)
-    {
+    protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
     }
 }

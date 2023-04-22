@@ -1,5 +1,6 @@
 package ru.vlsu.ispi.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import ru.vlsu.ispi.models.RegisterModel;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/account/")
@@ -124,8 +126,13 @@ public class AccountController {
         if (user == null){
             return "redirect:/";
         }
-        else if (user.getRole() == RoleType.Admin){
+        else if (user.getRole() == RoleType.Admin) {
+            List<Task> allTasks = taskHandler.getAllTasks();
+            List<User> allUsers = userHandler.getAllUsers();
+
             model.addAttribute("user", user);
+            model.addAttribute("userList", allUsers);
+            model.addAttribute("taskList", allTasks);
 
             return "adminPage";
         }
@@ -142,8 +149,11 @@ public class AccountController {
         if (user == null){
             return "redirect:/";
         }
-        else if (user.getRole() == RoleType.Moderator){
+        else if (user.getRole() == RoleType.Moderator) {
+            List<Task> allTasks = taskHandler.getAllTasks();
+
             model.addAttribute("user", user);
+            model.addAttribute("taskList", allTasks);
 
             return "moderatorPage";
         }
@@ -205,7 +215,22 @@ public class AccountController {
 
     @GetMapping("logout")
     public String Logout(Model model){
-
         return "redirect:/";
+    }
+
+    @GetMapping("{userId}/edit/role/user/{siteUserId}")
+    public String EditUserRole(@PathVariable("userId") Long userId, @PathVariable("siteUserId") Long siteUserId,
+                               HttpServletRequest request) throws SQLException {
+        User user = userHandler.FindUserById(userId);
+        User siteUser = userHandler.FindUserById(siteUserId);
+
+        if (user != null && siteUser != null){
+            return getPreviousPageByRequest(request).orElse("/");
+        }
+        return "redirect:/";
+    }
+
+    protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
     }
 }

@@ -10,6 +10,7 @@
 <body>
 <a th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
 <br>
+<br>
 <div class = "form-group">
     <a class = "btn btn-primary" role = "button" href="/account/logout"> Выйти из учетной записи </a>
 </div>
@@ -20,7 +21,60 @@
 <br>
 <h3> Вы находитесь на странице администратора </h3>
 <br>
-<h3 th:text="${user.nickname}"></h3>
-<h3 th:text="${user.role}"></h3>
+
+<div class="container-fluid">
+    <h4 class = "center"> Список пользователей: </h4>
+    <table class="table">
+        <thead class = "thead-dark">
+        <tr>
+            <th scope = "col">id</th>
+            <th scope = "col">почта</th>
+            <th scope = "col">никнэйм</th>
+            <th scope = "col">роль</th>
+            <th scope = "col">профиль</th>
+            <th scope = "col">изменить роль</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="siteUser : ${userList}">
+            <th scope = "row" th:text="${siteUser.id}"></th>
+            <td th:text="${siteUser.email}"> Email </td>
+            <td th:text="${siteUser.nickname}"> Nickname </td>
+            <td th:text="${siteUser.role}"> Role </td>
+            <td><a class = "btn btn-primary" role = "button" th:href = "@{/account/profile/} + ${user.id} + @{/executor/} + ${siteUser.id}"> Профиль </a></td>
+            <td><a class = "btn btn-warning" role = "button" th:href = "@{/account/} + ${user.id} + @{/edit/role/user/} + ${siteUser.id}"> Изменить роль </a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="container-fluid">
+    <h4 class = "center"> Список объявлений пользователей для редактирования: </h4>
+    <table class="table">
+        <thead class = "thead-dark">
+        <tr>
+            <th scope = "col">id</th>
+            <th scope = "col">название</th>
+            <th scope = "col">тип</th>
+            <th scope = "col">статус</th>
+            <th scope = "col">вознаграждение</th>
+            <th scope = "col">подробнее</th>
+            <th scope = "col">изменить</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task : ${taskList}">
+            <th scope = "row" th:text="${task.id}"></th>
+            <td th:text="${task.caption}"> Caption </td>
+            <td th:text="${task.type}"> Type </td>
+            <td th:text="${task.status}"> Status </td>
+            <td th:text="${task.price}"> Price </td>
+            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> Посмотреть </a></td>
+            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/task/} + ${task.id} + @{/editPost}"> Изменить статус </a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>
