@@ -9,11 +9,11 @@
 </head>
 <body>
 <div class = "form-group">
-    <a class = "btn btn-primary" role = "button" href="/account/logout"> Выйти из учетной записи </a>
+    <a class = "btn btn-primary" role = "button" href="/account/logout"> Выйти </a>
 </div>
 <br>
 <div class = "form-group">
-    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> ← </a>
 </div>
 <br>
 <br>
@@ -25,7 +25,7 @@
 <table class = "table">
     <tr>
         <td>#</td>
-        <td>Детали</td>
+        <td>Подробное описание</td>
     </tr>
     <tr>
         <td>Название</td>

@@ -13,11 +13,11 @@
 </div>
 <br>
 <div class = "form-group">
-    <a class = "btn btn-primary" role = "button" href="/account/login"> Войти в учетную запись </a>
+    <a class = "btn btn-primary" role = "button" href="/account/login"> Войти </a>
 </div>
 <br>
 <div class = "form-group">
-    <a class="btn btn-outline-info" type="button" href="/"> Вернуться на главную </a>
+    <a class="btn btn-outline-info" type="button" href="/"> ← </a>
 </div>
 <br>
 <br>
@@ -45,7 +45,7 @@
             <td th:text="${task.type}"> Type </td>
             <td th:text="${task.status}"> Status </td>
             <td th:text="${task.price}"> Price </td>
-            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/details/task/} + ${task.id}">Посмотреть</a></td>
+            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/details/task/} + ${task.id}">👁</a></td>
         </tr>
         </tbody>
     </table>

@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class = "form-group">
-    <a class = "btn btn-primary" role = "button" href="/account/logout"> Выйти из учетной записи </a>
+    <a class = "btn btn-primary" role = "button" href="/account/logout"> Выйти </a>
 </div>
 <br>
 <div class = "form-group">
@@ -17,7 +17,7 @@
 </div>
 <br>
 <div class = "form-group">
-    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> Вернуться на главную </a>
+    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> ← </a>
 </div>
 <br>
 <h3> Вы находитесь на странице модератора </h3>
@@ -44,9 +44,9 @@
             <td th:text="${task.type}"> Type </td>
             <td th:text="${task.status}"> Status </td>
             <td th:text="${task.price}"> Price </td>
-            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> Посмотреть </a></td>
+            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a></td>
             <td><a class = "btn btn-warning" role = "button" th:href = "@{/menu/} + ${user.id} + @{/edit/task/} + ${task.id}"> Изменить у себя </a></td>
-            <td><a class = "btn btn-danger" role = "button" th:href = "@{/menu/} + ${user.id} + @{/request/delete/task/} + ${task.id}"> Запрос на удаление </a></td>
+            <td><a class = "btn btn-danger" role = "button" th:href = "@{/menu/} + ${user.id} + @{/request/delete/task/} + ${task.id}"> ✍ </a></td>
         </tr>
         </tbody>
     </table>
