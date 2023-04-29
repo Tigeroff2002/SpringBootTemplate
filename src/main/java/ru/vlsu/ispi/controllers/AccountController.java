@@ -12,6 +12,7 @@ import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
 import ru.vlsu.ispi.beans.extrabeans.ExtraUser;
+import ru.vlsu.ispi.beans.extrabeans.WholeFilterSet;
 import ru.vlsu.ispi.enums.FilterBy;
 import ru.vlsu.ispi.enums.RoleType;
 import ru.vlsu.ispi.enums.TaskType;
@@ -40,30 +41,10 @@ public class AccountController {
     private ActionService actionHandler;
 
     @GetMapping("index/{id}")
-    public String AuthIndex(@PathVariable Long id, Model model) throws SQLException{
-        User user = userHandler.FindUserById(id);
-
-        if (user == null){
-            return "redirect:/";
-        }
-        else {
-            model.addAttribute("user", user);
-
-            List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(id);
-
-            List<Notification> notificationList = actionHandler.findAllNotificationsOfUser(id);
-
-            model.addAttribute("taskList", taskList);
-
-            model.addAttribute("notificationList", notificationList);
-
-            return "auth_index";
-        }
-    }
-
-    @GetMapping("index/{id}/findBy/{rowToFind}/filterBy/{filters}/sortBy/{sorter}")
-    public String AuthIndexFiltering(@PathVariable Long id, @PathVariable String rowToFind,
-                                     @PathVariable String filters, @PathVariable String sorter,
+    public String AuthIndexFiltering(@PathVariable Long id,
+                                     @RequestParam(name = "rowToFind") String rowToFind,
+                                     @RequestParam(name = "filter") String filter,
+                                     @RequestParam(name = "sorter") String sorter,
                                      Model model) throws SQLException{
         User user = userHandler.FindUserById(id);
 
@@ -75,19 +56,19 @@ public class AccountController {
 
             List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(id);
 
-            var wholeFilterName = "Filtering By Params: RowToFind = " + rowToFind + ", filters = [" + filters + "], sortBy = " + sorter;
+            var wholeFilterName = "Filtering By Params: RowToFind = " + rowToFind + ", filters = [" + filter + "], sortBy = " + sorter;
 
-            var obtainedTaskList = userHandler.filterByRowParameters(taskList, rowToFind, filters, sorter);
+            var obtainedTaskList = userHandler.filterByRowParameters(taskList, rowToFind, filter, sorter);
 
             List<Notification> notificationList = actionHandler.findAllNotificationsOfUser(id);
 
             model.addAttribute("taskList", obtainedTaskList);
 
-            model.addAttribute("filterName", wholeFilterName);
+            model.addAttribute("filterSet", new WholeFilterSet(rowToFind, filter, sorter));
 
             model.addAttribute("notificationList", notificationList);
 
-            return "auth_index_filter";
+            return "auth_index";
         }
     }
 
@@ -221,7 +202,7 @@ public class AccountController {
         }
         else if (user.getId() != -1){
             attributes.addFlashAttribute("user", user);
-            return "redirect:/account/index/" + Long.toString(user.getId()) + "";
+            return "redirect:/account/index/" + Long.toString(user.getId()) + DEFAULT_FILTER_HEADER;
         }
         else {
             return "redirect:/account/register";
@@ -244,7 +225,7 @@ public class AccountController {
 
         if (user != null){
             attributes.addFlashAttribute("user", user);
-            return "redirect:/account/index/" + Long.toString(user.getId()) + "";
+            return "redirect:/account/index/" + Long.toString(user.getId()) + DEFAULT_FILTER_HEADER;
         }
         else {
             return "redirect:/account/register";
@@ -271,4 +252,6 @@ public class AccountController {
     protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
     }
+
+    private static final String DEFAULT_FILTER_HEADER = "?rowToFind=empty&filter=default_filter&sorter=default_sort";
 }

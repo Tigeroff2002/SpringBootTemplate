@@ -53,6 +53,24 @@
 <h3> Добро пожаловать на сайт! </h3>
 <h3 th:text="${user.nickname}"></h3>
 <br>
+<div class="input-group mb-3">
+    <h5>Поиск объявления: </h5>
+    <br>
+    <form th:action="@{/account/index/} + ${user.id}" th:object="${filterSet}">
+        <input type="text" class="form-control" placeholder="Ключевые слова" aria-label="Ключевые слова"
+               aria-describedby="basic-addon2" th:field="*{rowToFind}" id="RowToFind">
+        <br>
+        <input type="text" class="form-control" placeholder="Фильтрация" aria-label="Фильтрация"
+               aria-describedby="basic-addon2" th:field="*{filter}" id="Filter">
+        <br>
+        <input type="text" class="form-control" placeholder="Сортировка" aria-label="Сортировка"
+               aria-describedby="basic-addon2" th:field="*{sorter}" id="Sorter">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit">Найти</button>
+        </div>
+    </form>
+</div>
+<br>
 <h4> Список всех доступных объявлений: </h4>
 <table class="table">
     <thead class = "thead-dark">
