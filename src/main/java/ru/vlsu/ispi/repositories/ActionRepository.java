@@ -71,6 +71,10 @@ public interface ActionRepository extends JpaRepository<Action, Long> {
             " AND a.actiontype = 'Liked' ORDER BY id DESC LIMIT 1")
     Action getLastActionByUserAndTask(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
+    @Query("SELECT a FROM Action a where a.user.id = :userId and a.task.id = :taskId" +
+            " ORDER BY id DESC LIMIT 1")
+    Action getSomeLastActionByUserAndTask(@Param("userId") Long userId, @Param("taskId") Long taskId);
+
     @Query("SELECT id FROM Action a WHERE a.timemoment = :date")
     int calculateMaxActionId(@Param("date") Date date);
 }

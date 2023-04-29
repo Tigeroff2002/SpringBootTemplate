@@ -44,7 +44,7 @@ public class ActionsController {
             return "redirect:/";
         }
         else {
-            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Liked);
+            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Liked, true);
             attributes.addFlashAttribute("user", user);
 
             return getPreviousPageByRequest(request).orElse("/");
@@ -61,7 +61,7 @@ public class ActionsController {
             return "redirect:/";
         }
         else {
-            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Commented);
+            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Commented, true);
             attributes.addFlashAttribute("user", user);
 
             return getPreviousPageByRequest(request).orElse("/");
@@ -78,7 +78,7 @@ public class ActionsController {
             return "redirect:/";
         }
         else {
-            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Preformalized);
+            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Preformalized, true);
             attributes.addFlashAttribute("user", user);
 
             return getPreviousPageByRequest(request).orElse("/");

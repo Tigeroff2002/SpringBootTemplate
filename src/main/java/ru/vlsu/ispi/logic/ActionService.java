@@ -33,7 +33,7 @@ public class ActionService {
     @Autowired
     private EventRepository eventRepository;
 
-    public Action saveAction(Long userId, Long taskId, ActionType type) {
+    public Action saveAction(Long userId, Long taskId, ActionType type, boolean isViewed) {
         if (userId < 0 || taskId < 0){
             throw new IllegalArgumentException("Ids should be greater than zero");
         }
@@ -46,7 +46,7 @@ public class ActionService {
             action.setActiontype(type);
             action.setUser(user);
             action.setTask(task);
-            action.setFormalized(false);
+            action.setFormalized(isViewed);
             Date currentDate = new Date();
             action.setTimemoment(currentDate);
             actionRepository.save(action);
@@ -267,14 +267,26 @@ public class ActionService {
         return events;
     }
 
-    public List<Task> findAllLikedUserTasks(Long userId){
+    public List<ExtraTask> findAllLikedUserTasks(Long userId){
         List<Task> allTasks = taskRepository.findAll();
 
-        List<Task> likedTasks = new ArrayList<>();
+        List<ExtraTask> likedTasks = new ArrayList<>();
 
         for (var task:allTasks){
             if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
-                likedTasks.add(task);
+
+                ExtraTask extraTask = new ExtraTask();
+                extraTask.setId(task.getId());
+                extraTask.setCaption(task.getCaption());
+                extraTask.setPrice(task.getPrice());
+                extraTask.setType(task.getType());
+                extraTask.setCreatedate(task.getCreatedate());
+                extraTask.setDescription(task.getDescription());
+                extraTask.setExecutor(task.getExecutor());
+                extraTask.setStatus(task.getStatus());
+                extraTask.IsViewed = true;
+
+                likedTasks.add(extraTask);
             }
         }
 
@@ -297,12 +309,22 @@ public class ActionService {
             extraTask.setExecutor(task.getExecutor());
             extraTask.setStatus(task.getStatus());
 
+            var lastUserAction = actionRepository.getSomeLastActionByUserAndTask(userId, task.getId());
+
             var lastAction = actionRepository.getLastActionByTask(task.getId());
 
             if (lastAction != null){
+
                 if (lastAction.getActiontype() == ActionType.Preformalized){
                     continue;
                 }
+            }
+
+            if (lastUserAction != null){
+                extraTask.IsViewed = lastUserAction.isFormalized;
+            }
+            else {
+                extraTask.IsViewed = false;
             }
 
             if (Objects.equals(task.getExecutor().getId(), userId)){
@@ -385,28 +407,14 @@ public class ActionService {
     }
 
     public List<ExtraTask> nameAllLikedAndUnlikedTasksByExecutor(Long userId, Long executorId){
-        List<Task> allTasks = taskRepository.getAllTaskFromCertainExecutor(executorId);
+        List<ExtraTask> allTasks = nameAllLikedAndUnlikedTasks(userId);
 
         List<ExtraTask> extraTasks = new ArrayList<>();
 
-        for (var task: allTasks){
-            ExtraTask extraTask = new ExtraTask();
-            extraTask.setId(task.getId());
-            extraTask.setCaption(task.getCaption());
-            extraTask.setPrice(task.getPrice());
-            extraTask.setType(task.getType());
-            extraTask.setCreatedate(task.getCreatedate());
-            extraTask.setDescription(task.getDescription());
-            extraTask.setExecutor(task.getExecutor());
-            extraTask.setStatus(task.getStatus());
-
-            if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
-                extraTask.Liked = "Liked";
+        for (var task:allTasks){
+            if (Objects.equals(task.getExecutor().getId(), executorId)){
+                extraTasks.add(task);
             }
-            else {
-                extraTask.Liked = "Unliked";
-            }
-            extraTasks.add(extraTask);
         }
 
         return extraTasks;
@@ -452,6 +460,25 @@ public class ActionService {
         }
 
         return likedTasks;
+    }
+
+    public void MarkTaskAsViewed(Long userId, Long taskId){
+        var user = userRepository.findUserById(userId);
+        var task = taskRepository.findTaskById(taskId);
+
+        if (user != null || task != null){
+            var action = actionRepository.getLastActionByUserAndTask(userId, taskId);
+
+            if (action != null){
+                if (!action.isFormalized){
+                    action.setFormalized(true);
+                    saveAction(userId, taskId, action.getActiontype(), true);
+                }
+            }
+            else {
+                saveAction(userId, taskId, ActionType.Viewed, true);
+            }
+        }
     }
 
     private final float COMMISSION_PERCENT = 5f;

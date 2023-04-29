@@ -72,6 +72,8 @@ public class TaskController {
         else {
             Task extraTask = actionHandler.nameLikedOrUnlikedTask(userId, taskId);
 
+            actionHandler.MarkTaskAsViewed(userId, taskId);
+
             if (extraTask != null){
                 model.addAttribute("task", extraTask);
                 model.addAttribute("user", user);

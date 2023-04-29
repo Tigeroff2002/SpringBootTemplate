@@ -8,4 +8,6 @@ public class ExtraTask extends Task {
     public Long EmployerId;
 
     public Long EventId;
+
+    public boolean IsViewed;
 }

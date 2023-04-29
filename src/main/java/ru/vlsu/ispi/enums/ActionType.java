@@ -5,5 +5,6 @@ public enum ActionType {
     Unliked,
     Commented,
     Preformalized,
-    UnPreformalized
+    UnPreformalized,
+    Viewed
 }

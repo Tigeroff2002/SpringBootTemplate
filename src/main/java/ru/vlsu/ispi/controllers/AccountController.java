@@ -68,7 +68,7 @@ public class AccountController {
         else {
             List<ExtraTask> taskList1 = actionHandler.MarkAllMyTasks(id);
 
-            List<Task> taskList2 = actionHandler.findAllLikedUserTasks(id);
+            List<ExtraTask> taskList2 = actionHandler.findAllLikedUserTasks(id);
 
             model.addAttribute("user", user);
             model.addAttribute("taskList1", taskList1);
