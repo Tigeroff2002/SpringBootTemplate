@@ -12,6 +12,7 @@ import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
 import ru.vlsu.ispi.beans.extrabeans.ExtraUser;
+import ru.vlsu.ispi.enums.FilterBy;
 import ru.vlsu.ispi.enums.RoleType;
 import ru.vlsu.ispi.enums.TaskType;
 import ru.vlsu.ispi.logic.ActionService;
@@ -57,6 +58,36 @@ public class AccountController {
             model.addAttribute("notificationList", notificationList);
 
             return "auth_index";
+        }
+    }
+
+    @GetMapping("index/{id}/findBy/{rowToFind}/filterBy/{filters}/sortBy/{sorter}")
+    public String AuthIndexFiltering(@PathVariable Long id, @PathVariable String rowToFind,
+                                     @PathVariable String filters, @PathVariable String sorter,
+                                     Model model) throws SQLException{
+        User user = userHandler.FindUserById(id);
+
+        if (user == null){
+            return "redirect:/";
+        }
+        else {
+            model.addAttribute("user", user);
+
+            List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(id);
+
+            var wholeFilterName = "Filtering By Params: RowToFind = " + rowToFind + ", filters = [" + filters + "], sortBy = " + sorter;
+
+            var obtainedTaskList = userHandler.filterByRowParameters(taskList, rowToFind, filters, sorter);
+
+            List<Notification> notificationList = actionHandler.findAllNotificationsOfUser(id);
+
+            model.addAttribute("taskList", obtainedTaskList);
+
+            model.addAttribute("filterName", wholeFilterName);
+
+            model.addAttribute("notificationList", notificationList);
+
+            return "auth_index_filter";
         }
     }
 

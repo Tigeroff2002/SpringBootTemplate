@@ -129,7 +129,88 @@ public class UserService {
         return null;
     }
 
-    public List<ExtraTask> filterByAllParameters(List<ExtraTask> currentTaskList, String rowToFind, List<FilterParameter> parameters, SortBy sorter){
+    public List<ExtraTask> filterByRowParameters(List<ExtraTask> currentTaskList, String rowToFind, String filters, String sorter){
+
+        if (stringIsNullOrEmptyOrBlank(rowToFind) || stringIsNullOrEmptyOrBlank(filters) || stringIsNullOrEmptyOrBlank(sorter)){
+            throw new IllegalArgumentException("String headers should not be null, empty or blank!");
+        }
+
+        rowToFind = rowToFind.toLowerCase();
+        //filters = filters.toLowerCase();
+        sorter = sorter.toLowerCase();
+
+        var sortBy = SortBy.valueOf(sorter);
+
+        var parameters = new ArrayList<FilterParameter>();
+
+        if (filters.contains("&")){
+            var filterByList = new ArrayList<String>(Arrays.asList(filters.split("&")));
+
+            for (var filter: filterByList){
+                var filterParameter = filterComparing(filter);
+
+                if (filterParameter != null){
+                    parameters.add(filterParameter);
+                }
+            }
+        }
+        else {
+            var filterParameter = filterComparing(filters);
+
+            if (filterParameter != null){
+                parameters.add(filterParameter);
+            }
+        }
+
+        return filterByAllParameters(currentTaskList, rowToFind, parameters, sortBy);
+    }
+
+    private FilterParameter filterComparing(String filter) {
+        if (!filter.contains(FilterBy.default_filter.toString())) {
+
+            var filterParameter = new FilterParameter();
+
+            if (filter.contains(FilterBy.type.toString().toLowerCase())) {
+                filterParameter.Filter = FilterBy.type;
+                var name = "type";
+                filterParameter.parameter = filter.substring(name.length() + 1);
+            } else if (filter.contains(FilterBy.status.toString().toLowerCase())) {
+                filterParameter.Filter = FilterBy.status;
+                var name = "status";
+                filterParameter.parameter = filter.substring(name.length() + 1);
+            } else if (filter.contains(FilterBy.liked.toString().toLowerCase())) {
+                filterParameter.Filter = FilterBy.liked;
+                var name = "liked";
+                filterParameter.parameter = "true";
+            } else if (filter.contains(FilterBy.unLiked.toString().toLowerCase())) {
+                filterParameter.Filter = FilterBy.unLiked;
+                var name = "unliked";
+                filterParameter.parameter = "true";
+            } else if (filter.contains(FilterBy.mine.toString().toLowerCase())) {
+                filterParameter.Filter = FilterBy.mine;
+                var name = "mine";
+                filterParameter.parameter = "true";
+            } else if (filter.contains(FilterBy.notMine.toString().toLowerCase())) {
+                filterParameter.Filter = FilterBy.notMine;
+                var name = "notmine";
+                filterParameter.parameter = "true";
+            } else if (filter.contains(FilterBy.unviewed.toString().toLowerCase())) {
+                filterParameter.Filter = FilterBy.unviewed;
+                var name = "unviewed";
+                filterParameter.parameter = "true";
+            }
+
+            return filterParameter;
+        }
+
+        return null;
+    }
+
+    private boolean stringIsNullOrEmptyOrBlank(String row){
+        return row == null || row.isEmpty() || row.trim().isEmpty();
+    }
+
+    private List<ExtraTask> filterByAllParameters(List<ExtraTask> currentTaskList, String rowToFind, List<FilterParameter> parameters, SortBy sorter){
 
         var taskListAfterSearch = findByString(currentTaskList, rowToFind);
 
@@ -138,25 +219,43 @@ public class UserService {
         return sortByParameter(taskListAfterFiltering, sorter);
     }
 
-    public List<ExtraTask> findByString(List<ExtraTask> currentTaskList, String row){
-        if (!row.equals("")){
+    private List<ExtraTask> findByString(List<ExtraTask> currentTaskList, String row){
+        if (!row.equals("empty")){
             var rowToFind = row.toLowerCase();
-            List<String> subWords = Arrays.asList(rowToFind.split("\\s*,\\s*"));
+            //List<String> subWords = Arrays.asList(rowToFind.split("\\s*,\\s*"));
+            if (rowToFind.contains("&")){
+                List<String> subWords = new ArrayList<String>(Arrays.asList(row.split("&")));
 
-            var obtainedTaskList = new ArrayList<ExtraTask>();
+                var obtainedTaskList = new ArrayList<ExtraTask>();
 
-            for(var task:currentTaskList){
-                var caption = task.getCaption();
-                var description = task.getDescription();
+                for(var task:currentTaskList){
+                    var caption = task.getCaption().toLowerCase();
+                    var description = task.getDescription().toLowerCase();
 
-                if (containsAtLeastElementOfArray(caption, subWords)
-                        || containsAtLeastElementOfArray(description, subWords)){
-                    obtainedTaskList.add(task);
+                    if (containsAtLeastElementOfArray(caption, subWords)
+                            || containsAtLeastElementOfArray(description, subWords)){
+                        obtainedTaskList.add(task);
+                    }
                 }
-            }
 
-            return obtainedTaskList;
+                return obtainedTaskList;
+            }
+            else {
+                var newTaskList = new ArrayList<ExtraTask>();
+
+                for(var task:currentTaskList){
+                    var caption = task.getCaption().toLowerCase();
+                    var description = task.getDescription().toLowerCase();
+
+                    if (caption.contains(rowToFind) || description.contains(rowToFind)){
+                        newTaskList.add(task);
+                    }
+                }
+
+                return newTaskList;
+            }
         }
+
         return currentTaskList;
     }
 
@@ -169,19 +268,19 @@ public class UserService {
         return false;
     }
 
-    public List<ExtraTask> sortByParameter(List<ExtraTask> currentTaskList, SortBy direction){
+    private List<ExtraTask> sortByParameter(List<ExtraTask> currentTaskList, SortBy direction){
 
-        if (direction == SortBy.CheapFirst){
+        if (direction == SortBy.cheap_first){
             currentTaskList.sort((o1, o2) -> Math.round(o1.getPrice() - o2.getPrice()));
         }
-        else if (direction == SortBy.DearFirst){
+        else if (direction == SortBy.dear_first){
             currentTaskList.sort((o1, o2) -> Math.round(o2.getPrice() - o1.getPrice()));
         }
 
         return currentTaskList;
     }
 
-    public List<ExtraTask> filterBySetParameters(List<ExtraTask> currentTaskList, List<FilterParameter> parameters){
+    private List<ExtraTask> filterBySetParameters(List<ExtraTask> currentTaskList, List<FilterParameter> parameters){
         for (var parameter:parameters) {
             var filter = parameter.Filter;
             var param = parameter.parameter;
@@ -191,27 +290,27 @@ public class UserService {
     }
 
     private List<ExtraTask> filterByParameter(List<ExtraTask> currentTaskList, FilterBy filter, String parameter){
-        if (filter == FilterBy.Type){
+        if (filter == FilterBy.type){
             var param = TaskType.valueOf(parameter);
             currentTaskList = currentTaskList.stream().filter(x -> x.getType() == param).collect(Collectors.toList());
         }
-        else if (filter == FilterBy.Status){
+        else if (filter == FilterBy.status){
             var param = TaskStatus.valueOf(parameter);
             currentTaskList = currentTaskList.stream().filter(x -> x.getStatus() == param).collect(Collectors.toList());
         }
-        else if (filter == FilterBy.Mine){
+        else if (filter == FilterBy.mine){
             currentTaskList = currentTaskList.stream().filter(x -> x.IsMine).collect(Collectors.toList());
         }
-        else if (filter == FilterBy.NotMine){
+        else if (filter == FilterBy.notMine){
             currentTaskList = currentTaskList.stream().filter(x -> !x.IsMine).collect(Collectors.toList());
         }
-        else if (filter == FilterBy.Liked){
+        else if (filter == FilterBy.liked){
             currentTaskList = currentTaskList.stream().filter(x -> Objects.equals(x.Liked, "Liked")).collect(Collectors.toList());
         }
-        else if (filter == FilterBy.Unliked){
+        else if (filter == FilterBy.unLiked){
             currentTaskList = currentTaskList.stream().filter(x -> Objects.equals(x.Liked, "Unliked")).collect(Collectors.toList());
         }
-        else if (filter == FilterBy.Unviewed){
+        else if (filter == FilterBy.unviewed){
             currentTaskList = currentTaskList.stream().filter(x -> !x.IsViewed).collect(Collectors.toList());
         }
         return currentTaskList;
