@@ -12,11 +12,13 @@ import ru.vlsu.ispi.beans.Action;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.enums.ActionType;
+import ru.vlsu.ispi.enums.EventStatus;
 import ru.vlsu.ispi.logic.ActionService;
 import ru.vlsu.ispi.logic.TaskService;
 import ru.vlsu.ispi.logic.UserService;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -94,7 +96,7 @@ public class ActionsController {
             return "redirect:/";
         }
         else {
-            Action action = actionsHandler.findCertainActionByWholeParams(userId, taskId, ActionType.Liked).get();
+            Action action = actionsHandler.findCertainActionByWholeParams(userId, taskId, ActionType.Liked).get(0);
 
             if (action == null){
                 return getPreviousPageByRequest(request).orElse("/");
@@ -109,41 +111,18 @@ public class ActionsController {
         }
     }
 
-    @GetMapping("{userId}/task/{taskId}/uncomment")
-    public String DeleteCommentTask(@PathVariable Long userId, @PathVariable Long taskId,
-                                    RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        Task task = taskHandler.findTaskById(taskId);
-
-        if (user == null || task == null) {
-            return "redirect:/";
-        }
-        else {
-            Action action = actionsHandler.findCertainActionByWholeParams(userId, taskId, ActionType.Commented).get();
-
-            if (action == null){
-                return getPreviousPageByRequest(request).orElse("/");
-            }
-            else {
-                actionsHandler.deleteAction(action.getId());
-                attributes.addFlashAttribute("user", user);
-
-                return getPreviousPageByRequest(request).orElse("/");
-            }
-        }
-    }
-
-    @GetMapping("{userId}/task/{taskId}/unpreformalize")
-    public String AbortPreformalizeTask(@PathVariable Long userId, @PathVariable Long taskId,
+    @GetMapping("{userId}/executors/{executorId}/task/{taskId}/unpreformalize")
+    public String AbortPreformalizeTask(@PathVariable Long userId, @PathVariable Long executorId, @PathVariable Long taskId,
                                         RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
         User user = userHandler.FindUserById(userId);
+        User executor = userHandler.FindUserById(executorId);
         Task task = taskHandler.findTaskById(taskId);
 
-        if (user == null || task == null) {
+        if (user == null || executor == null || task == null) {
             return "redirect:/";
         }
         else {
-            Action action = actionsHandler.findCertainActionByWholeParams(userId, taskId, ActionType.Preformalized).get();
+            Action action = actionsHandler.findCertainActionByWholeParams(executorId, taskId, ActionType.Preformalized).get(0);
 
             if (action == null){
                 return getPreviousPageByRequest(request).orElse("/");
@@ -152,6 +131,13 @@ public class ActionsController {
                 action.setActiontype(ActionType.UnPreformalized);
                 action.setFormalized(false);
                 actionsHandler.editActionType(action.getActiontype(), action.getId());
+
+                var event = actionsHandler.findCertainLastEventByWholeParams(executorId, taskId).get();
+
+                if (event != null){
+                    actionsHandler.editEventType(EventStatus.Rejected, event.getId());
+                }
+
                 attributes.addFlashAttribute("user", user);
 
                 return getPreviousPageByRequest(request).orElse("/");
@@ -159,25 +145,32 @@ public class ActionsController {
         }
     }
 
-    @GetMapping("{userId}/task/{taskId}/formalizeEvent")
-    public String FormalizeTask(@PathVariable Long userId, @PathVariable Long taskId,
+    @GetMapping("{userId}/executors/{employerId}/task/{taskId}/formalizeEvent")
+    public String FormalizeEvent(@PathVariable Long userId, @PathVariable Long employerId, @PathVariable Long taskId,
                                 RedirectAttributes attributes, HttpServletRequest request) throws SQLException {
         User user = userHandler.FindUserById(userId);
+        User employer = userHandler.FindUserById(employerId);
         Task task = taskHandler.findTaskById(taskId);
 
-        if (user == null || task == null) {
+        if (user == null || employer == null || task == null) {
             return "redirect:/";
-        } else {
-            Action action = actionsHandler.findCertainActionByWholeParams(userId, taskId, ActionType.Preformalized).get();
+        }
+        else {
+            var action = actionsHandler.getLastActionByUserAndTask(employerId, taskId);
 
-            if (action == null) {
-                return getPreviousPageByRequest(request).orElse("/");
-            } else {
-                action.setFormalized(true);
-                actionsHandler.editActionFormalized(true, action.getId());
-                attributes.addFlashAttribute("user", user);
+            if (action != null){
+                if (action.getActiontype() == ActionType.Liked){
+                    action.setActiontype(ActionType.Preformalized);
+                    action.setFormalized(true);
+                    actionsHandler.editActionFormalized(true, action.getId());
+                    actionsHandler.saveEvent(action.getId(), EventStatus.InProgress);
+                    attributes.addFlashAttribute("user", user);
+                }
 
                 return getPreviousPageByRequest(request).orElse("/");
+            }
+            else {
+                return "redirect:/";
             }
         }
     }

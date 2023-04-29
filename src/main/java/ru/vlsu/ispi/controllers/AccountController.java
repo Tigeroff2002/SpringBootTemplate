@@ -22,6 +22,7 @@ import ru.vlsu.ispi.models.RegisterModel;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -65,16 +66,13 @@ public class AccountController {
             return "redirect:/";
         }
         else {
-            List<Task> taskList1 = taskHandler.getAllExecutorTasks(id);
+            List<ExtraTask> taskList1 = actionHandler.MarkAllMyTasks(id);
 
             List<Task> taskList2 = actionHandler.findAllLikedUserTasks(id);
-
-            List<Task> taskList3 = taskHandler.getAllExecutorTasks(id);
 
             model.addAttribute("user", user);
             model.addAttribute("taskList1", taskList1);
             model.addAttribute("taskList2", taskList2);
-            model.addAttribute("taskList3", taskList3);
 
             return "lk";
         }
@@ -82,6 +80,10 @@ public class AccountController {
 
     @GetMapping("profile/{id}/executor/{executorId}")
     public String Profile(@PathVariable Long id, @PathVariable Long executorId, Model model) throws SQLException{
+
+        if (Objects.equals(id, executorId)){
+            return "redirect:/account/lk/" + Long.toString(id);
+        }
         User user = userHandler.FindUserById(id);
 
         if (user == null){
@@ -94,7 +96,7 @@ public class AccountController {
                 return "redirect:/account/index/" + Long.toString(id) + "";
             }
             else {
-                List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(id);
+                List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasksByExecutor(id, executorId);
 
                 model.addAttribute("executor", executor);
                 model.addAttribute("user", user);

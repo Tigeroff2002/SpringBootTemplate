@@ -52,6 +52,8 @@
             <th scope = "col">статус</th>
             <th scope = "col">вознаграждение</th>
             <th scope = "col">подробнее</th>
+            <th scope = "col">исполнитель</th>
+            <th scope = "col">оформить</th>
             <th scope = "col">изменить</th>
             <th scope = "col">удалить</th>
         </tr>
@@ -64,6 +66,26 @@
             <td th:text="${task.status}"> Status </td>
             <td th:text="${task.price}"> Price </td>
             <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a></td>
+            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a></td>
+            <td>
+                <span th:if="${task.Liked == 'Empty'}">
+                    <h6>Нет исполнителя</h6>
+                </span>
+                <span th:unless="${task.Liked == 'Empty'}">
+                    <a class = "btn btn-primary" role = "button" th:href = "@{/account/profile/} + ${user.id} + @{/executor/} + ${task.EmployerId}"> Исполнитель </a>
+                </span>
+            </td>
+            <td>
+                <span th:if="${task.Liked == 'Empty'}">
+                    <h6>Пусто</h6>
+                </span>
+                <span th:if="${task.Liked == 'Liked'}">
+                    <a class = "btn btn-success" role = "button" th:href = "@{/actions/} + ${user.id} + @{/executors/} + ${task.EmployerId} + @{/task/} + ${task.id} + @{/formalizeEvent}">✅</a>
+                </span>
+                <span th:if="${task.Liked == 'Preformalized'}">
+                    <a class = "btn btn-success" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/unpreformalize}">отменить</a>
+                </span>
+            </td>
             <td><a class = "btn btn-warning" role = "button" th:href = "@{/menu/} + ${user.id} + @{/edit/task/} + ${task.id}"> Изменить </a></td>
             <td><a class = "btn btn-danger" role = "button" th:href = "@{/menu/} + ${user.id} + @{/delete/task/} + ${task.id}"> Удалить </a></td>
         </tr>
@@ -95,36 +117,6 @@
             <td th:text="${task.price}"> Price </td>
             <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a></td>
             <td><a class = "btn btn-danger" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/unlike}">♥</a></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<div class="container-fluid">
-    <h4 class = "center"> Список отзывов на ваши задачи: </h4>
-    <table class="table">
-        <thead class = "thead-dark">
-        <tr>
-            <th scope = "col">id</th>
-            <th scope = "col">название</th>
-            <th scope = "col">тип</th>
-            <th scope = "col">статус</th>
-            <th scope = "col">вознаграждение</th>
-            <th scope = "col">подробнее</th>
-            <th scope = "col">исполнитель</th>
-            <th scope = "col">preformalize</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="task : ${taskList3}">
-            <th scope = "row" th:text="${task.id}"></th>
-            <td th:text="${task.caption}"> Caption </td>
-            <td th:text="${task.type}"> Type </td>
-            <td th:text="${task.status}"> Status </td>
-            <td th:text="${task.price}"> Price </td>
-            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a></td>
-            <td><a class = "btn btn-primary" role = "button" th:href = "@{/account/profile/} + ${user.id} + @{/executor/} + ${task.executor.id}"> Исполнитель </a></td>
-            <td><a class = "btn btn-success" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/preformalize}">✅</a></td>
         </tr>
         </tbody>
     </table>

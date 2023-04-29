@@ -50,6 +50,12 @@ public interface ActionRepository extends JpaRepository<Action, Long> {
     @Query("SELECT a FROM Action a WHERE a.actiontype = :type AND a.task.id = :taskId")
     List<Action> getAllActionsByTaskAndType(@Param("taskId") Long taskId, @Param("type") ActionType type);
 
+    @Query("SELECT a FROM Action a WHERE a.task.id = :taskId ORDER BY id DESC LIMIT 1")
+    Action getLastActionByTask(@Param("taskId") Long taskId);
+
+    @Query("SELECT a FROM Action a WHERE a.actiontype = :type AND a.task.id = :taskId ORDER BY id DESC LIMIT 1")
+    Action getLastLikedActionByTask(@Param("taskId") Long taskId, @Param("type") ActionType type);
+
     @Query("SELECT a FROM Action a WHERE a.user.id = :userId AND a.task.id = :taskId AND a.actiontype = :type")
     List<Action> getActionByWholeParams(@Param("userId") Long userId, @Param("taskId") Long taskId, @Param("type") ActionType type);
 
@@ -60,6 +66,10 @@ public interface ActionRepository extends JpaRepository<Action, Long> {
             " AND a.actiontype IN ('Liked', 'Unliked')" +
             " ORDER BY id DESC LIMIT 1")
     ActionType getActionLastLikedStatus(@Param("userId") Long userId, @Param("taskId") Long taskId);
+
+    @Query("SELECT a FROM Action a where a.user.id = :userId and a.task.id = :taskId" +
+            " AND a.actiontype = 'Liked' ORDER BY id DESC LIMIT 1")
+    Action getLastActionByUserAndTask(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
     @Query("SELECT id FROM Action a WHERE a.timemoment = :date")
     int calculateMaxActionId(@Param("date") Date date);

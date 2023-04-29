@@ -3,18 +3,18 @@ package ru.vlsu.ispi.logic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vlsu.ispi.beans.Action;
+import ru.vlsu.ispi.beans.Event;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
 import ru.vlsu.ispi.enums.ActionType;
+import ru.vlsu.ispi.enums.EventStatus;
 import ru.vlsu.ispi.repositories.ActionRepository;
+import ru.vlsu.ispi.repositories.EventRepository;
 import ru.vlsu.ispi.repositories.TaskRepository;
 import ru.vlsu.ispi.repositories.UserRepository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static ru.vlsu.ispi.enums.RoleType.User;
 
@@ -29,6 +29,9 @@ public class ActionService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     public Action saveAction(Long userId, Long taskId, ActionType type) {
         if (userId < 0 || taskId < 0){
@@ -58,6 +61,48 @@ public class ActionService {
         }
     }
 
+    public Event saveEvent(Long actionId, EventStatus status){
+        if (actionId < 0){
+            throw new IllegalArgumentException("Action id should be greater than zero");
+        }
+
+        Action action = actionRepository.findActionById(actionId);
+
+        if (action != null){
+            Event event = new Event();
+            event.setEventstatus(status);
+
+            var taskPrice = action.getTask().getPrice();
+
+            var eventPrice = taskPrice * (100 + COMMISSION_PERCENT) / 100;
+
+            event.setTotalprice(eventPrice);
+
+            event.setTaskaction(action);
+
+            var dateNow = new Date();
+
+            var calendar = Calendar.getInstance();
+            calendar.setTime(dateNow);
+            calendar.add(Calendar.DATE, DAYS_NUMBER);
+
+            var dateEnd = calendar.getTime();
+
+            event.setFormalizedate(dateNow);
+            event.setCompletedate(dateEnd);
+
+            eventRepository.save(event);
+
+            int newId = eventRepository.calculateMaxEventId(dateNow);
+            event.setId(Integer.toUnsignedLong(newId));
+
+            return event;
+        }
+        else {
+            return null;
+        }
+    }
+
     public Action editActionType(ActionType type, Long actionId){
         Action action = actionRepository.findActionById(actionId);
 
@@ -66,6 +111,20 @@ public class ActionService {
             actionRepository.editActionType(actionId, type);
 
             return action;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public Event editEventType(EventStatus status, Long eventId){
+        var event = eventRepository.findEventById(eventId);
+
+        if (event != null){
+            event.setEventstatus(status);
+            eventRepository.setCertainStatusForEvent(status, eventId);
+
+            return event;
         }
         else {
             return null;
@@ -90,33 +149,76 @@ public class ActionService {
         actionRepository.deleteAction(actionId);
     }
 
+    public void deleteEvent(Long eventId){
+        eventRepository.deleteById(eventId);
+    }
+
     public Action findActionById(Long actionId){
         return actionRepository.findActionById(actionId);
     }
 
+    public Event findEventById(Long eventId){
+        return eventRepository.findEventById(eventId);
+    };
+
     public List<Action> findAllActionsOfUser(Long userId){
         return actionRepository.getAllActionsFromCertainUser(userId);
+    }
+
+    public List<Event> findAllEventsOfExecutor(Long executorId){
+        return eventRepository.getAllEventsFromCertainExecutor(executorId);
+    }
+
+    public List<Event> findAllEventsOfEmployer(Long employerId){
+        return eventRepository.getAllEventsFromCertainEmployer(employerId);
+    }
+
+    public List<Event> findAllEventsByCertainExecutorAndEmployer(Long executorId, Long employerId){
+        return eventRepository.getAllEventsFromCertainExecutorAndEmployer(executorId, employerId);
     }
 
     public List<Action> findAllActionsRelatedForCertainTask(Long taskId){
         return actionRepository.getAllActionsRelatesToCertainTask(taskId);
     }
 
+    public List<Event> findAllEventsRelatedForCertainTask(Long taskId){
+        return eventRepository.getAllEventsRelatesToCertainTask(taskId);
+    }
+
     public List<Action> findAllActionsByType(ActionType type){
         return actionRepository.getAllActionsByType(type);
+    }
+
+    public List<Event> findAllEventsByType(EventStatus status){
+        return eventRepository.getAllEventsByStatus(status);
     }
 
     public List<Action> findAllActionsByUserAndType(Long userId, ActionType type){
         return actionRepository.getAllActionsByUserAndType(userId, type);
     }
 
+    public List<Event> findAllEventsByExecutorAndStatus(Long executorId, EventStatus status){
+        return eventRepository.getAllActionsByExecutorAndStatus(executorId, status);
+    }
+
+    public List<Event> findAllByEmployerAndStatus(Long employerId, EventStatus status){
+        return eventRepository.getAllActionsByEmployerAndStatus(employerId, status);
+    }
+
     public List<Action> findAllActionsByTaskAndType(Long taskId, ActionType type){
         return actionRepository.getAllActionsByTaskAndType(taskId, type);
     }
 
+    public List<Event> findAllEventsByTaskAndType(Long taskId, EventStatus status){
+        return eventRepository.getAllActionsByTaskAndStatus(taskId, status);
+    }
 
-    public Optional<Action> findCertainActionByWholeParams(Long userId, Long taskId, ActionType type){
-        return actionRepository.getActionByWholeParams(userId, taskId, type).stream().findFirst();
+    public List<Action> findCertainActionByWholeParams(Long userId, Long taskId, ActionType type){
+        return actionRepository.getActionByWholeParams(userId, taskId, type);
+    }
+
+    public Optional<Event> findCertainLastEventByWholeParams(Long executorId, Long taskId){
+        return eventRepository.getLstEventByExecutorAndTaskAndStatus(executorId, taskId);
     }
 
     public List<Action> findAllActionsForMyTasks(Long userId){
@@ -134,6 +236,10 @@ public class ActionService {
         return actions;
     }
 
+    public Action getLastActionByUserAndTask(Long userId, Long taskId){
+        return actionRepository.getLastActionByUserAndTask(userId, taskId);
+    }
+
     public List<Action> findAllActionsWithCertainTypeForMyTasks(Long userId, ActionType type){
         List<Task> myTasks = taskRepository.getAllTaskFromCertainExecutor(userId);
 
@@ -142,11 +248,23 @@ public class ActionService {
         for (var task:myTasks) {
             Long currentTaskId = task.getId();
             List<Action> actionsForCurrentTask = actionRepository.getAllActionsByTaskAndType(currentTaskId, type);
-            for (var action: actionsForCurrentTask ){
-                actions.add(action);
-            }
+            actions.addAll(actionsForCurrentTask);
         }
         return actions;
+    }
+
+    public List<Event> findAllEventsWithCertainTypeForMyTasks(Long userId, EventStatus status){
+        List<Task> myTasks = taskRepository.getAllTaskFromCertainExecutor(userId);
+
+        List<Event> events = new ArrayList<>();
+
+        for (var task:myTasks){
+            Long currentTaskId = task.getId();
+
+            List<Event> eventsForCurrentTask = eventRepository.getAllActionsByTaskAndStatus(currentTaskId, status);
+            events.addAll(eventsForCurrentTask);
+        }
+        return events;
     }
 
     public List<Task> findAllLikedUserTasks(Long userId){
@@ -191,8 +309,8 @@ public class ActionService {
         return extraTasks;
     }
 
-    public List<ExtraTask> nameAllLikedAndUnlikedTasksByUser(Long userId){
-        List<Task> allTasks = taskRepository.getAllTaskFromCertainExecutor(userId);
+    public List<ExtraTask> nameAllLikedAndUnlikedTasksByExecutor(Long userId, Long executorId){
+        List<Task> allTasks = taskRepository.getAllTaskFromCertainExecutor(executorId);
 
         List<ExtraTask> extraTasks = new ArrayList<>();
 
@@ -242,4 +360,49 @@ public class ActionService {
         }
         return null;
     }
+
+    public List<ExtraTask> MarkAllMyTasks(Long executorId){
+        var myTasks = taskRepository.getAllTaskFromCertainExecutor(executorId);
+
+        List<ExtraTask> likedTasks = new ArrayList<>();
+
+        for (var task:myTasks){
+            var currentTaskId = task.getId();
+
+            ExtraTask extraTask = new ExtraTask();
+            extraTask.setId(task.getId());
+            extraTask.setCaption(task.getCaption());
+            extraTask.setPrice(task.getPrice());
+            extraTask.setType(task.getType());
+            extraTask.setCreatedate(task.getCreatedate());
+            extraTask.setDescription(task.getDescription());
+            extraTask.setExecutor(task.getExecutor());
+            extraTask.setStatus(task.getStatus());
+
+            var lastAction = actionRepository.getLastActionByTask(task.getId());
+
+            if (lastAction != null){
+                if (lastAction.getActiontype() == ActionType.Liked){
+                    extraTask.EmployerId = lastAction.getUser().getId();
+
+                    extraTask.Liked = "Liked";
+                }
+                else if (lastAction.getActiontype() == ActionType.Preformalized){
+                    extraTask.EmployerId = lastAction.getUser().getId();
+
+                    extraTask.Liked = "Preformalized";
+                }
+                else {
+                    extraTask.Liked = "Empty";
+                }
+            }
+
+            likedTasks.add(extraTask);
+        }
+
+        return likedTasks;
+    }
+
+    private final float COMMISSION_PERCENT = 5f;
+    private int DAYS_NUMBER = 7;
 }
