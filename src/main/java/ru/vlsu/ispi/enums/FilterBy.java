@@ -8,5 +8,6 @@ public enum FilterBy {
     NotMine,
     Mine,
     Liked,
-    Unliked
+    Unliked,
+    Unviewed
 }

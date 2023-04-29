@@ -354,13 +354,16 @@ public class ActionService {
 
             if (Objects.equals(task.getExecutor().getId(), userId)){
                 extraTask.Liked = "LikeProhibit";
+                extraTask.IsMine = true;
             }
             else {
                 if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
                     extraTask.Liked = "Liked";
+                    extraTask.IsMine = false;
                 }
                 else {
                     extraTask.Liked = "Unliked";
+                    extraTask.IsMine = false;
                 }
             }
 
