@@ -8,6 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 </head>
 <body>
+<div class = "position-absolute top-0 start-0">
+    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> ← </a>
+</div>
+<br>
+<br>
 <h3> Cоздайте новое объявление </h3>
 <br>
 <form th:action="@{/menu/} + ${user.id} + @{/createPost}" th:method="post" th:object="${task}">
@@ -49,9 +54,5 @@
 
     <button type="submit" class="btn btn-primary mb-2">Создать</button>
 </form>
-<br>
-<div class = "form-group">
-    <a class="btn btn-outline-info" type="button" th:href="@{/account/index/} + ${user.id}"> ← </a>
-</div>
 </body>
 </html>
