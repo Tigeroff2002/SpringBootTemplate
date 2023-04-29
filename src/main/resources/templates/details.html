@@ -56,16 +56,22 @@
             <span th:if="${task.Liked == 'Liked'}">
                 Unlike
             </span>
-            <span th:unless="${task.Liked == 'Liked'}">
+            <span th:un="${task.Liked == 'Unliked'}">
                 Like
+            </span>
+            <span th:un="${task.Liked == 'LikeProhibit'}">
+                Nothing to do
             </span>
         </td>
         <td>
             <span th:if="${task.Liked == 'Liked'}">
                 <a class = "btn btn-danger" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/unlike}">♥</a>
             </span>
-            <span th:unless="${task.Liked == 'Liked'}">
+            <span th:if="${task.Liked == 'Unliked'}">
                 <a class = "btn btn-light" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/like}">♥</a>
+            </span>
+            <span th:if="${task.Liked == 'LikeProhibit'}">
+                    Ваше объявление
             </span>
         </td>
     </tr>

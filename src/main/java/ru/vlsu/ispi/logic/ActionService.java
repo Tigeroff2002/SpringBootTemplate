@@ -297,16 +297,91 @@ public class ActionService {
             extraTask.setExecutor(task.getExecutor());
             extraTask.setStatus(task.getStatus());
 
-            if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
-                extraTask.Liked = "Liked";
+            var lastAction = actionRepository.getLastActionByTask(task.getId());
+
+            if (lastAction != null){
+                if (lastAction.getActiontype() == ActionType.Preformalized){
+                    continue;
+                }
+            }
+
+            if (Objects.equals(task.getExecutor().getId(), userId)){
+                extraTask.Liked = "LikeProhibit";
             }
             else {
-                extraTask.Liked = "Unliked";
+                if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
+                    extraTask.Liked = "Liked";
+                }
+                else {
+                    extraTask.Liked = "Unliked";
+                }
             }
+
             extraTasks.add(extraTask);
         }
 
         return extraTasks;
+    }
+
+    public List<ExtraTask> nameAllLikedAndUnlikedTasks(){
+        List<Task> allTasks = taskRepository.findAll();
+
+        List<ExtraTask> extraTasks = new ArrayList<>();
+
+        for (var task: allTasks){
+            ExtraTask extraTask = new ExtraTask();
+            extraTask.setId(task.getId());
+            extraTask.setCaption(task.getCaption());
+            extraTask.setPrice(task.getPrice());
+            extraTask.setType(task.getType());
+            extraTask.setCreatedate(task.getCreatedate());
+            extraTask.setDescription(task.getDescription());
+            extraTask.setExecutor(task.getExecutor());
+            extraTask.setStatus(task.getStatus());
+
+            var lastAction = actionRepository.getLastActionByTask(task.getId());
+
+            if (lastAction != null){
+                if (lastAction.getActiontype() == ActionType.Preformalized){
+                    continue;
+                }
+            }
+
+            extraTasks.add(extraTask);
+        }
+
+        return extraTasks;
+    }
+
+    public ExtraTask nameLikedOrUnlikedTask(Long userId, Long taskId){
+        Task task = taskRepository.findTaskById(taskId);
+
+        if (task != null){
+            ExtraTask extraTask = new ExtraTask();
+            extraTask.setId(task.getId());
+            extraTask.setCaption(task.getCaption());
+            extraTask.setPrice(task.getPrice());
+            extraTask.setType(task.getType());
+            extraTask.setCreatedate(task.getCreatedate());
+            extraTask.setDescription(task.getDescription());
+            extraTask.setExecutor(task.getExecutor());
+            extraTask.setStatus(task.getStatus());
+
+            if (Objects.equals(task.getExecutor().getId(), userId)){
+                extraTask.Liked = "LikeProhibit";
+            }
+            else {
+                if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
+                    extraTask.Liked = "Liked";
+                }
+                else {
+                    extraTask.Liked = "Unliked";
+                }
+            }
+
+            return extraTask;
+        }
+        return null;
     }
 
     public List<ExtraTask> nameAllLikedAndUnlikedTasksByExecutor(Long userId, Long executorId){
@@ -335,30 +410,6 @@ public class ActionService {
         }
 
         return extraTasks;
-    }
-
-    public ExtraTask nameLikedOrUnlikedTask(Long userId, Long taskId){
-        Task task = taskRepository.findTaskById(taskId);
-
-        if (task != null){
-            ExtraTask extraTask = new ExtraTask();
-            extraTask.setId(task.getId());
-            extraTask.setCaption(task.getCaption());
-            extraTask.setPrice(task.getPrice());
-            extraTask.setType(task.getType());
-            extraTask.setCreatedate(task.getCreatedate());
-            extraTask.setDescription(task.getDescription());
-            extraTask.setExecutor(task.getExecutor());
-            extraTask.setStatus(task.getStatus());
-            if (actionRepository.getActionLastLikedStatus(userId, task.getId()) == ActionType.Liked){
-                extraTask.Liked = "Liked";
-            }
-            else {
-                extraTask.Liked = "Unliked";
-            }
-            return extraTask;
-        }
-        return null;
     }
 
     public List<ExtraTask> MarkAllMyTasks(Long executorId){

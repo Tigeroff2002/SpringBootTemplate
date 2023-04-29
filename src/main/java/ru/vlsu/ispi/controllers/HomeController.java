@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
 import ru.vlsu.ispi.enums.TaskStatus;
 import ru.vlsu.ispi.enums.TaskType;
+import ru.vlsu.ispi.logic.ActionService;
 import ru.vlsu.ispi.logic.TaskService;
 import ru.vlsu.ispi.logic.UserService;
 
@@ -29,11 +31,14 @@ public class HomeController implements ErrorController {
     @Autowired
     private UserService userHandler;
 
+    @Autowired
+    private ActionService actionHandler;
+
     @GetMapping("/")
     public String Index(Model model){
-        List<Task> taskList = new ArrayList<>();
+        List<ExtraTask> taskList = new ArrayList<>();
 
-        taskList = taskHandler.getAllTasks();
+        taskList = actionHandler.nameAllLikedAndUnlikedTasks();
 
         model.addAttribute("taskList", taskList);
 
