@@ -19,11 +19,16 @@ import java.util.Optional;
 @Repository
 @Transactional(isolation = Isolation.READ_COMMITTED)
 public interface EventRepository extends JpaRepository<Event, Long> {
+
+    @Modifying
     @Query("UPDATE Event e SET e.eventstatus = :status WHERE id = :eventId")
     void setCertainStatusForEvent(@Param("status") EventStatus status, @Param("eventId") Long eventId);
 
     @Query("SELECT e FROM Event e WHERE id = :eventId")
     Event findEventById(@Param("eventId") Long eventId);
+
+    @Query("SELECT e FROM Event e WHERE e.taskaction.id = :actionId")
+    Event findEventByActionId(@Param("actionId") Long actionId);
 
     @Query("SELECT e FROM Event e WHERE e.taskaction.task.executor.id = :executorId")
     List<Event> getAllEventsFromCertainExecutor(@Param("executorId") Long executorId);
@@ -48,7 +53,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE e.taskaction.task.executor.id = :executorId AND e.taskaction.task.id = :taskId" +
             " ORDER BY id DESC LIMIT 1")
-    Optional<Event> getLstEventByExecutorAndTaskAndStatus(@Param("executorId") Long executorId, @Param("taskId") Long taskId);
+    Optional<Event> getLastEventByExecutorAndTaskAndStatus(@Param("executorId") Long executorId, @Param("taskId") Long taskId);
 
     @Query("SELECT e FROM Event e WHERE e.eventstatus = :status")
     List<Event> getAllEventsByStatus(@Param("status") EventStatus status);

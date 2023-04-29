@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.vlsu.ispi.beans.Notification;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
@@ -37,9 +38,6 @@ public class AccountController {
     @Autowired
     private ActionService actionHandler;
 
-    public AccountController(){
-    }
-
     @GetMapping("index/{id}")
     public String AuthIndex(@PathVariable Long id, Model model) throws SQLException{
         User user = userHandler.FindUserById(id);
@@ -52,7 +50,11 @@ public class AccountController {
 
             List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(id);
 
+            List<Notification> notificationList = actionHandler.findAllNotificationsOfUser(id);
+
             model.addAttribute("taskList", taskList);
+
+            model.addAttribute("notificationList", notificationList);
 
             return "auth_index";
         }

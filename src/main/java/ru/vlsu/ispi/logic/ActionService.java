@@ -2,21 +2,14 @@ package ru.vlsu.ispi.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.vlsu.ispi.beans.Action;
-import ru.vlsu.ispi.beans.Event;
-import ru.vlsu.ispi.beans.Task;
-import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.beans.*;
 import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
 import ru.vlsu.ispi.enums.ActionType;
 import ru.vlsu.ispi.enums.EventStatus;
-import ru.vlsu.ispi.repositories.ActionRepository;
-import ru.vlsu.ispi.repositories.EventRepository;
-import ru.vlsu.ispi.repositories.TaskRepository;
-import ru.vlsu.ispi.repositories.UserRepository;
+import ru.vlsu.ispi.repositories.*;
 
+import java.time.LocalTime;
 import java.util.*;
-
-import static ru.vlsu.ispi.enums.RoleType.User;
 
 @Service
 public class ActionService {
@@ -32,6 +25,9 @@ public class ActionService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     public Action saveAction(Long userId, Long taskId, ActionType type, boolean isViewed) {
         if (userId < 0 || taskId < 0){
@@ -97,6 +93,31 @@ public class ActionService {
             event.setId(Integer.toUnsignedLong(newId));
 
             return event;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public Notification saveNotification(Long userId, Long taskId){
+        var user = userRepository.findUserById(userId);
+        var task = taskRepository.findTaskById(taskId);
+
+        if (user != null && task != null){
+            var notification = new Notification();
+            notification.setText("Задача " + taskId.toString());
+
+            var timeNow = LocalTime.now();
+            notification.setTime(timeNow);
+
+            notification.setExecutor(user);
+
+            notificationRepository.save(notification);
+
+            var newId = notificationRepository.calculateMaxNotificationId(timeNow);
+            notification.setId(Integer.toUnsignedLong(newId));
+
+            return notification;
         }
         else {
             return null;
@@ -169,6 +190,10 @@ public class ActionService {
         return eventRepository.getAllEventsFromCertainExecutor(executorId);
     }
 
+    public List<Notification> findAllNotificationsOfUser(Long executorId){
+        return notificationRepository.getAllUserNotifications(executorId);
+    }
+
     public List<Event> findAllEventsOfEmployer(Long employerId){
         return eventRepository.getAllEventsFromCertainEmployer(employerId);
     }
@@ -218,7 +243,7 @@ public class ActionService {
     }
 
     public Optional<Event> findCertainLastEventByWholeParams(Long executorId, Long taskId){
-        return eventRepository.getLstEventByExecutorAndTaskAndStatus(executorId, taskId);
+        return eventRepository.getLastEventByExecutorAndTaskAndStatus(executorId, taskId);
     }
 
     public List<Action> findAllActionsForMyTasks(Long userId){
@@ -450,6 +475,11 @@ public class ActionService {
                     extraTask.EmployerId = lastAction.getUser().getId();
 
                     extraTask.Liked = "Preformalized";
+                    var event = eventRepository.findEventByActionId(lastAction.getId());
+
+                    if (event != null){
+                        extraTask.EventId = event.getId();
+                    }
                 }
                 else {
                     extraTask.Liked = "Empty";

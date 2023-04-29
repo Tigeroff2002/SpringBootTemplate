@@ -66,12 +66,7 @@
             <td th:text="${task.status}"> Status </td>
             <td th:text="${task.price}"> Price </td>
             <td>
-                <span th:if="${task.IsViewed}">
-                    <a class = "btn btn-outline-info" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a>
-                </span>
-                <span th:unless="${task.IsViewed}">
-                    <a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a>
-                </span>
+                <a class = "btn btn-outline-info" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a>
             </td>
             <td>
                 <span th:if="${task.Liked == 'Empty'}">
@@ -89,7 +84,7 @@
                     <a class = "btn btn-success" role = "button" th:href = "@{/actions/} + ${user.id} + @{/executors/} + ${task.EmployerId} + @{/task/} + ${task.id} + @{/formalizeEvent}">✅</a>
                 </span>
                 <span th:if="${task.Liked == 'Preformalized'}">
-                    <a class = "btn btn-success" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/unpreformalize}">отменить</a>
+                    <a class = "btn btn-success" role = "button" th:href = "@{/actions/} + ${user.id} + @{/events/} + ${task.EventId} + @{/rejectEvent}">отменить</a>
                 </span>
             </td>
             <td><a class = "btn btn-warning" role = "button" th:href = "@{/menu/} + ${user.id} + @{/edit/task/} + ${task.id}"> Изменить </a></td>
@@ -101,7 +96,7 @@
 <br>
 
 <div class="container-fluid">
-    <h4 class = "center"> Список ваших лайков (отзывов): </h4>
+    <h4 class = "center"> Список ваших лайков: </h4>
     <table class="table">
         <thead class = "thead-dark">
         <tr>
@@ -121,7 +116,7 @@
             <td th:text="${task.type}"> Type </td>
             <td th:text="${task.status}"> Status </td>
             <td th:text="${task.price}"> Price </td>
-            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a></td>
+            <td><a class = "btn btn-inline-info" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${task.id}"> 👁 </a></td>
             <td><a class = "btn btn-danger" role = "button" th:href = "@{/actions/} + ${user.id} + @{/task/} + ${task.id} + @{/unlike}">♥</a></td>
         </tr>
         </tbody>

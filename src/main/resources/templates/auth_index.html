@@ -19,6 +19,36 @@
 <div class = "form-group">
     <a class = "btn btn-primary" role = "button" th:href="@{/menu/} + ${user.id} + @{/new-task}"> Новое объявление </a>
 </div>
+<div class = "position-absolute top-0 end-0">
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        Уведомления
+    </button>
+    <div class="collapse" th:id="collapseExample">
+        <div class="card card-body">
+            <h4> Список ваших уведомлений: </h4>
+            <table class="table">
+                <thead class = "thead-dark">
+                <tr>
+                    <th scope = "col">id</th>
+                    <th scope = "col">текст</th>
+                    <th scope = "col">время</th>
+                    <th scope = "col">объявление</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="notification : ${notificationList}">
+                    <th scope = "row" th:text="${notification.id}"></th>
+                    <td th:text="${notification.text}"> Text </td>
+                    <td th:text="${notification.time}"> Time </td>
+                    <td>
+                        <a class = "btn btn-outline-info" role = "button" th:href = "@{/menu/} + ${user.id} + @{/details/task/} + ${notification.id}"> 👁 </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 <br>
 <h3> Добро пожаловать на сайт! </h3>
 <h3 th:text="${user.nickname}"></h3>

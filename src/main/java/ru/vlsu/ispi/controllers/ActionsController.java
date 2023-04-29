@@ -111,39 +111,33 @@ public class ActionsController {
         }
     }
 
-    @GetMapping("{userId}/executors/{executorId}/task/{taskId}/unpreformalize")
-    public String AbortPreformalizeTask(@PathVariable Long userId, @PathVariable Long executorId, @PathVariable Long taskId,
+    @GetMapping("{userId}/events/{eventId}/rejectEvent")
+    public String RejectEvent(@PathVariable Long userId, @PathVariable Long eventId,
                                         RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        User executor = userHandler.FindUserById(executorId);
-        Task task = taskHandler.findTaskById(taskId);
 
-        if (user == null || executor == null || task == null) {
+        var user = userHandler.FindUserById(userId);
+
+        if (user == null) {
             return "redirect:/";
         }
         else {
-            Action action = actionsHandler.findCertainActionByWholeParams(executorId, taskId, ActionType.Preformalized).get(0);
+                var event = actionsHandler.editEventType(EventStatus.Rejected, eventId);
 
-            if (action == null){
-                return getPreviousPageByRequest(request).orElse("/");
-            }
-            else {
-                action.setActiontype(ActionType.UnPreformalized);
-                action.setFormalized(false);
-                actionsHandler.editActionType(action.getActiontype(), action.getId());
+                var actionId = event.getTaskaction().getId();
+                var action = actionsHandler.findActionById(actionId);
 
-                var event = actionsHandler.findCertainLastEventByWholeParams(executorId, taskId).get();
+                if (action != null) {
+                    actionsHandler.editActionType(ActionType.UnPreformalized, actionId);
 
-                if (event != null){
-                    actionsHandler.editEventType(EventStatus.Rejected, event.getId());
+                    var taskId = action.getTask().getId();
+                    var employerId = action.getUser().getId();
+
+                    actionsHandler.saveAction(employerId, taskId, ActionType.Liked, true);
                 }
-
-                attributes.addFlashAttribute("user", user);
 
                 return getPreviousPageByRequest(request).orElse("/");
             }
         }
-    }
 
     @GetMapping("{userId}/executors/{employerId}/task/{taskId}/formalizeEvent")
     public String FormalizeEvent(@PathVariable Long userId, @PathVariable Long employerId, @PathVariable Long taskId,
@@ -162,8 +156,12 @@ public class ActionsController {
                 if (action.getActiontype() == ActionType.Liked){
                     action.setActiontype(ActionType.Preformalized);
                     action.setFormalized(true);
+
                     actionsHandler.editActionFormalized(true, action.getId());
                     actionsHandler.saveEvent(action.getId(), EventStatus.InProgress);
+
+                    actionsHandler.saveNotification(employerId, taskId);
+
                     attributes.addFlashAttribute("user", user);
                 }
 
