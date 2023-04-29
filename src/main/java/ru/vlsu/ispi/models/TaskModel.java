@@ -1,6 +1,7 @@
 package ru.vlsu.ispi.models;
 
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.enums.ActionType;
 import ru.vlsu.ispi.enums.TaskStatus;
 import ru.vlsu.ispi.enums.TaskType;
 

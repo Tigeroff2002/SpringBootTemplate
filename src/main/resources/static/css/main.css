@@ -15,9 +15,13 @@ html {
   font-size: 14px;
 }
 
+header {
+  background-color: green;
+}
+
 body {
   margin-bottom: 60px;
-  background-color: rgba(255, 255, 128, .5);
+  background-color: white;
 }
 
 table {
