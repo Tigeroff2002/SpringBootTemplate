@@ -25,10 +25,4 @@ public class Review {
     public Review() {
 
     }
-
-    public Review(String textreview, Event event, float mark){
-        this.textreview = textreview;
-        this.event = event;
-        this.mark = mark;
-    }
 }

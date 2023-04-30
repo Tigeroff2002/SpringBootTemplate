@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -11,6 +12,7 @@ import java.time.LocalTime;
 @Table(name = "Notifications")
 @AllArgsConstructor
 public class Notification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,16 +22,17 @@ public class Notification {
 
     private LocalTime time;
 
+    private LocalDateTime localTime;
+
     @ManyToOne
     private User executor;
 
+    @OneToOne
+    private Action action;
+
+    private boolean isViewed;
+
     public Notification() {
 
-    }
-
-    public Notification(String text, LocalTime time, User executor){
-        this.text = text;
-        this.time = time;
-        this.executor = executor;
     }
 }

@@ -25,9 +25,4 @@ public class Organization {
     public Organization() {
 
     }
-    public Organization(String caption, String city, String site){
-        this.caption = caption;
-        this.city = city;
-        this.site = site;
-    }
 }
