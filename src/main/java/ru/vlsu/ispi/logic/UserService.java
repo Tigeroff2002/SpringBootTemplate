@@ -2,6 +2,9 @@ package ru.vlsu.ispi.logic;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -22,11 +25,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+
+    public UserService(){
+
+    }
 
     public UserService(PasswordEncoder passwordEncoder){
         this.passwordEncoder = passwordEncoder;
@@ -314,6 +321,11 @@ public class UserService {
             currentTaskList = currentTaskList.stream().filter(x -> !x.IsViewed).collect(Collectors.toList());
         }
         return currentTaskList;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findUserByName(username);
     }
 
 

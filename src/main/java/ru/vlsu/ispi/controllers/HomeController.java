@@ -1,5 +1,6 @@
 package ru.vlsu.ispi.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import ru.vlsu.ispi.logic.ActionService;
 import ru.vlsu.ispi.logic.TaskService;
 import ru.vlsu.ispi.logic.UserService;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,18 @@ public class HomeController implements ErrorController {
     private ActionService actionHandler;
 
     @GetMapping("/")
-    public String Index(Model model){
+    public String Index(Model model, HttpSession session) throws SQLException {
+
+        var userId = (Long) session.getAttribute("userId");
+
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+
+            if (user != null){
+                return "redirect:/account/index1";
+            }
+        }
+
         List<ExtraTask> taskList = new ArrayList<>();
 
         taskList = actionHandler.nameAllLikedAndUnlikedTasks();
@@ -51,12 +64,21 @@ public class HomeController implements ErrorController {
         return "hello";
     }
 
-/*
+
     @RequestMapping("/error")
-    public String getErrorPath(){
+    public String getErrorPath(HttpSession session) throws SQLException{
+
+        var userId = (Long) session.getAttribute("userId");
+
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                return "redirect:/account/index1";
+            }
+        }
+
         return "redirect:/";
     }
-*/
 
     /* Code example for lab4 with transactions
 

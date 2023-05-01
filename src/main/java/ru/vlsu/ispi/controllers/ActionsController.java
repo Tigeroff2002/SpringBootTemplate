@@ -1,24 +1,28 @@
 package ru.vlsu.ispi.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.vlsu.ispi.beans.Action;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.enums.ActionType;
 import ru.vlsu.ispi.enums.EventStatus;
+import ru.vlsu.ispi.enums.RoleType;
 import ru.vlsu.ispi.logic.ActionService;
 import ru.vlsu.ispi.logic.TaskService;
 import ru.vlsu.ispi.logic.UserService;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -34,93 +38,139 @@ public class ActionsController {
     @Autowired
     private ActionService actionsHandler;
 
-    @GetMapping("{userId}/task/{taskId}/like")
-    public String LikeTask(@PathVariable Long userId, @PathVariable Long taskId, RedirectAttributes attributes, HttpServletRequest request)
-            throws SQLException {
-        User user = userHandler.FindUserById(userId);
-        Task task = taskHandler.findTaskById(taskId);
+    @GetMapping("like/task")
+    public String LikeTask(@RequestParam(name = "id") Long taskId, RedirectAttributes attributes,
+                           HttpServletRequest request, HttpSession session) throws SQLException {
 
-        if (user == null || task == null) {
-            return "redirect:/";
-        }
-        else {
-            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Liked, true);
-            attributes.addFlashAttribute("user", user);
-
-            return getPreviousPageByRequest(request).orElse("/");
-        }
-    }
-
-    @GetMapping("{userId}/task/{taskId}/comment")
-    public String CommentTask(@PathVariable Long userId, @PathVariable Long taskId,
-                              RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        Task task = taskHandler.findTaskById(taskId);
-
-        if (user == null || task == null) {
-            return "redirect:/";
-        }
-        else {
-            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Commented, true);
-            attributes.addFlashAttribute("user", user);
-
-            return getPreviousPageByRequest(request).orElse("/");
-        }
-    }
-
-    @GetMapping("{userId}/task/{taskId}/preformalize")
-    public String PreformalizeTask(@PathVariable Long userId, @PathVariable Long taskId,
-                                   RedirectAttributes attributes, HttpServletRequest request) throws SQLException {
-        User user = userHandler.FindUserById(userId);
-        Task task = taskHandler.findTaskById(taskId);
-
-        if (user == null || task == null) {
-            return "redirect:/";
-        }
-        else {
-            Action action = actionsHandler.saveAction(userId, taskId, ActionType.Preformalized, true);
-            attributes.addFlashAttribute("user", user);
-
-            return getPreviousPageByRequest(request).orElse("/");
-        }
-    }
-
-
-    @GetMapping("{userId}/task/{taskId}/unlike")
-    public String UnlikeTask(@PathVariable Long userId, @PathVariable Long taskId,
-                             RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        Task task = taskHandler.findTaskById(taskId);
-
-        if (user == null || task == null) {
-            return "redirect:/";
-        }
-        else {
-            Action action = actionsHandler.findCertainActionByWholeParams(userId, taskId, ActionType.Liked).get(0);
-
-            if (action == null){
-                return getPreviousPageByRequest(request).orElse("/");
-            }
-            else {
-                action.setActiontype(ActionType.Unliked);
-                actionsHandler.editActionType(action.getActiontype(), action.getId());
-                attributes.addFlashAttribute("user", user);
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                var task = taskHandler.findTaskById(taskId);
+                if (task != null){
+                    Action action = actionsHandler.saveAction(userId, taskId, ActionType.Liked, true);
+                    attributes.addFlashAttribute("user", user);
+                }
 
                 return getPreviousPageByRequest(request).orElse("/");
             }
         }
+
+        return "redirect:/";
     }
 
-    @GetMapping("{userId}/events/{eventId}/rejectEvent")
-    public String RejectEvent(@PathVariable Long userId, @PathVariable Long eventId,
-                                        RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
+    @GetMapping("comment/task")
+    public String CommentTask(@RequestParam(name = "id") Long taskId, RedirectAttributes attributes,
+                              HttpServletRequest request, HttpSession session) throws SQLException{
 
-        var user = userHandler.FindUserById(userId);
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                var task = taskHandler.findTaskById(taskId);
+                if (task != null){
+                    Action action = actionsHandler.saveAction(userId, taskId, ActionType.Commented, true);
+                    attributes.addFlashAttribute("user", user);
+                }
 
-        if (user == null) {
-            return "redirect:/";
+                return getPreviousPageByRequest(request).orElse("/");
+            }
         }
-        else {
+
+        return "redirect:/";
+    }
+
+    @GetMapping("preformalize/task")
+    public String PreformalizeTask(@RequestParam(name = "id") Long taskId, RedirectAttributes attributes,
+                                   HttpServletRequest request, HttpSession session) throws SQLException {
+
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                var task = taskHandler.findTaskById(taskId);
+                if (task != null){
+                    Action action = actionsHandler.saveAction(userId, taskId, ActionType.Preformalized, true);
+                    attributes.addFlashAttribute("user", user);
+                }
+
+                return getPreviousPageByRequest(request).orElse("/");
+            }
+        }
+
+        return "redirect:/";
+    }
+
+
+    @GetMapping("unlike/task")
+    public String UnlikeTask(@RequestParam(name = "id") Long taskId, RedirectAttributes attributes,
+                             HttpServletRequest request, HttpSession session) throws SQLException {
+
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                var task = taskHandler.findTaskById(taskId);
+                if (task != null){
+                    Action action = actionsHandler.findCertainActionByWholeParams(userId, taskId, ActionType.Liked).get(0);
+                    if (action != null){
+                        action.setActiontype(ActionType.Unliked);
+                        actionsHandler.editActionType(action.getActiontype(), action.getId());
+                        attributes.addFlashAttribute("user", user);
+                    }
+                }
+
+                return getPreviousPageByRequest(request).orElse("/");
+            }
+        }
+
+        return "redirect:/";
+    }
+
+    @GetMapping("formalizeEvent/task")
+    public String FormalizeEvent(@RequestParam(name = "id") Long taskId,
+                                 RedirectAttributes attributes, HttpServletRequest request, HttpSession session) throws SQLException {
+
+        var userId = (Long) session.getAttribute("userId");
+
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                    var task = taskHandler.findTaskById(taskId);
+                    if (task != null){
+                        var action = actionsHandler.getLastActionByUserAndTask(userId, taskId);
+                        if (action != null){
+                            if (action.getActiontype() == ActionType.Liked){
+                                action.setActiontype(ActionType.Preformalized);
+                                action.setTask(task);
+                                action.setFormalized(true);
+
+                                var actionId = action.getId();
+                                actionsHandler.editActionFormalized(true, actionId);
+                                actionsHandler.saveEvent(action.getId(), EventStatus.InProgress);
+                                actionsHandler.saveNotification(userId, taskId, actionId);
+
+                                attributes.addFlashAttribute("user", user);
+                            }
+                        }
+                        return "redirect:/menu/room/task?id=" + Long.toString(taskId);
+                    }
+
+                return getPreviousPageByRequest(request).orElse("/");
+            }
+        }
+
+        return "redirect:/";
+    }
+
+    @GetMapping("rejectEvent/event")
+    public String RejectEvent(@RequestParam(name = "id") Long eventId, RedirectAttributes attributes,
+                              HttpServletRequest request, HttpSession session) throws SQLException{
+
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
                 var event = actionsHandler.editEventType(EventStatus.Rejected, eventId);
 
                 var actionId = event.getTaskaction().getId();
@@ -139,44 +189,33 @@ public class ActionsController {
             }
         }
 
-    @GetMapping("{userId}/executors/{employerId}/task/{taskId}/formalizeEvent")
-    public String FormalizeEvent(@PathVariable Long userId, @PathVariable Long employerId, @PathVariable Long taskId,
-                                RedirectAttributes attributes, HttpServletRequest request) throws SQLException {
-        User user = userHandler.FindUserById(userId);
-        User employer = userHandler.FindUserById(employerId);
-        Task task = taskHandler.findTaskById(taskId);
+        return "redirect:/";
+    }
 
-        if (user == null || employer == null || task == null) {
-            return "redirect:/";
-        }
-        else {
-            var action = actionsHandler.getLastActionByUserAndTask(employerId, taskId);
+    @GetMapping("requestRole")
+    public String requestRoleChanging(@RequestParam(name = "role") String role, HttpServletRequest request,
+                                      HttpSession session) throws SQLException {
 
-            if (action != null){
-                if (action.getActiontype() == ActionType.Liked){
-                    action.setActiontype(ActionType.Preformalized);
-                    action.setFormalized(true);
+        var userId = (Long) session.getAttribute("userId");
 
-                    actionsHandler.editActionFormalized(true, action.getId());
-                    actionsHandler.saveEvent(action.getId(), EventStatus.InProgress);
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                role = role.toLowerCase();
 
-                    actionsHandler.saveNotification(employerId, taskId);
+                if (role.equals("admin") || role.equals("moderator") || role.equals("user")){
+                    var roleType = RoleType.valueOf(role);
 
-                    attributes.addFlashAttribute("user", user);
+                    if (user.getRole() != roleType){
+                        // call some new controller method
+                    }
                 }
 
                 return getPreviousPageByRequest(request).orElse("/");
             }
-            else {
-                return "redirect:/";
-            }
         }
-    }
 
-    @GetMapping("{userId}/request")
-    public String requestRoleChanging(@PathVariable Long userId, HttpServletRequest request){
-
-        return getPreviousPageByRequest(request).orElse("/");
+        return "redirect:/";
     }
 
     protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {
