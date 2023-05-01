@@ -1,5 +1,6 @@
 package ru.vlsu.ispi.beans;
 
+import lombok.AllArgsConstructor;
 import lombok.Generated;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import jakarta.persistence.*;
 @Data
 @Entity
 @Table(name="Users")
+@AllArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +38,9 @@ public class User implements UserDetails {
 
     private String contactnumber;
 
+    @ManyToOne
+    private Organization organization;
+
     /*
     private Date registerDate;
     private Date birthdayDate;
@@ -47,15 +52,6 @@ public class User implements UserDetails {
 
     public User() {
 
-    }
-
-    public User(String email, String nickname, String password, RoleType role, Gender gender, String contactnumber) {
-        this.email = email;
-        this.nickname = nickname;
-        this.password = password;
-        this.role = role;
-        this.gender = gender;
-        this.contactnumber = contactnumber;
     }
 
     @Override

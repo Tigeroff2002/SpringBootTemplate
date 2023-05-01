@@ -99,11 +99,13 @@ public class ActionService {
         }
     }
 
-    public Notification saveNotification(Long userId, Long taskId){
+    public Notification saveNotification(Long userId, Long taskId, Long actionId){
+
         var user = userRepository.findUserById(userId);
         var task = taskRepository.findTaskById(taskId);
+        var action = actionRepository.findActionById(actionId);
 
-        if (user != null && task != null){
+        if (user != null && task != null && action != null){
             var notification = new Notification();
             notification.setText("Задача " + taskId.toString());
 
@@ -111,6 +113,7 @@ public class ActionService {
             notification.setTime(timeNow);
 
             notification.setExecutor(user);
+            notification.setAction(action);
 
             notificationRepository.save(notification);
 

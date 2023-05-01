@@ -1,13 +1,13 @@
 package ru.vlsu.ispi.enums;
 
 public enum FilterBy {
-    Default,
-    Type,
-    Status,
+    default_filter,
+    type,
+    status,
     Viewed,
-    NotMine,
-    Mine,
-    Liked,
-    Unliked,
-    Unviewed
+    notMine,
+    mine,
+    liked,
+    unLiked,
+    unviewed
 }

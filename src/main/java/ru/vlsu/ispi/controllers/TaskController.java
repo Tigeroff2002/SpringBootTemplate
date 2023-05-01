@@ -1,6 +1,7 @@
 package ru.vlsu.ispi.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,193 +30,216 @@ public class TaskController {
     @Autowired
     private ActionService actionHandler;
 
-    @GetMapping("{userId}/new-task")
-    public String CreateTask(@PathVariable Long userId, Model model) throws SQLException {
-        User user = userHandler.FindUserById(userId);
-        if (user == null){
-            return "redirect:/";
-        }
-        else {
-            model.addAttribute("task", new TaskModel());
-            model.addAttribute("user", user);
+    @GetMapping("createTask")
+    public String CreateTask(Model model, HttpSession session) throws SQLException {
 
-            return "createTask";
+        var userId = (Long) session.getAttribute("userId");
+
+        if (userId != null){
+            User user = userHandler.FindUserById(userId);
+            if (user != null){
+                model.addAttribute("task", new TaskModel());
+                model.addAttribute("user", user);
+
+                return "createTask";
+            }
         }
+
+        return "redirect:/";
     }
 
-    @PostMapping("{userId}/createPost")
-    public String SubmitCreateTask(@PathVariable Long userId, @ModelAttribute TaskModel taskModel, RedirectAttributes attributes) throws SQLException{
+    @PostMapping("createTaskPost")
+    public String SubmitCreateTask(@ModelAttribute TaskModel taskModel, RedirectAttributes attributes, HttpSession session) throws SQLException{
         if (taskModel == null){
             throw new IllegalArgumentException("Null model was provided");
         }
 
-        User user = userHandler.FindUserById(userId);
-        if (user == null){
-            return "redirect:/";
-        }
-        else {
-            Task task = taskHandler.SaveTask(taskModel, userId);
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                Task task = taskHandler.SaveTask(taskModel, userId);
 
-            attributes.addFlashAttribute("task", task);
-            attributes.addFlashAttribute("user", user);
+                attributes.addFlashAttribute("task", task);
+                attributes.addFlashAttribute("user", user);
 
-            return "redirect:/menu/" + Long.toString(userId) + "/details/task/" + Long.toString(task.getId()) + "";
-        }
-    }
-
-    @GetMapping("{userId}/details/task/{taskId}")
-    public String TaskDetails(@PathVariable Long userId, @PathVariable Long taskId, Model model) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        if (user == null){
-            return "redirect:/";
-        }
-        else {
-            Task extraTask = actionHandler.nameLikedOrUnlikedTask(userId, taskId);
-
-            actionHandler.MarkTaskAsViewed(userId, taskId);
-
-            if (extraTask != null){
-                model.addAttribute("task", extraTask);
-                model.addAttribute("user", user);
-                return "details";
-            }
-            else {
-                return "redirect:/account/index/" + Long.toString(userId) + "";
+                return "redirect:/menu/details/task?id=" + Long.toString(task.getId());
             }
         }
+
+        return "redirect:/";
     }
 
-    @GetMapping("details/task/{taskId}")
-    public String TaskWithoutUserDetails(@PathVariable Long taskId, Model model) throws SQLException{
-        Task task = taskHandler.findTaskById(taskId);
+    @GetMapping("details/task")
+    public String TaskDetails(@RequestParam(name = "id") Long taskId, Model model, HttpSession session) throws SQLException{
 
-        if (task != null){
-            model.addAttribute("task", task);
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                Task extraTask = actionHandler.nameLikedOrUnlikedTask(userId, taskId);
 
-            return "details_nouser";
-        }
-        else {
-            return "redirect:/";
-        }
-    }
+                actionHandler.MarkTaskAsViewed(userId, taskId);
 
-    @GetMapping("{userId}/edit/task/{taskId}")
-    public String EditTask(@PathVariable Long userId, @PathVariable Long taskId, Model model) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        if (user == null){
-            return "redirect:/";
+                if (extraTask != null){
+                    model.addAttribute("task", extraTask);
+                    model.addAttribute("user", user);
+                    return "details";
+                }
+                else {
+                    return "redirect:/account/index1";
+                }
+            }
         }
-        else {
-            Task task = taskHandler.findTaskById(taskId);
+
+        if (userId == null){
+            var task = taskHandler.findTaskById(taskId);
 
             if (task != null){
                 model.addAttribute("task", task);
-                model.addAttribute("user", user);
-                return "editTask";
-            }
-            else {
-                return "redirect:/account/index/" + Long.toString(userId) + "";
+                return "details_nouser";
             }
         }
+
+        return "redirect:/";
     }
 
-    @PostMapping("{userId}/task/{taskId}/editPost")
-    public String SubmitEditTask(@PathVariable Long userId, @PathVariable Long taskId, @ModelAttribute TaskModel taskModel, RedirectAttributes attributes)
-            throws SQLException{
+    @GetMapping("edit/task")
+    public String EditTask(@RequestParam(name = "id") Long taskId, Model model, HttpSession session) throws SQLException{
+
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                Task task = taskHandler.findTaskById(taskId);
+
+                if (task != null){
+                    model.addAttribute("task", task);
+                    model.addAttribute("user", user);
+                    return "editTask";
+                }
+                else {
+                    return "redirect:/account/index1";
+                }
+            }
+        }
+
+        return "redirect:/";
+    }
+
+    @PostMapping("editPost/task")
+    public String SubmitEditTask(@RequestParam(name = "id") Long taskId, @ModelAttribute TaskModel taskModel,
+                                 RedirectAttributes attributes, HttpSession session) throws SQLException {
         if (taskModel == null){
             throw new IllegalArgumentException("Null model was provided");
         }
-        User user = userHandler.FindUserById(userId);
-        if (user == null){
-            return "redirect:/";
-        }
-        else {
-            Task task = taskHandler.editTask(taskModel, taskId);
 
-            attributes.addFlashAttribute("task", task);
-            attributes.addFlashAttribute("user", user);
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                Task task = taskHandler.editTask(taskModel, taskId);
 
-            return "redirect:/account/lk/" + Long.toString(userId) + "";
+                attributes.addFlashAttribute("task", task);
+                attributes.addFlashAttribute("user", user);
+
+                return "redirect:/account/lk";
+            }
         }
+
+        return "redirect:/";
     }
 
-    @PostMapping("{userId}/task/{taskId}/request/editPost")
-    public String SubmitRequestEditTask(@PathVariable Long userId, @PathVariable Long taskId,
-                                        @ModelAttribute TaskModel taskModel, RedirectAttributes attributes) throws SQLException {
+    @PostMapping("request/editPost/task")
+    public String SubmitRequestEditTask(@RequestParam(name = "id") Long taskId,
+                                        @ModelAttribute TaskModel taskModel, RedirectAttributes attributes, HttpSession session) throws SQLException {
         if (taskModel == null){
             throw new IllegalArgumentException("Null model was provided");
         }
-        User user = userHandler.FindUserById(userId);
-        if (user == null){
-            return "redirect:/";
-        }
-        else {
-            Task task = taskHandler.editTask(taskModel, taskId);
 
-            attributes.addFlashAttribute("task", task);
-            attributes.addFlashAttribute("user", user);
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                Task task = taskHandler.editTask(taskModel, taskId);
 
-            return "redirect:/account/lk/" + Long.toString(userId) + "";
-        }
-    }
-
-    @GetMapping("{userId}/delete/task/{taskId}")
-    public String DeleteTask(@PathVariable Long userId, @PathVariable Long taskId, Model model, RedirectAttributes attributes) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        if (user == null){
-            return "redirect:/";
-        }
-        else {
-            Task task = taskHandler.findTaskById(taskId);
-
-            if (task != null){
-                taskHandler.deleteTask(taskId);
+                attributes.addFlashAttribute("task", task);
                 attributes.addFlashAttribute("user", user);
-                return "redirect:/account/lk/" + Long.toString(userId) + "";
-            }
-            else {
-                attributes.addFlashAttribute("user", user);
-                return "redirect:/account/index/" + Long.toString(userId) + "";
+
+                return "redirect:/account/lk";
             }
         }
+
+        return "redirect:/";
     }
 
-    @GetMapping("{userId}/request/delete/task/{taskId}")
-    public String RequestDeleteTask(@PathVariable Long userId, @PathVariable Long taskId, Model model,
-                                    RedirectAttributes attributes, HttpServletRequest request) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        if (user == null){
-            return "redirect:/";
-        }
-        else {
-            Task task = taskHandler.findTaskById(taskId);
-            if (task == null){
-                return "redirect:/";
+    @GetMapping("delete/task")
+    public String DeleteTask(@RequestParam(name = "id") Long taskId, Model model,
+                             RedirectAttributes attributes, HttpSession session) throws SQLException{
+
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                Task task = taskHandler.findTaskById(taskId);
+
+                if (task != null){
+                    taskHandler.deleteTask(taskId);
+                    attributes.addFlashAttribute("user", user);
+                    return "redirect:/account/lk";
+                }
+                else {
+                    attributes.addFlashAttribute("user", user);
+                    return "redirect:/account/index1";
+                }
             }
-            else {
-                return getPreviousPageByRequest(request).orElse("/");
-            }
         }
+
+        return "redirect:/";
     }
 
-    @GetMapping("{userId}/room/task/{taskId}")
-    public String TaskRoom(@PathVariable Long userId, @PathVariable Long taskId, Model model) throws SQLException{
-        User user = userHandler.FindUserById(userId);
-        if (user == null){
-            return "redirect:/";
-        }
-        else {
-            Task task = taskHandler.findTaskById(taskId);
+    @GetMapping("request/delete/task")
+    public String RequestDeleteTask(@RequestParam(name = "id") Long taskId, Model model,
+                                    RedirectAttributes attributes, HttpServletRequest request, HttpSession session) throws SQLException{
 
-            if (task != null){
-                model.addAttribute("task", task);
-                model.addAttribute("user", user);
-                return "taskRoomPage";
-            }
-            else {
-                return "redirect:/account/index/" + Long.toString(userId) + "";
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                Task task = taskHandler.findTaskById(taskId);
+                if (task == null){
+                    return "redirect:/";
+                }
+                else {
+                    return getPreviousPageByRequest(request).orElse("/");
+                }
             }
         }
+
+        return "redirect:/";
+    }
+
+    @GetMapping("room/task")
+    public String TaskRoom(@RequestParam(name = "id") Long taskId, Model model, HttpSession session) throws SQLException{
+
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                Task task = taskHandler.findTaskById(taskId);
+
+                if (task != null){
+                    model.addAttribute("task", task);
+                    model.addAttribute("user", user);
+                    return "taskRoomPage";
+                }
+                else {
+                    return "redirect:/account/index1";
+                }
+            }
+        }
+
+        return "redirect:/";
     }
 
     protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {

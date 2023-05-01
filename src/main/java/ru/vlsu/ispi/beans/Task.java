@@ -13,6 +13,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name="Tasks")
+@AllArgsConstructor
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,15 +38,5 @@ public class Task {
 
     public Task() {
 
-    }
-
-    public Task(String caption, Date createdate, float price, TaskType type, String description, User executor, TaskStatus status) {
-        this.caption = caption;
-        this.createdate = createdate;
-        this.price = price;
-        this.type = type;
-        this.description = description;
-        this.executor = executor;
-        this.status = status;
     }
 }

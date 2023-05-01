@@ -3,7 +3,9 @@ package ru.vlsu.ispi.beans;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.vlsu.ispi.enums.DirectionType;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -11,6 +13,7 @@ import java.time.LocalTime;
 @Table(name = "Notifications")
 @AllArgsConstructor
 public class Notification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,16 +23,20 @@ public class Notification {
 
     private LocalTime time;
 
+    private LocalDateTime localTime;
+
+    private boolean isViewed;
+
     @ManyToOne
     private User executor;
 
+    @OneToOne
+    private Action action;
+
+    @Enumerated(value = EnumType.STRING)
+    private DirectionType direction;
+
     public Notification() {
 
-    }
-
-    public Notification(String text, LocalTime time, User executor){
-        this.text = text;
-        this.time = time;
-        this.executor = executor;
     }
 }
