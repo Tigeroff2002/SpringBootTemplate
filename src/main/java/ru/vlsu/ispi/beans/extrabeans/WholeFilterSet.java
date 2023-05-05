@@ -22,44 +22,54 @@ public class WholeFilterSet {
         Filter = filter;
     }
 
-    private String FilterByType;
+    private String type;
 
-    public String getFilterByType(){
-        return FilterByType;
+    public String getType(){
+        return type;
     }
 
-    public void setFilterByType(String filterByType){
-        FilterByType = filterByType;
+    public void setType(String type){
+        this.type = type;
     }
 
-    private String FilterByStatus;
+    private String status;
 
-    public String getFilterByStatus(){
-        return FilterByStatus;
+    public String getStatus(){
+        return status;
     }
 
-    public void setFilterByStatus(String filterByStatus){
-        FilterByStatus = filterByStatus;
+    public void setStatus(String status){
+        this.status = status;
     }
 
-    private String FilterByLikedStatus;
+    private String liked;
 
-    public String getFilterByLikedStatus(){
-        return FilterByLikedStatus;
+    public String getLiked(){
+        return liked;
     }
 
-    public void setFilterByLikedStatus(String filterByLikedStatus){
-        FilterByLikedStatus = filterByLikedStatus;
+    public void setLiked(String liked){
+        this.liked = liked;
     }
 
-    private String FilterByViewedStatus;
+    private String unliked;
 
-    public String getFilterByViewedStatus(){
-        return FilterByViewedStatus;
+    public String getUnliked(){
+        return unliked;
     }
 
-    public void setFilterByViewedStatus(String filterByViewedStatus){
-        FilterByViewedStatus = filterByViewedStatus;
+    public void setUnliked(String unliked){
+        this.unliked = unliked;
+    }
+
+    private String unviewed;
+
+    public String getUnviewed(){
+        return unviewed;
+    }
+
+    public void setViewed(String viewed){
+        this.unviewed = viewed;
     }
 
     private String Sorter;
@@ -78,15 +88,32 @@ public class WholeFilterSet {
         this.Sorter = Sorter;
     }
 
+    public WholeFilterSet(String RowToFind, String type, String status, String liked, String unviewed, String Sorter){
+        this.RowToFind = RowToFind;
+        this.type = type;
+        this.status = status;
+        this.liked = liked;
+        this.unviewed = unviewed;
+        this.Sorter = Sorter;
+    }
+
     public WholeFilterSet(){
         this.RowToFind = "empty";
         this.Filter = "default_filter";
         this.Sorter = "default_sort";
+        this.type = "All";
+        this.status = "All";
+        this.liked = "All";
+        this.unviewed = "All";
     }
 
     public WholeFilterSet(String RowToFind){
         this.RowToFind = RowToFind;
         this.Filter = "default_filter";
         this.Sorter = "default_sort";
+        this.type = "All";
+        this.status = "All";
+        this.liked = "All";
+        this.unviewed = "All";
     }
 }

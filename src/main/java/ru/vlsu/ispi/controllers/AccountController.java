@@ -82,6 +82,45 @@ public class AccountController {
         return "redirect:/";
     }
 
+    @GetMapping("paramindex")
+    public String AuthIndexFiltering(@RequestParam(name = "rowToFind") String rowToFind,
+                                     @RequestParam(name = "type") String type,
+                                     @RequestParam(name = "status") String status,
+                                     @RequestParam(name = "liked") String liked,
+                                     @RequestParam(name = "unviewed") String unviewed,
+                                     @RequestParam(name = "Sorter") String sorter,
+                                     Model model,
+                                     HttpSession session) throws SQLException{
+
+        var userId = (Long) session.getAttribute("userId");
+        if (userId != null){
+            var user = userHandler.FindUserById(userId);
+            if (user != null){
+                model.addAttribute("user", user);
+
+                List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(userId);
+
+                //var wholeFilterName = "Filtering By Params: RowToFind = " + rowToFind + ", filters = [" + filter + "], sortBy = " + sorter;
+
+                var filter = "type=" + type.toString() + "&status=" + status.toString() + "&liked=" + liked.toString() + "&unviewed=" + unviewed.toString();
+
+                var obtainedTaskList = userHandler.filterByRowParameters(taskList, rowToFind, filter, sorter);
+
+                List<Notification> notificationList = actionHandler.findAllNotificationsOfUser(userId);
+
+                model.addAttribute("taskList", obtainedTaskList);
+
+                model.addAttribute("filterSet", new WholeFilterSet(rowToFind, filter, sorter));
+
+                model.addAttribute("notificationList", notificationList);
+
+                return "auth_index";
+            }
+        }
+
+        return "redirect:/";
+    }
+
     @GetMapping("lk")
     public String LK(Model model, HttpSession session) throws SQLException{
 
