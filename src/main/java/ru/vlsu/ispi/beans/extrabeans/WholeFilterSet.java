@@ -22,6 +22,46 @@ public class WholeFilterSet {
         Filter = filter;
     }
 
+    private String FilterByType;
+
+    public String getFilterByType(){
+        return FilterByType;
+    }
+
+    public void setFilterByType(String filterByType){
+        FilterByType = filterByType;
+    }
+
+    private String FilterByStatus;
+
+    public String getFilterByStatus(){
+        return FilterByStatus;
+    }
+
+    public void setFilterByStatus(String filterByStatus){
+        FilterByStatus = filterByStatus;
+    }
+
+    private String FilterByLikedStatus;
+
+    public String getFilterByLikedStatus(){
+        return FilterByLikedStatus;
+    }
+
+    public void setFilterByLikedStatus(String filterByLikedStatus){
+        FilterByLikedStatus = filterByLikedStatus;
+    }
+
+    private String FilterByViewedStatus;
+
+    public String getFilterByViewedStatus(){
+        return FilterByViewedStatus;
+    }
+
+    public void setFilterByViewedStatus(String filterByViewedStatus){
+        FilterByViewedStatus = filterByViewedStatus;
+    }
+
     private String Sorter;
 
     public String getSorter() {

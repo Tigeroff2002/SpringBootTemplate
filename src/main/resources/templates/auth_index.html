@@ -64,17 +64,26 @@
     <h5>Поиск объявления: </h5>
     <br>
     <form th:action="@{/account/index}" th:object="${filterSet}">
-        <input type="text" class="form-control" placeholder="Ключевые слова" aria-label="Ключевые слова"
-               aria-describedby="basic-addon2" th:field="*{rowToFind}" id="RowToFind">
+        <div class = "form-group">
+            <input type="text" class="form-control" placeholder="Ключевые слова" aria-label="Ключевые слова"
+                   aria-describedby="basic-addon2" th:field="*{rowToFind}" id="RowToFind">
+        </div>
         <br>
-        <input type="text" class="form-control" placeholder="Фильтрация" aria-label="Фильтрация"
-               aria-describedby="basic-addon2" th:field="*{filter}" id="Filter">
+        <div class = "form-group">
+
+        </div>
         <br>
-        <input type="text" class="form-control" placeholder="Сортировка" aria-label="Сортировка"
-               aria-describedby="basic-addon2" th:field="*{sorter}" id="Sorter">
+        <div class = "form-group">
+            <label for="SortingByPrice"> Направление сортировки  </label>
+            <select class="form-control" id="SortingByPrice" th:field="*{Sorter}">
+                <option th:value="'cheap_first'" th:text="CheaperFirst"></option>
+                <option th:value="'dear_first'" th:text="RicherFirst"></option>
+                <option th:value="'default_sort'" th:text="DefaultSorting"></option>
+            </select>
+        </div>
         <br>
         <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="submit">Найти</button>
+            <button class="btn btn-outline-secondary" type="submit">Показать</button>
         </div>
     </form>
 </div>
