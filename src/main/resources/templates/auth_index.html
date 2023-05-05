@@ -63,7 +63,7 @@
 <div class="input-group mb-3">
     <h5>Поиск объявления: </h5>
     <br>
-    <form th:action="@{/account/index/} + ${user.id}" th:object="${filterSet}">
+    <form th:action="@{/account/index}" th:object="${filterSet}">
         <input type="text" class="form-control" placeholder="Ключевые слова" aria-label="Ключевые слова"
                aria-describedby="basic-addon2" th:field="*{rowToFind}" id="RowToFind">
         <br>

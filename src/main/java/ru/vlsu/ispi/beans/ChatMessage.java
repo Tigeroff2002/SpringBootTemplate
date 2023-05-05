@@ -24,6 +24,15 @@ public class ChatMessage {
 
     private boolean isReplied;
 
+    private boolean isEdited;
+
     @ManyToOne
     private Event event;
+
+    @ManyToOne
+    private User user;
+
+    public ChatMessage(){
+
+    }
 }

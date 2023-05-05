@@ -65,6 +65,7 @@ public class HomeController implements ErrorController {
     }
 
 
+    /*
     @RequestMapping("/error")
     public String getErrorPath(HttpSession session) throws SQLException{
 
