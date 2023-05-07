@@ -62,14 +62,14 @@ public class WholeFilterSet {
         this.unliked = unliked;
     }
 
-    private String unviewed;
+    private String viewed;
 
-    public String getUnviewed(){
-        return unviewed;
+    public String getViewed(){
+        return viewed;
     }
 
     public void setViewed(String viewed){
-        this.unviewed = viewed;
+        this.viewed = viewed;
     }
 
     private String Sorter;
@@ -82,19 +82,34 @@ public class WholeFilterSet {
         Sorter = sorter;
     }
 
+    private boolean isAuthUser;
+
+    public boolean isAuthUser() {
+        return isAuthUser;
+    }
+
     public WholeFilterSet(String RowToFind, String Filter, String Sorter){
         this.RowToFind = RowToFind;
         this.Filter = Filter;
         this.Sorter = Sorter;
     }
 
-    public WholeFilterSet(String RowToFind, String type, String status, String liked, String unviewed, String Sorter){
+    public WholeFilterSet(String RowToFind, String type, String status, String Sorter){
+        this.RowToFind = RowToFind;
+        this.type = type;
+        this.status = status;
+        this.Sorter = Sorter;
+        this.isAuthUser = false;
+    }
+
+    public WholeFilterSet(String RowToFind, String type, String status, String liked, String viewed, String Sorter){
         this.RowToFind = RowToFind;
         this.type = type;
         this.status = status;
         this.liked = liked;
-        this.unviewed = unviewed;
+        this.viewed = viewed;
         this.Sorter = Sorter;
+        this.isAuthUser = true;
     }
 
     public WholeFilterSet(){
@@ -104,7 +119,7 @@ public class WholeFilterSet {
         this.type = "All";
         this.status = "All";
         this.liked = "All";
-        this.unviewed = "All";
+        this.viewed = "All";
     }
 
     public WholeFilterSet(String RowToFind){
@@ -114,6 +129,6 @@ public class WholeFilterSet {
         this.type = "All";
         this.status = "All";
         this.liked = "All";
-        this.unviewed = "All";
+        this.viewed = "All";
     }
 }

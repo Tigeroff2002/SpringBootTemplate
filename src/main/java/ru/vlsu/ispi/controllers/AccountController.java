@@ -3,6 +3,7 @@ package ru.vlsu.ispi.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.session.Session;
@@ -44,23 +45,148 @@ public class AccountController {
     @Autowired
     private ActionService actionHandler;
 
-    @GetMapping("index1")
-    public String DefaultIndex(){
-        return "redirect:/account/index" + DEFAULT_FILTER_HEADER + "elementsPerPage=5&currentPageNumber=1";
+    @GetMapping("default_index")
+    public String DefaultIndex(HttpSession session){
+
+        if (session.getAttribute("rowToFind") == null){
+            session.setAttribute("rowToFind", "empty");
+        }
+
+        if (session.getAttribute("type") == null){
+            session.setAttribute("type", "default");
+        }
+
+        if (session.getAttribute("status") == null){
+            session.setAttribute("status", "default");
+        }
+
+        if (session.getAttribute("liked") == null){
+            session.setAttribute("liked", "default");
+        }
+
+        if (session.getAttribute("viewed") == null){
+            session.setAttribute("viewed", "default");
+        }
+
+        if (session.getAttribute("sorter") == null){
+            session.setAttribute("sorter", "default_sort");
+        }
+
+        if (session.getAttribute("elementsPerPage") == null){
+            session.setAttribute("elementsPerPage", 5);
+        }
+
+        if (session.getAttribute("currentPageNumber") == null){
+            session.setAttribute("currentPageNumber", 1);
+        }
+
+        var rowToFind = (String) session.getAttribute("rowToFind");
+        var type = (String) session.getAttribute("type");
+        var status = (String) session.getAttribute("status");
+        var liked = (String) session.getAttribute("liked");
+        var viewed = (String) session.getAttribute("viewed");
+        var sorter = (String) session.getAttribute("sorter");
+
+        var elementsPerPage = (int) session.getAttribute("elementsPerPage");
+
+        var currentPageNumber = 1;
+        session.setAttribute("currentPageNumber", currentPageNumber);
+
+        return "redirect:/account/index?rowToFind=" + rowToFind + "&type=" + type + "&status=" + status + "&liked=" + liked + "&viewed=" + viewed + "&sorter="
+                + sorter + "&elementsPerPage=" + Integer.toString(elementsPerPage) + "&currentPageNumber=" + Integer.toString(currentPageNumber);
     }
 
-    @GetMapping("index2")
+    @GetMapping("index1")
     public String RedirectAmongThePages(@RequestParam("currentPageNumber") int currentPageNumber,
                                         @RequestParam("elementsPerPage") int elementsPerPage,
                                         HttpSession session){
 
-        return "redirect:/account/index" + DEFAULT_FILTER_HEADER +
-                "elementsPerPage=" + Integer.toString(elementsPerPage) + "&currentPageNumber=" + Integer.toString(currentPageNumber);
+        if (currentPageNumber <= 0 || elementsPerPage <= 0){
+            return "redirect:/account/default_index";
+        }
+
+        if (session.getAttribute("rowToFind") == null){
+            session.setAttribute("rowToFind", "empty");
+        }
+
+        if (session.getAttribute("type") == null){
+            session.setAttribute("type", "default");
+        }
+
+        if (session.getAttribute("status") == null){
+            session.setAttribute("status", "default");
+        }
+
+        if (session.getAttribute("liked") == null){
+            session.setAttribute("liked", "default");
+        }
+
+        if (session.getAttribute("viewed") == null){
+            session.setAttribute("viewed", "default");
+        }
+
+        if (session.getAttribute("sorter") == null){
+            session.setAttribute("sorter", "default_sort");
+        }
+
+        session.setAttribute("elementsPerPage", elementsPerPage);
+
+        session.setAttribute("currentPageNumber", currentPageNumber);
+
+        var rowToFind = (String) session.getAttribute("rowToFind");
+        var type = (String) session.getAttribute("type");
+        var status = (String) session.getAttribute("status");
+        var liked = (String) session.getAttribute("liked");
+        var viewed = (String) session.getAttribute("viewed");
+        var sorter = (String) session.getAttribute("sorter");
+
+        return "redirect:/account/index?rowToFind=" + rowToFind + "&type=" + type + "&status=" + status + "&liked=" + liked + "&viewed=" + viewed + "&sorter="
+                + sorter + "&elementsPerPage=" + Integer.toString(elementsPerPage) + "&currentPageNumber=" + Integer.toString(currentPageNumber);
+    }
+
+    @GetMapping("index2")
+    public String RedirectAmongFilters(@RequestParam(name = "rowToFind") String rowToFind,
+                                       @RequestParam(name = "type") String type,
+                                       @RequestParam(name = "status") String status,
+                                       @RequestParam(name = "liked") String liked,
+                                       @RequestParam(name = "viewed") String viewed,
+                                       @RequestParam(name = "sorter") String sorter,
+                                       HttpSession session){
+
+        if (stringIsNullOrEmptyOrBlank(rowToFind) || stringIsNullOrEmptyOrBlank(type)
+                || stringIsNullOrEmptyOrBlank(status) || stringIsNullOrEmptyOrBlank(liked)
+                    || stringIsNullOrEmptyOrBlank(viewed) || stringIsNullOrEmptyOrBlank(sorter)){
+            return "redirect:/account/default_index";
+        }
+
+        session.setAttribute("rowToFind", rowToFind);
+
+        session.setAttribute("type", type);
+
+        session.setAttribute("status", status);
+
+        session.setAttribute("liked", liked);
+
+        session.setAttribute("viewed", viewed);
+
+        session.setAttribute("sorter", sorter);
+
+        var elementsPerPage = (int) session.getAttribute("elementsPerPage");
+
+        var currentPageNumber = 1;
+        session.setAttribute("currentPageNumber", currentPageNumber);
+
+        return "redirect:/account/index?rowToFind=" + rowToFind + "&type=" + type + "&status=" + status + "&liked=" + liked + "&viewed=" + viewed + "&sorter="
+                + sorter + "&elementsPerPage=" + Integer.toString(elementsPerPage) + "&currentPageNumber=" + Integer.toString(currentPageNumber);
+
     }
 
     @GetMapping("index")
     public String AuthIndexFiltering(@RequestParam(name = "rowToFind") String rowToFind,
-                                     @RequestParam(name = "filter") String filter,
+                                     @RequestParam(name = "type") String type,
+                                     @RequestParam(name = "status") String status,
+                                     @RequestParam(name = "liked") String liked,
+                                     @RequestParam(name = "viewed") String viewed,
                                      @RequestParam(name = "sorter") String sorter,
                                      @RequestParam(name = "elementsPerPage") int elementsPerPage,
                                      @RequestParam(name = "currentPageNumber") int currentPageNumber,
@@ -69,7 +195,7 @@ public class AccountController {
                                      HttpSession session) throws SQLException {
 
         if (currentPageNumber == 0){
-            return "redirect:/";
+            return "redirect:/account/default_index";
         }
 
         var userId = (Long) session.getAttribute("userId");
@@ -81,7 +207,21 @@ public class AccountController {
 
                 List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(userId);
 
-                var obtainedTaskList = userHandler.filterByRowParameters(taskList, rowToFind, filter, sorter);
+                var filterSet = new WholeFilterSet(rowToFind, type, status, liked, viewed, sorter);
+
+                var obtainedTaskList = userHandler.filterByRowParameters(taskList, rowToFind, filterSet, sorter);
+
+                if (obtainedTaskList.size() == 0){
+
+                    session.setAttribute("rowToFind", "empty");
+                    session.setAttribute("type", "default");
+                    session.setAttribute("status", "default");
+                    session.setAttribute("liked", "default");
+                    session.setAttribute("viewed", "viewed");
+                    session.setAttribute("sorter", "default_sort");
+
+                    return "redirect:/account/default_index";
+                }
 
                 var pagination = new Pagination();
 
@@ -92,6 +232,8 @@ public class AccountController {
                 var listOfListsTasks = taskHandler.distributeTasksByPages(obtainedTaskList, pagination);
 
                 pagination.setLastPageNumber(listOfListsTasks.size() - 1);
+
+                session.setAttribute("lastPageNumber", pagination.getLastPageNumber());
 
                 var listTasksForCurrentPage = taskHandler.getElementsForCurrentPage(listOfListsTasks, currentPageNumber);
 
@@ -104,51 +246,11 @@ public class AccountController {
 
                 model.addAttribute("taskList", listTasksForCurrentPage);
 
-                model.addAttribute("filterSet", new WholeFilterSet(rowToFind, filter, sorter));
+                model.addAttribute("filterSet", new WholeFilterSet(rowToFind, type, status, liked, viewed, sorter));
 
                 model.addAttribute("notificationList", notificationList);
 
                 model.addAttribute("pagination", pagination);
-
-                return "auth_index";
-            }
-        }
-
-        return "redirect:/";
-    }
-
-    @GetMapping("paramindex")
-    public String AuthIndexFiltering(@RequestParam(name = "rowToFind") String rowToFind,
-                                     @RequestParam(name = "type") String type,
-                                     @RequestParam(name = "status") String status,
-                                     @RequestParam(name = "liked") String liked,
-                                     @RequestParam(name = "unviewed") String unviewed,
-                                     @RequestParam(name = "Sorter") String sorter,
-                                     Model model,
-                                     HttpServletRequest request,
-                                     HttpSession session) throws SQLException{
-
-        var userId = (Long) session.getAttribute("userId");
-        if (userId != null){
-            var user = userHandler.FindUserById(userId);
-            if (user != null){
-                model.addAttribute("user", user);
-
-                List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(userId);
-
-                //var wholeFilterName = "Filtering By Params: RowToFind = " + rowToFind + ", filters = [" + filter + "], sortBy = " + sorter;
-
-                var filter = "type=" + type.toString() + "&status=" + status.toString() + "&liked=" + liked.toString() + "&unviewed=" + unviewed.toString();
-
-                var obtainedTaskList = userHandler.filterByRowParameters(taskList, rowToFind, filter, sorter);
-
-                List<Notification> notificationList = actionHandler.findAllNotificationsOfUser(userId);
-
-                model.addAttribute("taskList", obtainedTaskList);
-
-                model.addAttribute("filterSet", new WholeFilterSet(rowToFind, filter, sorter));
-
-                model.addAttribute("notificationList", notificationList);
 
                 return "auth_index";
             }
@@ -292,8 +394,18 @@ public class AccountController {
         }
         else if (user.getId() != -1){
             attributes.addFlashAttribute("user", user);
+
             session.setAttribute("userId", user.getId());
-            return "redirect:/account/index/" + Long.toString(user.getId()) + DEFAULT_FILTER_HEADER + "elementsPerPage=5&currentPageNumber=1";
+
+            session.removeAttribute("rowToFind");
+            session.removeAttribute("type");
+            session.removeAttribute("status");
+            session.removeAttribute("sorter");
+            session.removeAttribute("currentPageNumber");
+            session.removeAttribute("lastPageNumber");
+            session.removeAttribute("elementsPerPage");
+
+            return "redirect:/account/";
         }
         else {
             return "redirect:/account/register";
@@ -317,8 +429,18 @@ public class AccountController {
 
         if (user != null){
             attributes.addFlashAttribute("user", user);
+
             session.setAttribute("userId", user.getId());
-            return "redirect:/account/index" + DEFAULT_FILTER_HEADER + "elementsPerPage=5&currentPageNumber=1";
+
+            session.removeAttribute("rowToFind");
+            session.removeAttribute("type");
+            session.removeAttribute("status");
+            session.removeAttribute("sorter");
+            session.removeAttribute("currentPageNumber");
+            session.removeAttribute("lastPageNumber");
+            session.removeAttribute("elementsPerPage");
+
+            return "redirect:/account/default_index";
         }
         else {
             return "redirect:/account/register";
@@ -329,6 +451,16 @@ public class AccountController {
     public String Logout(Model model, HttpSession session){
 
         session.removeAttribute("userId");
+        session.removeAttribute("rowToFind");
+        session.removeAttribute("type");
+        session.removeAttribute("status");
+        session.removeAttribute("liked");
+        session.removeAttribute("viewed");
+        session.removeAttribute("sorter");
+        session.removeAttribute("currentPageNumber");
+        session.removeAttribute("lastPageNumber");
+        session.removeAttribute("elementsPerPage");
+
         return "redirect:/";
     }
 
@@ -354,5 +486,7 @@ public class AccountController {
         return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
     }
 
-    private static final String DEFAULT_FILTER_HEADER = "?rowToFind=empty&filter=default_filter&sorter=default_sort&";
+    private boolean stringIsNullOrEmptyOrBlank(String row){
+        return row == null || row.isEmpty() || row.trim().isEmpty();
+    }
 }

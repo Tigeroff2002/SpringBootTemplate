@@ -15,6 +15,7 @@ import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
 import ru.vlsu.ispi.beans.extrabeans.ExtraUser;
 import ru.vlsu.ispi.beans.extrabeans.FilterParameter;
+import ru.vlsu.ispi.beans.extrabeans.WholeFilterSet;
 import ru.vlsu.ispi.enums.*;
 import ru.vlsu.ispi.models.LoginModel;
 import ru.vlsu.ispi.models.RegisterModel;
@@ -136,81 +137,60 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public List<ExtraTask> filterByRowParameters(List<ExtraTask> currentTaskList, String rowToFind, String filters, String sorter){
+    public List<ExtraTask> filterByRowParameters(List<ExtraTask> currentTaskList, String rowToFind, WholeFilterSet filterSet, String sorter){
 
-        if (stringIsNullOrEmptyOrBlank(rowToFind) || stringIsNullOrEmptyOrBlank(filters) || stringIsNullOrEmptyOrBlank(sorter)){
+        if (stringIsNullOrEmptyOrBlank(rowToFind) || filterSet == null || stringIsNullOrEmptyOrBlank(sorter)){
             throw new IllegalArgumentException("String headers should not be null, empty or blank!");
         }
 
         rowToFind = rowToFind.toLowerCase();
-        //filters = filters.toLowerCase();
+
         sorter = sorter.toLowerCase();
 
         var sortBy = SortBy.valueOf(sorter);
 
         var parameters = new ArrayList<FilterParameter>();
 
-        if (filters.contains("&")){
-            var filterByList = new ArrayList<String>(Arrays.asList(filters.split("&")));
+        if (filterSet.isAuthUser()){
 
-            for (var filter: filterByList){
-                var filterParameter = filterComparing(filter);
+            var filterAuthCase1 = filterSet.getLiked();
 
-                if (filterParameter != null){
-                    parameters.add(filterParameter);
-                }
+            if (!Objects.equals(filterAuthCase1, "default")){
+                var filterAuthParameter1 = new FilterParameter();
+                filterAuthParameter1.Filter = FilterBy.liked;
+                filterAuthParameter1.parameter = filterAuthCase1;
+                parameters.add(filterAuthParameter1);
+            }
+
+            var filterAuthCase2 = filterSet.getViewed();
+
+            if (!Objects.equals(filterAuthCase2, "default")){
+                var filterAuthParameter2 = new FilterParameter();
+                filterAuthParameter2.Filter = FilterBy.viewed;
+                filterAuthParameter2.parameter = filterAuthCase2;
+                parameters.add(filterAuthParameter2);
             }
         }
-        else {
-            var filterParameter = filterComparing(filters);
 
-            if (filterParameter != null){
-                parameters.add(filterParameter);
-            }
+        var filterCase1 = filterSet.getType();
+
+        if (!Objects.equals(filterCase1, "default")){
+            var filterParameter1 = new FilterParameter();
+            filterParameter1.Filter = FilterBy.type;
+            filterParameter1.parameter = filterSet.getType();
+            parameters.add(filterParameter1);
+        }
+
+        var filterCase2 = filterSet.getStatus();
+
+        if (!Objects.equals(filterCase2, "default")){
+            var filterParameter2 = new FilterParameter();
+            filterParameter2.Filter = FilterBy.status;
+            filterParameter2.parameter = filterSet.getStatus();
+            parameters.add(filterParameter2);
         }
 
         return filterByAllParameters(currentTaskList, rowToFind, parameters, sortBy);
-    }
-
-    private FilterParameter filterComparing(String filter) {
-        if (!filter.contains(FilterBy.default_filter.toString())) {
-
-            var filterParameter = new FilterParameter();
-
-            if (filter.contains(FilterBy.type.toString().toLowerCase())) {
-                filterParameter.Filter = FilterBy.type;
-                var name = "type";
-                filterParameter.parameter = filter.substring(name.length() + 1);
-            } else if (filter.contains(FilterBy.status.toString().toLowerCase())) {
-                filterParameter.Filter = FilterBy.status;
-                var name = "status";
-                filterParameter.parameter = filter.substring(name.length() + 1);
-            } else if (filter.contains(FilterBy.liked.toString().toLowerCase())) {
-                filterParameter.Filter = FilterBy.liked;
-                var name = "liked";
-                filterParameter.parameter = "true";
-            } else if (filter.contains(FilterBy.unLiked.toString().toLowerCase())) {
-                filterParameter.Filter = FilterBy.unLiked;
-                var name = "unliked";
-                filterParameter.parameter = "true";
-            } else if (filter.contains(FilterBy.mine.toString().toLowerCase())) {
-                filterParameter.Filter = FilterBy.mine;
-                var name = "mine";
-                filterParameter.parameter = "true";
-            } else if (filter.contains(FilterBy.notMine.toString().toLowerCase())) {
-                filterParameter.Filter = FilterBy.notMine;
-                var name = "notmine";
-                filterParameter.parameter = "true";
-            } else if (filter.contains(FilterBy.unviewed.toString().toLowerCase())) {
-                filterParameter.Filter = FilterBy.unviewed;
-                var name = "unviewed";
-                filterParameter.parameter = "true";
-            }
-
-            return filterParameter;
-        }
-
-        return null;
     }
 
     private boolean stringIsNullOrEmptyOrBlank(String row){
@@ -221,17 +201,27 @@ public class UserService implements UserDetailsService {
 
         var taskListAfterSearch = findByString(currentTaskList, rowToFind);
 
+        if (taskListAfterSearch.size() == 0){
+            return taskListAfterSearch;
+        }
+
         var taskListAfterFiltering = filterBySetParameters(taskListAfterSearch, parameters);
+
+        if (taskListAfterFiltering.size() == 0){
+            return taskListAfterFiltering;
+        }
 
         return sortByParameter(taskListAfterFiltering, sorter);
     }
 
     private List<ExtraTask> findByString(List<ExtraTask> currentTaskList, String row){
         if (!row.equals("empty")){
+
             var rowToFind = row.toLowerCase();
-            //List<String> subWords = Arrays.asList(rowToFind.split("\\s*,\\s*"));
-            if (rowToFind.contains("&")){
-                List<String> subWords = new ArrayList<String>(Arrays.asList(row.split("&")));
+
+            if (rowToFind.contains("+")){
+
+                List<String> subWords = new ArrayList<String>(Arrays.asList(row.split("\\+")));
 
                 var obtainedTaskList = new ArrayList<ExtraTask>();
 
@@ -247,6 +237,7 @@ public class UserService implements UserDetailsService {
 
                 return obtainedTaskList;
             }
+
             else {
                 var newTaskList = new ArrayList<ExtraTask>();
 
@@ -308,17 +299,16 @@ public class UserService implements UserDetailsService {
         else if (filter == FilterBy.mine){
             currentTaskList = currentTaskList.stream().filter(x -> x.IsMine).collect(Collectors.toList());
         }
-        else if (filter == FilterBy.notMine){
-            currentTaskList = currentTaskList.stream().filter(x -> !x.IsMine).collect(Collectors.toList());
-        }
         else if (filter == FilterBy.liked){
-            currentTaskList = currentTaskList.stream().filter(x -> Objects.equals(x.Liked, "Liked")).collect(Collectors.toList());
+            currentTaskList = currentTaskList.stream().filter(x -> Objects.equals(x.Liked, parameter)).collect(Collectors.toList());
         }
-        else if (filter == FilterBy.unLiked){
-            currentTaskList = currentTaskList.stream().filter(x -> Objects.equals(x.Liked, "Unliked")).collect(Collectors.toList());
-        }
-        else if (filter == FilterBy.unviewed){
-            currentTaskList = currentTaskList.stream().filter(x -> !x.IsViewed).collect(Collectors.toList());
+        else if (filter == FilterBy.viewed){
+            if (Objects.equals(parameter, "viewed")){
+                currentTaskList = currentTaskList.stream().filter(x -> x.IsViewed).collect(Collectors.toList());
+            }
+            else {
+                currentTaskList = currentTaskList.stream().filter(x -> !x.IsViewed).collect(Collectors.toList());
+            }
         }
         return currentTaskList;
     }

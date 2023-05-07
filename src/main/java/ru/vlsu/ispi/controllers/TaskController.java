@@ -87,7 +87,7 @@ public class TaskController {
                     return "details";
                 }
                 else {
-                    return "redirect:/account/index1";
+                    return "redirect:/account/default_index";
                 }
             }
         }
@@ -119,7 +119,7 @@ public class TaskController {
                     return "editTask";
                 }
                 else {
-                    return "redirect:/account/index1";
+                    return "redirect:/account/default_index";
                 }
             }
         }
@@ -190,7 +190,7 @@ public class TaskController {
                 }
                 else {
                     attributes.addFlashAttribute("user", user);
-                    return "redirect:/account/index1";
+                    return "redirect:/account/default_index";
                 }
             }
         }
@@ -234,7 +234,7 @@ public class TaskController {
                     return "taskRoomPage";
                 }
                 else {
-                    return "redirect:/account/index1";
+                    return "redirect:/account/default_index";
                 }
             }
         }
