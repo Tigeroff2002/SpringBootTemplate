@@ -29,6 +29,80 @@
     <br>
     <h3> Новый пользователь, добро пожаловать на сайт! </h3>
     <br>
+    <div class="input-group mb-3">
+        <div class = "form-group">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">
+                Параметры поиска
+                <span class="position-absolute top-0 start-100"><span class="visually-hidden">параметры поиска по умолчанию</span></span>
+            </button>
+            <div class = "collapse" id = "collapseExample2">
+                <form th:action="@{/account/index}" th:object="${filterSet}">
+                    <br>
+                    <div class = "form-group row">
+                        <label>Поиск объявления: </label>
+                    </div>
+                    <br>
+                    <div class = "form-group row">
+                        <label> Введите ключевые слова:  </label>
+                        <input type="text" class="form-control" placeholder="Ключевые слова" aria-label="Ключевые слова"
+                               aria-describedby="basic-addon2" th:field="*{rowToFind}" id="RowToFind">
+                    </div>
+                    <br>
+                    <div class = "form-group row">
+                        <div class = "form-group col-md-3">
+                            <label for="FilteringByType"> Выберите тип фильтрации:  </label>
+                            <select class="form-control" id="FilteringByType" th:field="*{type}">
+                                <option th:value="'All'" th:text="Любые"></option>
+                                <option th:value="'Building'" th:text="Строительство"></option>
+                                <option th:value="'Cleaning'" th:text="Чистка"></option>
+                                <option th:value="'Repairing'" th:text="Ремонт"></option>
+                                <option th:value="'Consulting'" th:text="Консультация"></option>
+                                <option th:value="'Cooking'" th:text="Готовка"></option>
+                                <option th:value="'Freelancing'" th:text="Фриланс"></option>
+                            </select>
+                        </div>
+                        <div class = "form-group col-md-3">
+                            <label for="FilteringByStatus"> Выберите статус объявлений:  </label>
+                            <select class="form-control" id="FilteringByStatus" th:field="*{status}">
+                                <option th:value="'All'" th:text="Любые"></option>
+                                <option th:value="'Inactive'" th:text="Inactive"></option>
+                                <option th:value="'ToDo'" th:text="ToDo"></option>
+                            </select>
+                        </div>
+                        <div class = "form-group col-md-3">
+                            <label for="FilteringByLikedStatus"> Мои понравившиеся:  </label>
+                            <select class="form-control" id="FilteringByLikedStatus" th:field="*{liked}">
+                                <option th:value="'All'" th:text="Любые"></option>
+                                <option th:value="'Liked'" th:text="Понравившиеся"></option>
+                                <option th:value="'Unliked'" th:text="Непонравившиеся"></option>
+                            </select>
+                        </div>
+                        <div class = "form-group col-md-3">
+                            <label for="FilteringByViewedStatus"> Мои просмотренные:  </label>
+                            <select class="form-control" id="FilteringByViewedStatus" th:field="*{unviewed}">
+                                <option th:value="'All'" th:text="Любые"></option>
+                                <option th:value="'unviewed'" th:text="Непросмотренные"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class = "form-group row-md-3">
+                        <label for="SortingByPrice"> Направление сортировки  </label>
+                        <select class="form-control" id="SortingByPrice" th:field="*{sorter}">
+                            <option th:value="'default_sort'" th:text="ПоУмолчанию"></option>
+                            <option th:value="'cheap_first'" th:text="СначалаДешевые"></option>
+                            <option th:value="'dear_first'" th:text="СначалаДорогие"></option>
+                        </select>
+                    </div>
+                    <br>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Показать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br>
     <h4> Список всех доступных объявлений: </h4>
     <table class="table">
         <thead class = "thead-dark">
@@ -52,5 +126,38 @@
         </tr>
         </tbody>
     </table>
+    <div class = "position-absolute end-0">
+        <form th:action="@{/index1}" th:object="${pagination}">
+            <br>
+            <div class = "form-group row">
+                <label>Страничный навигатор: </label>
+            </div>
+            <br>
+            <div class = "form-group row">
+                <div class = "form-group col">
+                    <label> Текущий номер страницы  </label>
+                    <input type="text" class="form-control" th:placeholder="${pagination.currentPageNumber}"
+                           aria-describedby="basic-addon2" th:field="*{currentPageNumber}" id="currentPageNumber">
+                </div>
+                <div class = "form-group col">
+                    <label> Всего страниц  </label>
+                    <br>
+                    <!--label th:text = "${pagination.lastPageNumber}"></label!-->
+                    <input type="text" class="form-control" th:placeholder="${pagination.lastPageNumber}">
+                </div>
+                <div class = "form-group col">
+                    <label> Элементов на странице  </label>
+                    <input type="text" class="form-control" th:placeholder="${pagination.elementsPerPage}"
+                           aria-describedby="basic-addon2" th:field="*{elementsPerPage}" id="elementsPerPage">
+                </div>
+            </div>
+            <br>
+            <div class = "form-group row">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Перейти</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 </html>

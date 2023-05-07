@@ -447,7 +447,7 @@ public class ActionService {
     }
 
     public List<ExtraTask> nameAllLikedAndUnlikedTasks(Long userId){
-        List<Task> allTasks = taskRepository.findAll();
+        List<Task> allTasks = taskRepository.findAllTasks();
 
         List<ExtraTask> extraTasks = new ArrayList<>();
 
@@ -502,7 +502,7 @@ public class ActionService {
     }
 
     public List<ExtraTask> nameAllLikedAndUnlikedTasks(){
-        List<Task> allTasks = taskRepository.findAll();
+        List<Task> allTasks = taskRepository.findAllTasks();
 
         List<ExtraTask> extraTasks = new ArrayList<>();
 

@@ -15,6 +15,7 @@ import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
 import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
 import ru.vlsu.ispi.beans.extrabeans.ExtraUser;
+import ru.vlsu.ispi.beans.extrabeans.Pagination;
 import ru.vlsu.ispi.beans.extrabeans.WholeFilterSet;
 import ru.vlsu.ispi.enums.FilterBy;
 import ru.vlsu.ispi.enums.RoleType;
@@ -45,17 +46,34 @@ public class AccountController {
 
     @GetMapping("index1")
     public String DefaultIndex(){
-        return "redirect:/account/index" + DEFAULT_FILTER_HEADER;
+        return "redirect:/account/index" + DEFAULT_FILTER_HEADER + "elementsPerPage=5&currentPageNumber=1";
+    }
+
+    @GetMapping("index2")
+    public String RedirectAmongThePages(@RequestParam("currentPageNumber") int currentPageNumber,
+                                        @RequestParam("elementsPerPage") int elementsPerPage,
+                                        HttpSession session){
+
+        return "redirect:/account/index" + DEFAULT_FILTER_HEADER +
+                "elementsPerPage=" + Integer.toString(elementsPerPage) + "&currentPageNumber=" + Integer.toString(currentPageNumber);
     }
 
     @GetMapping("index")
     public String AuthIndexFiltering(@RequestParam(name = "rowToFind") String rowToFind,
                                      @RequestParam(name = "filter") String filter,
                                      @RequestParam(name = "sorter") String sorter,
+                                     @RequestParam(name = "elementsPerPage") int elementsPerPage,
+                                     @RequestParam(name = "currentPageNumber") int currentPageNumber,
                                      Model model,
-                                     HttpSession session) throws SQLException{
+                                     HttpServletRequest request,
+                                     HttpSession session) throws SQLException {
+
+        if (currentPageNumber == 0){
+            return "redirect:/";
+        }
 
         var userId = (Long) session.getAttribute("userId");
+
         if (userId != null){
             var user = userHandler.FindUserById(userId);
             if (user != null){
@@ -63,17 +81,34 @@ public class AccountController {
 
                 List<ExtraTask> taskList = actionHandler.nameAllLikedAndUnlikedTasks(userId);
 
-                var wholeFilterName = "Filtering By Params: RowToFind = " + rowToFind + ", filters = [" + filter + "], sortBy = " + sorter;
-
                 var obtainedTaskList = userHandler.filterByRowParameters(taskList, rowToFind, filter, sorter);
+
+                var pagination = new Pagination();
+
+                pagination.setElementsPerPage(elementsPerPage);
+
+                pagination.setCurrentPageNumber(currentPageNumber);
+
+                var listOfListsTasks = taskHandler.distributeTasksByPages(obtainedTaskList, pagination);
+
+                pagination.setLastPageNumber(listOfListsTasks.size() - 1);
+
+                var listTasksForCurrentPage = taskHandler.getElementsForCurrentPage(listOfListsTasks, currentPageNumber);
+
+                if (listTasksForCurrentPage == null) {
+
+                    return "redirect:/";
+                }
 
                 List<Notification> notificationList = actionHandler.findAllNotificationsOfUser(userId);
 
-                model.addAttribute("taskList", obtainedTaskList);
+                model.addAttribute("taskList", listTasksForCurrentPage);
 
                 model.addAttribute("filterSet", new WholeFilterSet(rowToFind, filter, sorter));
 
                 model.addAttribute("notificationList", notificationList);
+
+                model.addAttribute("pagination", pagination);
 
                 return "auth_index";
             }
@@ -90,6 +125,7 @@ public class AccountController {
                                      @RequestParam(name = "unviewed") String unviewed,
                                      @RequestParam(name = "Sorter") String sorter,
                                      Model model,
+                                     HttpServletRequest request,
                                      HttpSession session) throws SQLException{
 
         var userId = (Long) session.getAttribute("userId");
@@ -257,7 +293,7 @@ public class AccountController {
         else if (user.getId() != -1){
             attributes.addFlashAttribute("user", user);
             session.setAttribute("userId", user.getId());
-            return "redirect:/account/index/" + Long.toString(user.getId()) + DEFAULT_FILTER_HEADER;
+            return "redirect:/account/index/" + Long.toString(user.getId()) + DEFAULT_FILTER_HEADER + "elementsPerPage=5&currentPageNumber=1";
         }
         else {
             return "redirect:/account/register";
@@ -282,7 +318,7 @@ public class AccountController {
         if (user != null){
             attributes.addFlashAttribute("user", user);
             session.setAttribute("userId", user.getId());
-            return "redirect:/account/index" + DEFAULT_FILTER_HEADER;
+            return "redirect:/account/index" + DEFAULT_FILTER_HEADER + "elementsPerPage=5&currentPageNumber=1";
         }
         else {
             return "redirect:/account/register";
@@ -318,5 +354,5 @@ public class AccountController {
         return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
     }
 
-    private static final String DEFAULT_FILTER_HEADER = "?rowToFind=empty&filter=default_filter&sorter=default_sort";
+    private static final String DEFAULT_FILTER_HEADER = "?rowToFind=empty&filter=default_filter&sorter=default_sort&";
 }

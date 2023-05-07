@@ -18,6 +18,11 @@ import java.util.List;
 @Repository
 @Transactional(isolation = Isolation.READ_COMMITTED)
 public interface TaskRepository extends JpaRepository<Task, Long> {
+
+    @Modifying
+    @Query("SELECT t FROM Task t ORDER BY id")
+    List<Task> findAllTasks();
+
     @Modifying
     @Query("DELETE FROM Task t WHERE t.id = :taskId")
     void deleteTask(@Param("taskId") Long id);
