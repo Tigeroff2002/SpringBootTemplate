@@ -72,6 +72,10 @@ public interface ActionRepository extends JpaRepository<Action, Long> {
     Action getLastActionByUserAndTask(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
     @Query("SELECT a FROM Action a where a.user.id = :userId and a.task.id = :taskId" +
+            " AND a.actiontype = 'Preformalized' ORDER BY id ASC LIMIT 1")
+    Action getLastFormalizedActionByUserAndTask(@Param("userId") Long userId, @Param("taskId") Long taskId);
+
+    @Query("SELECT a FROM Action a where a.user.id = :userId and a.task.id = :taskId" +
             " ORDER BY id DESC LIMIT 1")
     Action getSomeLastActionByUserAndTask(@Param("userId") Long userId, @Param("taskId") Long taskId);
 

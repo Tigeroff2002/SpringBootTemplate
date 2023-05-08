@@ -627,7 +627,7 @@ public class ActionService {
         var user = userRepository.findUserById(userId);
         var task = taskRepository.findTaskById(taskId);
 
-        if (user != null || task != null){
+        if (user != null && task != null){
             var action = actionRepository.getLastActionByUserAndTask(userId, taskId);
 
             if (action != null){
@@ -640,6 +640,24 @@ public class ActionService {
                 saveAction(userId, taskId, ActionType.Viewed, true);
             }
         }
+    }
+
+    public Event GetCurrentEventForUserEndTask(Long userId, Long taskId){
+
+        var user = userRepository.findUserById(userId);
+        var task = taskRepository.findTaskById(taskId);
+
+        if (user != null && task != null){
+            var action = actionRepository.getLastFormalizedActionByUserAndTask(userId, taskId);
+
+            if (action != null){
+                var event = eventRepository.findEventByActionId(action.getId());
+
+                return event;
+            }
+        }
+
+        return null;
     }
 
     private final float COMMISSION_PERCENT = 5f;
