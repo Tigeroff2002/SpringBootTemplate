@@ -211,7 +211,7 @@ public class AccountController {
 
                 var obtainedTaskList = userHandler.filterByRowParameters(taskList, rowToFind, filterSet, sorter);
 
-                if (obtainedTaskList.size() == 0){
+                if (obtainedTaskList.size() == 0 && taskList.size() != 0){
 
                     session.setAttribute("rowToFind", "empty");
                     session.setAttribute("type", "default");
@@ -237,7 +237,7 @@ public class AccountController {
 
                 var listTasksForCurrentPage = taskHandler.getElementsForCurrentPage(listOfListsTasks, currentPageNumber);
 
-                if (listTasksForCurrentPage == null) {
+                if (listTasksForCurrentPage == null && taskList.size() != 0) {
 
                     return "redirect:/";
                 }
