@@ -1,15 +1,20 @@
 package ru.vlsu.ispi.logic;
 
+import ch.qos.logback.core.joran.sanity.Pair;
+import org.apache.commons.collections4.KeyValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.beans.extrabeans.ExtraTask;
+import ru.vlsu.ispi.beans.extrabeans.Pagination;
 import ru.vlsu.ispi.enums.TaskStatus;
 import ru.vlsu.ispi.models.TaskModel;
 import ru.vlsu.ispi.repositories.TaskRepository;
 import ru.vlsu.ispi.repositories.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -93,5 +98,43 @@ public class TaskService {
 
     public List<Task> getAllExecutorTasks(Long executorId){
         return taskRepository.getAllTaskFromCertainExecutor(executorId);
+    }
+
+    public List<List<ExtraTask>> distributeTasksByPages(List<ExtraTask> allTasks, Pagination pagination){
+
+        var elementsPerPage = pagination.getElementsPerPage();
+
+        var count = allTasks.size();
+
+        var rawLastPageNumber = count / elementsPerPage;
+
+        var lastPageNumber = count % elementsPerPage == 0 ? rawLastPageNumber : rawLastPageNumber + 1;
+
+        var listOfLists = new ArrayList<List<ExtraTask>>(lastPageNumber + 1);
+
+        listOfLists.add(new ArrayList<ExtraTask>());
+
+        for (var i = 1; i < lastPageNumber + 1; i++){
+
+            var currentList = new ArrayList<ExtraTask>();
+
+            for (var j = (i - 1) * elementsPerPage; j < i * elementsPerPage; j++){
+
+                if (j >= count){
+                   break;
+                }
+
+                currentList.add(allTasks.get(j));
+            }
+
+            listOfLists.add(currentList);
+        }
+
+        return listOfLists;
+    }
+
+    public List<ExtraTask> getElementsForCurrentPage(List<List<ExtraTask>> listOfLists, int currentPageNumber){
+
+        return currentPageNumber < listOfLists.size() ? listOfLists.get(currentPageNumber) : null;
     }
 }

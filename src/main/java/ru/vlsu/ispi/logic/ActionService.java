@@ -8,6 +8,7 @@ import ru.vlsu.ispi.enums.ActionType;
 import ru.vlsu.ispi.enums.EventStatus;
 import ru.vlsu.ispi.repositories.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -28,6 +29,9 @@ public class ActionService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private ChatRepository chatRepository;
 
     public Action saveAction(Long userId, Long taskId, ActionType type, boolean isViewed) {
         if (userId < 0 || taskId < 0){
@@ -127,6 +131,39 @@ public class ActionService {
         }
     }
 
+    public ChatMessage SaveMessage(Long eventId, Long userId, String textMessage){
+
+        var event = eventRepository.findEventById(eventId);
+        var user = userRepository.findUserById(userId);
+
+        if (user != null && event != null && stringIsNullOrEmptyOrBlank(textMessage)){
+            var chatMessage = new ChatMessage();
+            chatMessage.setEvent(event);
+            chatMessage.setUser(user);
+            chatMessage.setText(textMessage);
+
+            var dateNow = LocalDateTime.now();
+            chatMessage.setTime(dateNow);
+            chatMessage.setViewed(false);
+            chatMessage.setReplied(false);
+            chatMessage.setEdited(false);
+
+            chatRepository.save(chatMessage);
+
+            var newId = chatRepository.calculateMaxChatMessageId(dateNow);
+            chatMessage.setId(Integer.toUnsignedLong(newId));
+
+            return chatMessage;
+        }
+        else {
+            return null;
+        }
+    }
+
+    private boolean stringIsNullOrEmptyOrBlank(String row){
+        return row == null || row.isEmpty() || row.trim().isEmpty();
+    }
+
     public Action editActionType(ActionType type, Long actionId){
         Action action = actionRepository.findActionById(actionId);
 
@@ -155,6 +192,57 @@ public class ActionService {
         }
     }
 
+    public ChatMessage editMessageText(Long messageId, Long userId, String newText){
+        var message = chatRepository.findMessageById(messageId);
+        var user = userRepository.findUserById(userId);
+
+        if (user != null && message != null){
+            message.setViewed(true);
+            message.setText(newText);
+            message.setEdited(true);
+
+            var dateNow = LocalDateTime.now();
+
+            //chatRepository.editMessageText(messageId, newText, dateNow);
+
+            return message;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ChatMessage editMessageViewStatus(Long messageId, Long userId){
+        var message = chatRepository.findMessageById(messageId);
+        var user = userRepository.findUserById(userId);
+
+        if (user != null && message != null){
+            message.setViewed(true);
+            chatRepository.editMessageViewStatus(messageId);
+
+            return message;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ChatMessage editMessageReplyStatus(Long messageId, Long userId){
+        var message = chatRepository.findMessageById(messageId);
+        var user = userRepository.findUserById(userId);
+
+        if (user != null && message != null){
+            message.setViewed(true);
+            message.setReplied(true);
+            chatRepository.editMessageReplyStatus(messageId);
+
+            return message;
+        }
+        else {
+            return null;
+        }
+    }
+
     public Action editActionFormalized(boolean isFormalized, Long actionId){
         Action action = actionRepository.findActionById(actionId);
 
@@ -177,6 +265,14 @@ public class ActionService {
         eventRepository.deleteById(eventId);
     }
 
+    public void deleteNotification(Long notificationId){
+        notificationRepository.deleteById(notificationId);
+    }
+
+    public void deleteMessage(Long messageId){
+        chatRepository.deleteById(messageId);
+    }
+
     public Action findActionById(Long actionId){
         return actionRepository.findActionById(actionId);
     }
@@ -184,6 +280,14 @@ public class ActionService {
     public Event findEventById(Long eventId){
         return eventRepository.findEventById(eventId);
     };
+
+    public Notification findNotificationById(Long notificationId){
+        return notificationRepository.findNotificationById(notificationId);
+    }
+
+    public ChatMessage findChatMessageById(Long messageId){
+        return chatRepository.findMessageById(messageId);
+    }
 
     public List<Action> findAllActionsOfUser(Long userId){
         return actionRepository.getAllActionsFromCertainUser(userId);
@@ -244,6 +348,27 @@ public class ActionService {
     public List<Action> findCertainActionByWholeParams(Long userId, Long taskId, ActionType type){
         return actionRepository.getActionByWholeParams(userId, taskId, type);
     }
+
+    public List<ChatMessage> findAllChatMessageByEvent(Long eventId){
+        return chatRepository.findAllMessagesByEventId(eventId);
+    }
+
+    public List<ChatMessage> findAllChatMessagesOfUser(Long userId){
+        return chatRepository.findAllMessagesByUserId(userId);
+    }
+
+    public List<ChatMessage> findAllChatMessagesOfEventByCertainUser(Long eventId, Long userId){
+        return chatRepository.findAllMessagesByEventIdAndUserId(eventId, userId);
+    }
+
+    public List<ChatMessage> findAllUnviewedMessageOfEventId(Long eventId){
+        return chatRepository.findAllUnviewedMessageOfEventId(eventId);
+    }
+
+    public List<ChatMessage> findAllUnviewedMessagesDirectedToUserId(Long userId){
+        return chatRepository.findAllUnviewedMessagesDirectedToUserId(userId);
+    }
+
 
     public Optional<Event> findCertainLastEventByWholeParams(Long executorId, Long taskId){
         return eventRepository.getLastEventByExecutorAndTaskAndStatus(executorId, taskId);
@@ -322,7 +447,7 @@ public class ActionService {
     }
 
     public List<ExtraTask> nameAllLikedAndUnlikedTasks(Long userId){
-        List<Task> allTasks = taskRepository.findAll();
+        List<Task> allTasks = taskRepository.findAllTasks();
 
         List<ExtraTask> extraTasks = new ArrayList<>();
 
@@ -377,7 +502,7 @@ public class ActionService {
     }
 
     public List<ExtraTask> nameAllLikedAndUnlikedTasks(){
-        List<Task> allTasks = taskRepository.findAll();
+        List<Task> allTasks = taskRepository.findAllTasks();
 
         List<ExtraTask> extraTasks = new ArrayList<>();
 
@@ -502,7 +627,7 @@ public class ActionService {
         var user = userRepository.findUserById(userId);
         var task = taskRepository.findTaskById(taskId);
 
-        if (user != null || task != null){
+        if (user != null && task != null){
             var action = actionRepository.getLastActionByUserAndTask(userId, taskId);
 
             if (action != null){
@@ -515,6 +640,24 @@ public class ActionService {
                 saveAction(userId, taskId, ActionType.Viewed, true);
             }
         }
+    }
+
+    public Event GetCurrentEventForUserEndTask(Long userId, Long taskId){
+
+        var user = userRepository.findUserById(userId);
+        var task = taskRepository.findTaskById(taskId);
+
+        if (user != null && task != null){
+            var action = actionRepository.getLastFormalizedActionByUserAndTask(userId, taskId);
+
+            if (action != null){
+                var event = eventRepository.findEventByActionId(action.getId());
+
+                return event;
+            }
+        }
+
+        return null;
     }
 
     private final float COMMISSION_PERCENT = 5f;

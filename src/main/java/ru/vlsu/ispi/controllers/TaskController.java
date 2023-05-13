@@ -7,8 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.vlsu.ispi.beans.ChatMessage;
+import ru.vlsu.ispi.beans.Event;
 import ru.vlsu.ispi.beans.Task;
 import ru.vlsu.ispi.beans.User;
+import ru.vlsu.ispi.beans.extrabeans.ExtraMessage;
 import ru.vlsu.ispi.enums.TaskStatus;
 import ru.vlsu.ispi.enums.TaskType;
 import ru.vlsu.ispi.logic.ActionService;
@@ -16,7 +19,10 @@ import ru.vlsu.ispi.logic.TaskService;
 import ru.vlsu.ispi.logic.UserService;
 import ru.vlsu.ispi.models.TaskModel;
 
+import java.sql.Array;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -87,7 +93,7 @@ public class TaskController {
                     return "details";
                 }
                 else {
-                    return "redirect:/account/index1";
+                    return "redirect:/account/default_index";
                 }
             }
         }
@@ -119,7 +125,7 @@ public class TaskController {
                     return "editTask";
                 }
                 else {
-                    return "redirect:/account/index1";
+                    return "redirect:/account/default_index";
                 }
             }
         }
@@ -190,7 +196,7 @@ public class TaskController {
                 }
                 else {
                     attributes.addFlashAttribute("user", user);
-                    return "redirect:/account/index1";
+                    return "redirect:/account/default_index";
                 }
             }
         }
@@ -229,17 +235,69 @@ public class TaskController {
                 Task task = taskHandler.findTaskById(taskId);
 
                 if (task != null){
+
+                    var extraMessageList = new ArrayList<ExtraMessage>();
+
+                    Event event = null;
+
+                    if (!Objects.equals(task.getExecutor().getId(), userId)){
+
+                        event = actionHandler.GetCurrentEventForUserEndTask(userId, taskId);
+                    }
+                    else {
+
+                    }
+
+                    if (event != null){
+                        var messageList = actionHandler.findAllChatMessageByEvent(event.getId());
+
+                        for (var message: messageList){
+                            var extraMessage = new ExtraMessage();
+                            extraMessage.setTime(message.getTime());
+                            extraMessage.setText(message.getText());
+                            extraMessage.setUser(message.getUser());
+                            extraMessage.setViewed(message.isViewed());
+                            extraMessage.setEdited(message.isEdited());
+                            extraMessage.setEvent(message.getEvent());
+                            extraMessage.setReplied(message.isReplied());
+
+                            var fellowId = message.getUser().getId();
+
+                            extraMessage.IsMine = Objects.equals(fellowId, userId);
+
+                            extraMessageList.add(extraMessage);
+                        }
+                    }
+
+                    var fellowName = task.getExecutor().getNickname();
+
                     model.addAttribute("task", task);
+
                     model.addAttribute("user", user);
+
+                    model.addAttribute("messageList", extraMessageList);
+
+                    model.addAttribute("fellowName", fellowName);
+
+                    model.addAttribute("myName", user.getNickname());
+
+                    model.addAttribute("newMessage", new ChatMessage());
+
                     return "taskRoomPage";
                 }
                 else {
-                    return "redirect:/account/index1";
+                    return "redirect:/account/default_index";
                 }
             }
         }
 
         return "redirect:/";
+    }
+
+    @GetMapping("room/task/newMessage")
+    public String SendNewChatMessage(@RequestParam(name = "userId") Long userId, HttpServletRequest request , HttpSession session){
+
+        return getPreviousPageByRequest(request).orElse("/");
     }
 
     protected Optional<String> getPreviousPageByRequest(HttpServletRequest request) {

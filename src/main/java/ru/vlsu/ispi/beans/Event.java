@@ -20,6 +20,9 @@ public class Event {
     @OneToOne
     private Action taskaction;
 
+    @ManyToOne
+    private User Executor;
+
     @Enumerated(value = EnumType.STRING)
     private EventStatus eventstatus;
 
