@@ -38,9 +38,6 @@ public class User implements UserDetails {
 
     private String contactnumber;
 
-    @ManyToOne
-    private Organization organization;
-
     /*
     private Date registerDate;
     private Date birthdayDate;

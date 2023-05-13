@@ -18,7 +18,7 @@
 </div>
 <br>
 <div class = "position-absolute top-0 start-0">
-    <a class="btn btn-primary" type="button" th:href="@{/account/default_index}"> ← index</a>
+    <a class="btn btn-primary" type="button" th:href="@{/account/index}"> ← index</a>
 </div>
 <br>
 <div class = "form-group">
@@ -27,35 +27,6 @@
 <br>
 <h3> Вы находитесь на странице модератора </h3>
 <br>
-<div class="container-fluid">
-    <h4 class = "center"> Список объявлений пользователей для редактирования: </h4>
-    <table class="table">
-        <thead class = "thead-dark">
-        <tr>
-            <th scope = "col">id</th>
-            <th scope = "col">название</th>
-            <th scope = "col">тип</th>
-            <th scope = "col">статус</th>
-            <th scope = "col">вознаграждение</th>
-            <th scope = "col">подробнее</th>
-            <th scope = "col">изменить</th>
-            <th scope = "col">запрос на удаление</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="task : ${taskList}">
-            <th scope = "row" th:text="${task.id}"></th>
-            <td th:text="${task.caption}"> Caption </td>
-            <td th:text="${task.type}"> Type </td>
-            <td th:text="${task.status}"> Status </td>
-            <td th:text="${task.price}"> Price </td>
-            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/details/task?id=} + ${task.id}"> 👁 </a></td>
-            <td><a class = "btn btn-warning" role = "button" th:href = "@{/menu/edit/task?id=} + ${task.id}"> Изменить у себя </a></td>
-            <td><a class = "btn btn-danger" role = "button" th:href = "@{/menu/request/delete/task?id=} + ${task.id}"> ✍ </a></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
 <br>
 </body>
 </html>

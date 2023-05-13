@@ -61,20 +61,4 @@ public class WebSecurityConfig {
         return new HandlerMappingIntrospector();
     }
 
-    /*
-    @Bean
-    public SpringSecurityDialect springSecurityDialect(){
-        return new SpringSecurityDialect();
-    }
-    */
-
-        /*
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
-        return new ProviderManager(daoAuthenticationProvider);
-    }
-    */
 }

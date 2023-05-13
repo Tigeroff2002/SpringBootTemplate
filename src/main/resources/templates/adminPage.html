@@ -14,9 +14,8 @@
 </head>
 <body>
 <div class = "position-absolute top-0 start-0">
-    <a class="btn btn-primary" type="button" th:href="@{/account/default_index}"> ← index </a>
+    <a class="btn btn-primary" type="button" th:href="@{/account/index}"> ← index </a>
 </div>
-<br>
 <br>
 <div class = "position-absolute top-0 end-0">
     <a class = "btn btn-primary" role = "button" href="/account/logout"> Выйти </a>
@@ -28,77 +27,5 @@
 <br>
 <h3> Вы находитесь на странице администратора </h3>
 <br>
-
-<div class="container-fluid">
-    <h4 class = "center"> Список пользователей: </h4>
-    <table class="table">
-        <thead class = "thead-dark">
-        <tr>
-            <th scope = "col">id</th>
-            <th scope = "col">почта</th>
-            <th scope = "col">никнэйм</th>
-            <th scope = "col">роль</th>
-            <th scope = "col">профиль</th>
-            <th scope = "col">изменить роль</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="siteUser : ${userList}">
-            <th scope = "row" th:text="${siteUser.id}"></th>
-            <td th:text="${siteUser.email}"> Email </td>
-            <td th:text="${siteUser.nickname}"> Nickname </td>
-            <td th:text="${siteUser.role}"> Role </td>
-            <td><a class = "btn btn-primary" role = "button" th:href = "@{/account/profile?executorId=} + ${siteUser.id}"> Профиль </a></td>
-            <td>
-                <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    ✍
-                </button>
-                <div class="collapse" th:id="collapseExample">
-                    <div class="card card-body">
-                        <form th:method = "post" th:action = "@{/account/role//editPost/user?siteUserId=} + ${siteUser.id}" th:object = "${user}">
-                            <label for="exampleFormControlSelect1"> Укажите роль </label>
-                            <select class="form-control" id="exampleFormControlSelect1" th:field="*{role}">
-                                <option th:value="'User'" th:text="User"></option>
-                                <option th:value="'Moderator'" th:text="Moderator"></option>
-                                <option th:value="'Admin'" th:text="Admin"></option>
-                            </select>
-                            <button type="submit" class="btn btn-primary mb-2">Изменить</button>
-                        </form>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<div class="container-fluid">
-    <h4 class = "center"> Список объявлений пользователей для редактирования: </h4>
-    <table class="table">
-        <thead class = "thead-dark">
-        <tr>
-            <th scope = "col">id</th>
-            <th scope = "col">название</th>
-            <th scope = "col">тип</th>
-            <th scope = "col">статус</th>
-            <th scope = "col">вознаграждение</th>
-            <th scope = "col">подробнее</th>
-            <th scope = "col">изменить</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="task : ${taskList}">
-            <th scope = "row" th:text="${task.id}"></th>
-            <td th:text="${task.caption}"> Caption </td>
-            <td th:text="${task.type}"> Type </td>
-            <td th:text="${task.status}"> Status </td>
-            <td th:text="${task.price}"> Price </td>
-            <td><a class = "btn btn-primary" role = "button" th:href = "@{/menu/details/task?id=} + ${task.id}"> 👁 </a></td>
-            <td><a class = "btn btn-warning" role = "button" th:href = "@{/menu/editPost/task?id=} + ${task.id}"> ✍ </a></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
 </body>
 </html>
